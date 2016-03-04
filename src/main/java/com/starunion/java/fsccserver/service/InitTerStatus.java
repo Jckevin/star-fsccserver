@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.starunion.java.fsccserver.po.ClientStatusInfoCc;
 import com.starunion.java.fsccserver.po.SipActiveInfo;
 
 
@@ -18,9 +19,10 @@ public class InitTerStatus {
 	private static final Logger logger = LoggerFactory
 			.getLogger(InitTerStatus.class);
 
-	// public static List<SipActiveInfo> activeUserList = new
-	// ArrayList<SipActiveInfo>();
+//	 public static List<SipActiveInfo> activeUserList = new
+//	 ArrayList<SipActiveInfo>();
 	public static Map<String, SipActiveInfo> activeUserMap = new HashMap<String, SipActiveInfo>();
+//	public static Map<String, ClientStatusInfo> activeUserMap = new HashMap<String, ClientStatusInfo>();
 	public static Map<String, String> specialCallMap = new HashMap<String, String>();
 	@Autowired
 	private ProcLinuxCommand proc;
@@ -48,6 +50,15 @@ public class InitTerStatus {
 				if (line.length() > 10) {
 					parts = line.toString().split("\\|");
 					if (!parts[0].equals("userid")) {
+//						ClientStatusInfo info = new ClientStatusInfo();
+//						info.setNumber(parts[0]);
+//						if (parts[4].startsWith("error")) {
+//							info.setStatus((short)0);
+//						} else {
+//							info.setStatus((short)1);
+//						}
+//						 activeUserList.add(info);
+//						activeUserMap.put(parts[0], info);
 						SipActiveInfo info = new SipActiveInfo();
 						info.setSipNumber(parts[0]);
 						if (parts[4].startsWith("error")) {

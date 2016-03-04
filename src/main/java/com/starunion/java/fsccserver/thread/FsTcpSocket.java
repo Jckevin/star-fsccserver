@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.service.ConfigManager;
 import com.starunion.java.fsccserver.service.ProcFsResponse;
+import com.starunion.java.fsccserver.util.ConfigManager;
 
 /*
  * @Author LingSong

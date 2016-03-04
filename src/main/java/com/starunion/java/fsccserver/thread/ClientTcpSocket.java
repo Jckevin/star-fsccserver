@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.po.ClientBindInfo;
-import com.starunion.java.fsccserver.service.ConfigManager;
 import com.starunion.java.fsccserver.service.ProcClientRequest;
+import com.starunion.java.fsccserver.util.ConfigManager;
 
 /*
  * @Author LingSong 

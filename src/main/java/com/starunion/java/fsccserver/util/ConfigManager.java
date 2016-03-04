@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.service;
+package com.starunion.java.fsccserver.util;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,6 +25,7 @@ public class ConfigManager {
 	private String fsPort;
 	private String disRecordPath;
 	private String disMusicPath;
+	private String peerCodec;
 
 	private static ConfigManager configurationManager;
 	private static String configurationPath;
@@ -73,6 +74,8 @@ public class ConfigManager {
 		logger.debug("{} disRecordPath {} {}",s,s,disRecordPath);
 		disMusicPath = getProperties().getProperty("disMusicPath").trim();
 		logger.debug("{} disMusicPath {} {}",s,s,disMusicPath);
+		peerCodec = getProperties().getProperty("peerCodec").trim();
+		logger.debug("{} peerCodec {} {}",s,s,peerCodec);
 
 	}
 
@@ -122,6 +125,14 @@ public class ConfigManager {
 
 	public void setDisMusicPath(String disMusicPath) {
 		this.disMusicPath = disMusicPath;
+	}
+
+	public String getPeerCodec() {
+		return peerCodec;
+	}
+
+	public void setPeerCodec(String peerCodec) {
+		this.peerCodec = peerCodec;
 	}
 
 }
