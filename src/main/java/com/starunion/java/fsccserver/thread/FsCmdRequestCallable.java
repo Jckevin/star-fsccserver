@@ -31,8 +31,6 @@ public class FsCmdRequestCallable implements Callable<String>{
 	private static final Logger logger = LoggerFactory.getLogger(FsCmdRequestCallable.class);
 
 	BufferedWriter out = null;
-	@Autowired
-	private ProcFsResponse msgProc;
 	private String sendCmd;
 	
 	public FsCmdRequestCallable(){
@@ -84,6 +82,7 @@ public class FsCmdRequestCallable implements Callable<String>{
 	public String call() throws Exception {
 
 		String result = "ABCDEFG";
+		logger.debug("get cmd = {}",sendCmd);
 //		try {
 //			String ipAddr = ConfigManager.getInstance().getFsAddr();
 //			int ipPort = Integer.parseInt(ConfigManager.getInstance().getFsPort());
@@ -145,8 +144,14 @@ public class FsCmdRequestCallable implements Callable<String>{
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
+		if(sendCmd.startsWith("bgapi originate")){
+			Thread.sleep(15000);
+			logger.debug("long task process over...");
+		}else{
+			Thread.sleep(1500);
+			logger.debug("short task over");
+		}
 		
-		Thread.sleep(15000);
 		
 		return result;
 	}

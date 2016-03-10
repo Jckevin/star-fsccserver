@@ -102,7 +102,8 @@ public class RequestClientService {
 				break;
 			default:
 				logger.debug("begin process ctd service");
-				reqMsgCmdService.procCmdCTD(message.getClientId(),message.getContent());
+				reqMsgCmdService.procCmdCTD1(message.getClientId(),message.getContent());
+				rspBuff = makeLastResponse(reqLine, ConstantCc.SUCCESS);
 				break;
 			}
 

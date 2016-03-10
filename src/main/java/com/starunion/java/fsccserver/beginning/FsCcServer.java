@@ -36,6 +36,8 @@ import com.starunion.java.fsccserver.thread.TcpClientResponseThread;
 public class FsCcServer {
 	private static final Logger logger = LoggerFactory.getLogger(FsCcServer.class);
 
+	public static ExecutorService executor = Executors.newCachedThreadPool();
+	
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
