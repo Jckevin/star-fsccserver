@@ -1,9 +1,17 @@
 package com.starunion.java.fsccserver.service;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.starunion.java.fsccserver.thread.FsCmdRequestCallable;
+import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
 /** 
@@ -14,7 +22,9 @@ import com.starunion.java.fsccserver.util.ConstantCc;
 @Service
 public class ProcClientReqCmd {
 	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqCmd.class);
-
+	
+	@Autowired
+	FsCmdRequestCallable task;
 	public ProcClientReqCmd(){
 		
 	}
@@ -29,6 +39,40 @@ public class ProcClientReqCmd {
 		buff.append(ConstantCc.DISP_FSCMD_TAIL);
 //		fsSocket.fsSendCommand(buff.toString());
 		logger.debug("make command : {}", buff.toString());
+		
+		ExecutorService executor = Executors.newCachedThreadPool();
+//        FsCmdRequestCallable task = new FsCmdRequestCallable();
+        task.setSendCmd(buff.toString());
+        Future<String> result = executor.submit(task);
+//        executor.shutdown();
+         
+        logger.debug("主线程在执行任务");
+         
+        try {
+        	logger.debug("task运行结果"+result.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+		
+		
+		
+//		ClientDataMap.fsCmdRequestQueue.add(buff.toString()) ;
+//		ClientDataMap.fsCmdRequestQueue.add(buff.toString());
+//		int status = 0;
+//		while(status == 0){
+//			try {
+//				ClientDataMap.fsCmdResponseQueue.wait();
+//				logger.debug("receive response... ");
+//				logger.debug("receive response {} ",ClientDataMap.fsCmdResponseQueue.peek());
+//				status = 1;
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}	
+//		}
+		logger.debug("haha ... i jump out the while...");
 		
 		return 0;
 	}

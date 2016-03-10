@@ -46,6 +46,7 @@ public class ClientDataMap {
 	 * @param value: TcpClientSocketThread
 	 */
 	public static ConcurrentHashMap<String, TcpClientSocketThread> clientThreadMap = new ConcurrentHashMap<String, TcpClientSocketThread>(0);
+//	public static ConcurrentHashMap<String, Thread> clientThreadMap = new ConcurrentHashMap<String, Thread>(0);
 
 	/**
 	 * client request queue 

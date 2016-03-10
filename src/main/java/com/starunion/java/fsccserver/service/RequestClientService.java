@@ -98,10 +98,11 @@ public class RequestClientService {
 			case ConstantCc.CC_CTD:
 				int res = reqMsgCmdService.procCmdCTD(message.getClientId(),message.getContent());
 				rspBuff = makeLastResponse(reqLine, ConstantCc.FAILED);
-				logger.debug("begin process log out service");
+				logger.debug("begin process the third party call service");
 				break;
 			default:
-				logger.debug("begin process log out service");
+				logger.debug("begin process ctd service");
+				reqMsgCmdService.procCmdCTD(message.getClientId(),message.getContent());
 				break;
 			}
 

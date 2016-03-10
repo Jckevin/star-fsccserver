@@ -1,16 +1,12 @@
-package com.starunion.java.fsccserver.thread;
+package com.starunion.java.fsccserver.thread.runable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,42 +14,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.service.ProcClientRequest;
 import com.starunion.java.fsccserver.service.RequestClientService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
 /**
  * @author Lings
- * @date Mar 2, 2016 9:23:50 AM
+ * @date Mar 8, 2016 3:49:56 PM
  * 
  */
-
-@Service
 @Scope("prototype")
-public class TcpClientSocketThread extends Thread {
-	private static final Logger logger = LoggerFactory.getLogger(TcpClientSocketThread.class);
+@Service
+public class TcpClientSocketRunable implements Runnable {
+
+	private static final Logger logger = LoggerFactory.getLogger(TcpClientSocketRunable.class);
 
 	private Socket clientSocket;
 	private String clientId;
+	private String threadName;
 	@Autowired
 	RequestClientService reqClientService;
 
 	private long firsttime = 0;
 	private boolean isFrist = true;
 
-	public TcpClientSocketThread() {
+	public TcpClientSocketRunable() {
 
 	}
 
-	public TcpClientSocketThread(String id, Socket client) {
-		super("CcClientThread-" + id);
+	public TcpClientSocketRunable(String id, Socket client, String name) {
 		this.clientId = id;
 		this.clientSocket = client;
+		this.threadName = name;
 	}
 
 	public void run() {
-		logger.debug("client socket process thread {} started", getName());
+		logger.debug("client socket process thread {} started", threadName);
 
 		while (true) {
 			try {
@@ -61,28 +57,45 @@ public class TcpClientSocketThread extends Thread {
 					if (isFrist) {
 						firsttime = System.currentTimeMillis();
 						isFrist = false;
-						sleep(5000);
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						continue;
 					} else {
 						long interval = System.currentTimeMillis() - firsttime;
 						// socket disconnect, thread hold one minute
 						if (interval > ConstantCc.TIMEOUT_CLT_SOCK) {
-							interrupt();
+							Thread.interrupted();
 							logger.debug("after interrupt ,thread status = {}",Thread.currentThread().getState());
 //							Thread.currentThread().destroy();
 							ClientDataMap.clientThreadMap.remove(clientId);
-							sleep(1);
+							break;
 						} else {
 							logger.debug("the socket closed, wait for 5 s...");
-							sleep(5000);
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							continue;
 						}
 					}
+//					logger.debug("client id = {}",clientId);
+////					ClientDataMap.clientThreadMap.get(clientId).interrupt();
+//					Thread.interrupted();
+//					logger.debug("after interrupt ,thread status = {}", Thread.currentThread().getState());
+//					// Thread.currentThread().destroy();
+//					// ClientDataMap.clientThreadMap.remove(clientId);
+//					ClientDataMap.clientThreadMap.remove(clientId);
+//					break;
 				} else {
 					if (!isFrist) {
 						isFrist = true;
 					}
-
 					String line = null;
 					StringBuffer sendBuff = new StringBuffer();
 					BufferedReader is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -91,7 +104,8 @@ public class TcpClientSocketThread extends Thread {
 					while ((line = is.readLine()) != null) {
 						if (line.length() > 0) {
 							logger.info("receive client request message : {}", line);
-//							RequestClientService reqClientService = new RequestClientService();
+							// RequestClientService reqClientService = new
+							// RequestClientService();
 							sendBuff = reqClientService.procClientRequest(line);
 							out.write(sendBuff.toString());
 							out.flush();
@@ -114,18 +128,16 @@ public class TcpClientSocketThread extends Thread {
 				try {
 					clientSocket.close();
 					clientSocket = null;
-					logger.error("thread {} throw SocketException, e :", getName(), e);
+					logger.error("thread {} throw SocketException, e :", threadName, e);
 				} catch (IOException e1) {
-					logger.error("thread {} closed IOException, e : ", getName(), e1);
+					logger.error("thread {} closed IOException, e : ", threadName, e1);
 				}
 			} catch (IOException e) {
-				logger.error("thread connection {} throw IOException, e: ", getName(), e);
-			} catch (InterruptedException e) {
-				break;
+				logger.error("thread connection {} throw IOException, e: ", threadName, e);
 			}
 		}
 		logger.debug(
-				"one client initactively closed , now binding client count : {}. and client socket count : {}",
+				"one client status closed , now binding client count : {}. and client socket count : {}",
 				ClientDataMap.clientSocketMap.size(), ClientDataMap.clientThreadMap.size());
 	}
 
@@ -140,8 +152,18 @@ public class TcpClientSocketThread extends Thread {
 	public String getClientId() {
 		return clientId;
 	}
-	
+
 	public void setClientId(String clientId) {
+		logger.debug("somebody set me now me = {}",clientId);
 		this.clientId = clientId;
 	}
+
+	public String getThreadName() {
+		return threadName;
+	}
+
+	public void setThreadName(String threadName) {
+		this.threadName = threadName;
+	}
+
 }

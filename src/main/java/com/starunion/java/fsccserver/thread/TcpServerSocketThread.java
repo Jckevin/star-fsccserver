@@ -12,13 +12,17 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
 import com.starunion.java.fsccserver.service.LoginAndOutService;
 import com.starunion.java.fsccserver.service.RequestMessageService;
+import com.starunion.java.fsccserver.thread.runable.TcpClientSocketRunable;
 import com.starunion.java.fsccserver.util.ClientDataMap;
+import com.starunion.java.fsccserver.util.ConfigManager;
 import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.SpringContextUtil;
 
 /*
  * @Author LingSong 
@@ -33,8 +37,9 @@ public class TcpServerSocketThread extends Thread {
 	 LoginAndOutService loginService;
 	 @Autowired
 	 RequestMessageService requestCheckService;
-	 @Autowired
-	 TcpClientSocketThread clientThread;
+//	 @Autowired
+//	 TcpClientSocketRunable clientRunable;
+//	 TcpClientSocketThread clientThread;
 
 	private ServerSocket serverSocket = null;
 
@@ -51,12 +56,12 @@ public class TcpServerSocketThread extends Thread {
 
 		if (thread == null || !thread.isAlive()) {
 			logger.info("THREAD for the client is NOT EXISTED, create NEW THREAD.");
-//			clientThread = new TcpClientSocketThread(id,clientSocket);
+//			TcpClientSocketThread clientThread = new TcpClientSocketThread(id,clientSocket);
+			TcpClientSocketThread clientThread = SpringContextUtil.getApplicationContext().getBean("tcpClientSocketThread", TcpClientSocketThread.class);
 			clientThread.setClientId(id);
 			clientThread.setName("CcClientThread-" + id);
 			clientThread.setClientSocket(clientSocket);
 			clientThread.start();
-
 			ClientDataMap.clientThreadMap.put(id, clientThread);
 
 		} else {

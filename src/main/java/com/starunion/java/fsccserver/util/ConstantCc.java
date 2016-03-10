@@ -18,7 +18,7 @@ public class ConstantCc {
 	/**
 	 * client connect timeout 1 minite
 	 */
-	public final static int TIMEOUT_CLT_SOCK = 1000 * 15;
+	public final static int TIMEOUT_CLT_SOCK = 1000 * 30;
 	public final static int CC_REQ_PARTS_LMT = 3;
 	public final static String CC_REQ_PARTS_SPLIT = ":";
 	
