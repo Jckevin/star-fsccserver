@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.service.ProcClientRequest;
-import com.starunion.java.fsccserver.service.RequestClientService;
+import com.starunion.java.fsccserver.service.ClientRequestService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
@@ -37,7 +37,7 @@ public class TcpClientSocketThread extends Thread {
 	private Socket clientSocket;
 	private String clientId;
 	@Autowired
-	RequestClientService reqClientService;
+	ClientRequestService clientReqService;
 
 	private long firsttime = 0;
 	private boolean isFrist = true;
@@ -92,7 +92,7 @@ public class TcpClientSocketThread extends Thread {
 						if (line.length() > 0) {
 							logger.info("receive client request message : {}", line);
 //							RequestClientService reqClientService = new RequestClientService();
-							sendBuff = reqClientService.procClientRequest(line);
+							sendBuff = clientReqService.procClientRequest(line);
 							out.write(sendBuff.toString());
 							out.flush();
 							logger.info("send client response message : {}", sendBuff.toString());

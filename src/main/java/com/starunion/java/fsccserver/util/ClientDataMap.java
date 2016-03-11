@@ -3,12 +3,15 @@ package com.starunion.java.fsccserver.util;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.starunion.java.fsccserver.po.ClientStatusInfoCc;
 import com.starunion.java.fsccserver.thread.TcpClientSocketThread;
@@ -85,12 +88,11 @@ public class ClientDataMap {
 	public static ConcurrentLinkedQueue<String> fsCmdResponseQueue = new ConcurrentLinkedQueue<String>();
 	
 	/**
-	 * for FreeSWITCH server notify queue 
-	 * @param key: Client Identifier Number. 
-	 * Like work Number, telephone Number etc.
-	 * <p>
-	 * @param value: String
+	 * for FreeSWITCH server notify receive queue 
+	 * @param String:simple make the 
 	 */
-	public static ConcurrentLinkedQueue<String> fsCmdNotifyQueue = new ConcurrentLinkedQueue<String>();
+//	public static ConcurrentLinkedQueue<String> fsCmdNotifyQueue = new ConcurrentLinkedQueue<String>();
+	public static BlockingQueue<Map<String,String>> fsNotifyRecvQueue = new LinkedBlockingQueue<Map<String,String>>();
+	public static BlockingQueue<String> fsNotifySendQueue = new LinkedBlockingQueue<String>();
 
 }

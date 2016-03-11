@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.service.RequestClientService;
+import com.starunion.java.fsccserver.service.ClientRequestService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
@@ -33,7 +33,7 @@ public class TcpClientSocketRunable implements Runnable {
 	private String clientId;
 	private String threadName;
 	@Autowired
-	RequestClientService reqClientService;
+	ClientRequestService reqClientService;
 
 	private long firsttime = 0;
 	private boolean isFrist = true;

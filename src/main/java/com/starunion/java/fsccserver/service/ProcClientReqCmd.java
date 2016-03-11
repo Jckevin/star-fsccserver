@@ -102,7 +102,13 @@ public class ProcClientReqCmd {
 		logger.debug("主线程在执行任务");
 
 		try {
-			logger.debug("task运行结果" + result.get(5000, TimeUnit.MILLISECONDS));
+			String res = result.get(5000, TimeUnit.MILLISECONDS);
+			logger.debug("task运行结果" + res);
+			if(res.equals("success")){
+				return ConstantCc.SUCCESS;
+			}else{
+				return ConstantCc.FAILED;
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
@@ -111,23 +117,6 @@ public class ProcClientReqCmd {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// ClientDataMap.fsCmdRequestQueue.add(buff.toString()) ;
-		// ClientDataMap.fsCmdRequestQueue.add(buff.toString());
-		// int status = 0;
-		// while(status == 0){
-		// try {
-		// ClientDataMap.fsCmdResponseQueue.wait();
-		// logger.debug("receive response... ");
-		// logger.debug("receive response {}
-		// ",ClientDataMap.fsCmdResponseQueue.peek());
-		// status = 1;
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		logger.debug("haha ... i jump out the while...");
 
 		return 0;
 	}

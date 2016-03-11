@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
 import com.starunion.java.fsccserver.service.LoginAndOutService;
-import com.starunion.java.fsccserver.service.RequestMessageService;
+import com.starunion.java.fsccserver.service.MessageClientReqService;
 import com.starunion.java.fsccserver.thread.runable.TcpClientSocketRunable;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConfigManager;
@@ -36,7 +36,7 @@ public class TcpServerSocketThread extends Thread {
 	 @Autowired
 	 LoginAndOutService loginService;
 	 @Autowired
-	 RequestMessageService requestCheckService;
+	 MessageClientReqService requestCheckService;
 //	 @Autowired
 //	 TcpClientSocketRunable clientRunable;
 //	 TcpClientSocketThread clientThread;

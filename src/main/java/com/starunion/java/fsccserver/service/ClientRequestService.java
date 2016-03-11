@@ -45,11 +45,11 @@ import com.starunion.java.fsccserver.util.ConstantCc;
  */
 
 @Service
-public class RequestClientService {
-	private static final Logger logger = LoggerFactory.getLogger(RequestClientService.class);
+public class ClientRequestService {
+	private static final Logger logger = LoggerFactory.getLogger(ClientRequestService.class);
 
 	@Autowired
-	RequestMessageService reqMsgService;
+	MessageClientReqService reqMsgService;
 	@Autowired
 	ProcClientReqCmd reqMsgCmdService;
 	@Autowired
@@ -75,7 +75,7 @@ public class RequestClientService {
 	@Autowired
 	private ProcLinuxCommand procLinuxCmd;
 
-	public RequestClientService() {
+	public ClientRequestService() {
 
 	}
 
@@ -97,7 +97,11 @@ public class RequestClientService {
 				break;
 			case ConstantCc.CC_CTD:
 				int res = reqMsgCmdService.procCmdCTD(message.getClientId(),message.getContent());
-				rspBuff = makeLastResponse(reqLine, ConstantCc.FAILED);
+				if(res==0){
+					rspBuff = makeLastResponse(reqLine, ConstantCc.SUCCESS);	
+				}else{
+					rspBuff = makeLastResponse(reqLine, ConstantCc.FAILED);
+				}
 				logger.debug("begin process the third party call service");
 				break;
 			default:

@@ -11,9 +11,9 @@ import com.starunion.java.fsccserver.util.ConstantCc;
  * 
  */
 @Service
-public class RequestMessageService {
+public class MessageClientReqService {
 	
-	public RequestMessageService() {
+	public MessageClientReqService() {
 
 	}
 

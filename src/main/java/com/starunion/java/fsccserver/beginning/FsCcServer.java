@@ -18,6 +18,9 @@ import com.starunion.java.fsccserver.thread.FsTcpSocket;
 import com.starunion.java.fsccserver.thread.TcpClientRequestRunnable;
 import com.starunion.java.fsccserver.thread.TcpClientRequestThread;
 import com.starunion.java.fsccserver.thread.TcpClientResponseThread;
+import com.starunion.java.fsccserver.thread.TcpFsNotifyProcThread;
+import com.starunion.java.fsccserver.thread.TcpFsSocketThread;
+import com.starunion.java.fsccserver.thread.TcpNotifySendToClientThread;
 
 /**
  * This project used as an important middler server who connects both the
@@ -37,7 +40,7 @@ public class FsCcServer {
 	private static final Logger logger = LoggerFactory.getLogger(FsCcServer.class);
 
 	public static ExecutorService executor = Executors.newCachedThreadPool();
-	
+
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
@@ -70,7 +73,28 @@ public class FsCcServer {
 		// TcpServerSocketThread("CcServerTcpThread");
 		Thread serverThread = new Thread(
 				applicationContext.getBean("tcpServerSocketThread", TcpServerSocketThread.class));
+		serverThread.setName("CcServerThread");
 		serverThread.start();
+
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		Thread fsThread = new Thread(applicationContext.getBean("tcpFsSocketThread", TcpFsSocketThread.class));
+		fsThread.setName("FsSocketThread");
+		fsThread.start();
+
+		Thread fsNotifyThread = new Thread(
+				applicationContext.getBean("tcpFsNotifyProcThread", TcpFsNotifyProcThread.class));
+		fsNotifyThread.setName("FsNotifyRecvThread");
+		fsNotifyThread.start();
+		
+		Thread fsNotifySendThread = new Thread(
+				applicationContext.getBean("tcpNotifySendToClientThread", TcpNotifySendToClientThread.class));
+		fsNotifySendThread.setName("FsNotifySendThread");
+		fsNotifySendThread.start();
 
 		/** static request message Queue Thread start */
 		// TcpClientRequestThread clientReqThread = new
@@ -89,9 +113,9 @@ public class FsCcServer {
 		// TcpClientResponseThread("CcClientRspThread");
 		// clientRspThread.start();
 		/** start TCP socket(client) for FreeSWITCH. */
-		// Thread fsThread = new
-		// Thread(applicationContext.getBean("fsTcpSocket",
-		// FsTcpSocket.class));
-		// fsThread.start();
+//		 Thread fsThread = new
+//		 Thread(applicationContext.getBean("fsTcpSocket",
+//		 FsTcpSocket.class));
+//		 fsThread.start();
 	}
 }
