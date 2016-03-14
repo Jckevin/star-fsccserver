@@ -21,6 +21,7 @@ import com.starunion.java.fsccserver.service.MessageFsNotifyService;
 import com.starunion.java.fsccserver.service.ProcFsResponse;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConfigManager;
+import com.starunion.java.fsccserver.util.ConstantCc;
 
 /**
  * @author Lings
@@ -34,22 +35,28 @@ public class TcpFsSocketThread extends Thread {
 	MessageFsNotifyService msgService;
 	private BufferedWriter out = null;
 
+	private String fsIp;
+	private int fsPort;
+
+	private Socket fsClient = null;
+
 	public TcpFsSocketThread() {
 
 	}
-	
+
 	@Override
 	public void run() {
-		try {
-			String ipAddr = ConfigManager.getInstance().getFsAddr();
-			int ipPort = Integer.parseInt(ConfigManager.getInstance().getFsPort());
-			Socket fsClient = new Socket(ipAddr, ipPort);
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
-			out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));
-			StringBuffer notifyBuffer = new StringBuffer();
-			String line = null;
+		fsIp = ConfigManager.getInstance().getFsAddr();
+		fsPort = Integer.parseInt(ConfigManager.getInstance().getFsPort());
+		while (true) {
 			try {
+
+				fsClient = new Socket(fsIp, fsPort);
+
+				BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
+				out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));
+				StringBuffer notifyBuffer = new StringBuffer();
+				String line = null;
 				/** this logic is beautiful for me, hold on! keep on! */
 				while ((line = in.readLine()) != null) {
 					notifyBuffer.append(line);
@@ -59,7 +66,8 @@ public class TcpFsSocketThread extends Thread {
 						 * it seems this condition is enough for message end.
 						 */
 						Map<String, String> respMap = new HashMap<String, String>();
-						logger.debug("receive response message from FreeSWITCH:======>\n{}", notifyBuffer.toString());
+						// logger.debug("receive response message from
+						// FreeSWITCH:======>\n{}", notifyBuffer.toString());
 						respMap = msgService.parseFsResponse(notifyBuffer);
 						String contentType = respMap.get("Content-Type");
 						if (contentType != null) {
@@ -79,8 +87,22 @@ public class TcpFsSocketThread extends Thread {
 									fsSendCommand("event plain CHANNEL_PARK\n\n");
 									fsSendCommand("event plain CUSTOM sofia::register\n\n");
 								}
+							} else if (contentType.equals("text/disconnect-notice")) {
+								logger.debug("server disconected, close the fsClient...");
+								fsClient.close();
+								Map<String, String> msg = new HashMap<String, String>();
+								msg.put("Event-Name", "FS Dis-connected");
+								/**
+								 * :TODO Q:why here invoke throw
+								 * interruptedException?
+								 */
+								try {
+									ClientDataMap.fsNotifyRecvQueue.put(msg);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
 							} else {
-								logger.debug("get content type [{}] without process.", contentType);
+								logger.debug("get content type [{}] WITHOUT process.", contentType);
 							}
 						} else {
 							String eventType = respMap.get("Event-Name");
@@ -89,12 +111,10 @@ public class TcpFsSocketThread extends Thread {
 								try {
 									ClientDataMap.fsNotifyRecvQueue.put(respMap);
 								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}
 						}
-
 						/**
 						 * this step is important ,or memory leak and useless
 						 * message .
@@ -102,16 +122,20 @@ public class TcpFsSocketThread extends Thread {
 						notifyBuffer.delete(0, notifyBuffer.length());
 					}
 				}
-			} catch (IOException e) {
-				fsClient.close();
+			} catch (BindException e) {
 				e.printStackTrace();
+			} catch (IOException e) {
+				try {
+					sleep(10000);
+					logger.debug("after 10 s ,retry...");
+					Map<String, String> msg = new HashMap<String, String>();
+					msg.put("Event-Name", "FS Re-try");
+					ClientDataMap.fsNotifyRecvQueue.put(msg);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			}
-		} catch (BindException e) {
-			// fsClient.close();
-			e.printStackTrace();
-		} catch (IOException e) {
-			// fsClient.close();
-			e.printStackTrace();
+
 		}
 
 	}

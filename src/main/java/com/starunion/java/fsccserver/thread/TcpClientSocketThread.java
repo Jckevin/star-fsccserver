@@ -71,7 +71,10 @@ public class TcpClientSocketThread extends Thread {
 							logger.debug("after interrupt ,thread status = {}",Thread.currentThread().getState());
 //							Thread.currentThread().destroy();
 							ClientDataMap.clientThreadMap.remove(clientId);
-							sleep(1);
+							logger.debug("after interrupt, now binding client thread count : {}",ClientDataMap.clientThreadMap.size());
+							break;
+							/**:TODO why sleep(1) equals break operation ?*/
+//							sleep(1);
 						} else {
 							logger.debug("the socket closed, wait for 5 s...");
 							sleep(5000);

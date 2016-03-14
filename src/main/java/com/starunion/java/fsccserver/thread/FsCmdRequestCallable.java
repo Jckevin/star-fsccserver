@@ -86,14 +86,7 @@ public class FsCmdRequestCallable implements Callable<String> {
 								logger.debug("get content type [{}] without process.", contentType);
 							}
 						}
-						/**
-						 * it seems this condition is enough for message end.
-						 */
-						// msgProc.procFsResponse(respBuffer);
-						/**
-						 * this step is important ,or memory leak and useless
-						 * message .
-						 */
+						
 						respBuffer.delete(0, respBuffer.length());
 					}
 				}
