@@ -22,8 +22,6 @@ import org.quartz.Trigger;
 //import static org.quartz.impl.matchers.EverythingMatcher.*;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.thread.FsTcpSocket;
-
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -44,29 +42,29 @@ public class QuartzTaskService {
 
 	}
 
-	public void stopMeetPlay(FsTcpSocket fs, String meetNum, int delay) {
-
-		@SuppressWarnings("static-access")
-		SchedulerFactory sf = QuartzScheduler.getInstance().getSchedulerFactory();
-		try {
-			Scheduler sched = sf.getScheduler();
-			Date date = new Date();
-			long nDate = date.getTime() + delay;
-			date.setTime(nDate);
-
-			JobDataMap map = new JobDataMap();
-			map.put("fsSock", fs);
-			map.put("meetNum", meetNum);
-			JobDetail job = newJob(JobStopMeetPlayMusic.class).withIdentity("job1", "group1").setJobData(map).build();
-			Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(date)
-					.withSchedule(simpleSchedule().withIntervalInSeconds(30).withRepeatCount(0)).build();
-			sched.scheduleJob(job, trigger);
-			sched.start();
-		} catch (SchedulerException e) {
-			e.printStackTrace();
-		}
-
-	}
+//	public void stopMeetPlay(FsTcpSocket fs, String meetNum, int delay) {
+//
+//		@SuppressWarnings("static-access")
+//		SchedulerFactory sf = QuartzScheduler.getInstance().getSchedulerFactory();
+//		try {
+//			Scheduler sched = sf.getScheduler();
+//			Date date = new Date();
+//			long nDate = date.getTime() + delay;
+//			date.setTime(nDate);
+//
+//			JobDataMap map = new JobDataMap();
+//			map.put("fsSock", fs);
+//			map.put("meetNum", meetNum);
+//			JobDetail job = newJob(JobStopMeetPlayMusic.class).withIdentity("job1", "group1").setJobData(map).build();
+//			Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(date)
+//					.withSchedule(simpleSchedule().withIntervalInSeconds(30).withRepeatCount(0)).build();
+//			sched.scheduleJob(job, trigger);
+//			sched.start();
+//		} catch (SchedulerException e) {
+//			e.printStackTrace();
+//		}
+//
+//	}
 
 	public void delayMeetPlayAtTime(StringBuffer cmd, long delayTime) {
 

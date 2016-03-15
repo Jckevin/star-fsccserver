@@ -19,10 +19,10 @@ import com.starunion.java.fsccserver.util.ClientDataMap;
 * 
 */
 @Service
-public class TcpNotifySendToClientThread extends Thread{
-	private static final Logger logger = LoggerFactory.getLogger(TcpNotifySendToClientThread.class);
+public class ThreadNotifySendToClient extends Thread{
+	private static final Logger logger = LoggerFactory.getLogger(ThreadNotifySendToClient.class);
 
-	public TcpNotifySendToClientThread() {
+	public ThreadNotifySendToClient() {
 
 	}
 

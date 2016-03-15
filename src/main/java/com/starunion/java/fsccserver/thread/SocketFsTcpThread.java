@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.service.FsNotifyService;
 import com.starunion.java.fsccserver.service.MessageFsNotifyService;
-import com.starunion.java.fsccserver.service.ProcFsResponse;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConfigManager;
 import com.starunion.java.fsccserver.util.ConstantCc;
@@ -29,29 +27,27 @@ import com.starunion.java.fsccserver.util.ConstantCc;
  * 
  */
 @Service
-public class TcpFsSocketThread extends Thread {
-	private static final Logger logger = LoggerFactory.getLogger(TcpFsSocketThread.class);
+public class SocketFsTcpThread extends Thread {
+	private static final Logger logger = LoggerFactory.getLogger(SocketFsTcpThread.class);
 	@Autowired
 	MessageFsNotifyService msgService;
 	private BufferedWriter out = null;
 
 	private String fsIp;
-	private int fsPort;
 
 	private Socket fsClient = null;
 
-	public TcpFsSocketThread() {
+	public SocketFsTcpThread() {
 
 	}
 
 	@Override
 	public void run() {
 		fsIp = ConfigManager.getInstance().getFsAddr();
-		fsPort = Integer.parseInt(ConfigManager.getInstance().getFsPort());
 		while (true) {
 			try {
 
-				fsClient = new Socket(fsIp, fsPort);
+				fsClient = new Socket(fsIp, ConstantCc.FS_SERV_PORT);
 
 				BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
 				out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));
@@ -127,9 +123,8 @@ public class TcpFsSocketThread extends Thread {
 			} catch (IOException e) {
 				try {
 					sleep(10000);
-					logger.debug("after 10 s ,retry...");
 					Map<String, String> msg = new HashMap<String, String>();
-					msg.put("Event-Name", "FS Re-try");
+					msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.FS_EVENT_UNBIND);
 					ClientDataMap.fsNotifyRecvQueue.put(msg);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();

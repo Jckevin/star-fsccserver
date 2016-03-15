@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.beginning.FsCcServer;
-import com.starunion.java.fsccserver.thread.FsCmdRequestCallable;
+import com.starunion.java.fsccserver.thread.CallableFsCmdRequest;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
@@ -27,7 +27,7 @@ public class ProcClientReqCmd {
 	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqCmd.class);
 
 	@Autowired
-	FsCmdRequestCallable task;
+	CallableFsCmdRequest task;
 
 	public ProcClientReqCmd() {
 

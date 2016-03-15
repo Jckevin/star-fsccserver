@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.net.Socket;
 import java.util.HashMap;
@@ -18,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.service.MessageFsNotifyService;
-import com.starunion.java.fsccserver.service.ProcClientReqCmd;
-import com.starunion.java.fsccserver.service.ProcFsResponse;
 import com.starunion.java.fsccserver.util.ConfigManager;
+import com.starunion.java.fsccserver.util.ConstantCc;
 
 /**
  * @author Lings
@@ -28,15 +26,15 @@ import com.starunion.java.fsccserver.util.ConfigManager;
  * 
  */
 @Service
-public class FsCmdRequestCallable implements Callable<String> {
-	private static final Logger logger = LoggerFactory.getLogger(FsCmdRequestCallable.class);
+public class CallableFsCmdRequest implements Callable<String> {
+	private static final Logger logger = LoggerFactory.getLogger(CallableFsCmdRequest.class);
 
 	BufferedWriter out = null;
 	private String sendCmd;
 	@Autowired
 	MessageFsNotifyService msgService;
 
-	public FsCmdRequestCallable() {
+	public CallableFsCmdRequest() {
 
 	}
 
@@ -47,8 +45,7 @@ public class FsCmdRequestCallable implements Callable<String> {
 		logger.debug("get cmd = {}", sendCmd);
 		try {
 			String ipAddr = ConfigManager.getInstance().getFsAddr();
-			int ipPort = Integer.parseInt(ConfigManager.getInstance().getFsPort());
-			Socket fsClient = new Socket(ipAddr, ipPort);
+			Socket fsClient = new Socket(ipAddr, ConstantCc.FS_SERV_PORT);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));
@@ -86,25 +83,25 @@ public class FsCmdRequestCallable implements Callable<String> {
 								logger.debug("get content type [{}] without process.", contentType);
 							}
 						}
-						
+
 						respBuffer.delete(0, respBuffer.length());
 					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			} 
+			}
 		} catch (BindException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		if (sendCmd.startsWith("bgapi originate")) {
-//			Thread.sleep(15000);
-//			logger.debug("long task process over...");
-//		} else {
-//			Thread.sleep(1500);
-//			logger.debug("short task over");
-//		}
+		// if (sendCmd.startsWith("bgapi originate")) {
+		// Thread.sleep(15000);
+		// logger.debug("long task process over...");
+		// } else {
+		// Thread.sleep(1500);
+		// logger.debug("short task over");
+		// }
 
 		return result;
 	}

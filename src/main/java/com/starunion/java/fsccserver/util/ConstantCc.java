@@ -9,6 +9,8 @@ public class ConstantCc {
 
 	// for the project
 	public final static int TCP_SERV_PORT = 6099;
+	public final static int FS_SERV_PORT = 8021;
+	
 	public final static int SUCCESS = 0;
 	public final static int FAILED = -1;
 
@@ -16,7 +18,7 @@ public class ConstantCc {
 
 	// CLIENT REQUEST COMMAND TYPE
 	/**
-	 * client connect timeout 1 minite
+	 * client connect thread delayed timeout 1 minite
 	 */
 	public final static int TIMEOUT_CLT_SOCK = 1000 * 30;
 	public final static int CC_REQ_PARTS_LMT = 3;
@@ -46,4 +48,7 @@ public class ConstantCc {
 	public final static String PWD_SAME_NAME = "0";
 	public final static String PWD_STATIC_STR = "1";
 
+	// for freeswitch
+	public final static String FS_EVENT_HEAD = "Event-Name";
+	public final static String FS_EVENT_UNBIND = "UnbindServer";
 }

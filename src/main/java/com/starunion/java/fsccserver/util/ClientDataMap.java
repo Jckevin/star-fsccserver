@@ -1,20 +1,14 @@
 package com.starunion.java.fsccserver.util;
 
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.starunion.java.fsccserver.po.ClientStatusInfoCc;
-import com.starunion.java.fsccserver.thread.TcpClientSocketThread;
+import com.starunion.java.fsccserver.thread.SocketClientTcpThread;
 
 /**
  * @author Lings
@@ -48,7 +42,7 @@ public class ClientDataMap {
 	 * <p>
 	 * @param value: TcpClientSocketThread
 	 */
-	public static ConcurrentHashMap<String, TcpClientSocketThread> clientThreadMap = new ConcurrentHashMap<String, TcpClientSocketThread>(0);
+	public static ConcurrentHashMap<String, SocketClientTcpThread> clientThreadMap = new ConcurrentHashMap<String, SocketClientTcpThread>(0);
 //	public static ConcurrentHashMap<String, Thread> clientThreadMap = new ConcurrentHashMap<String, Thread>(0);
 
 	/**

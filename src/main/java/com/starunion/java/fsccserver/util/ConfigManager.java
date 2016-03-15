@@ -20,9 +20,9 @@ public class ConfigManager {
 	private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
 
 	private String disAddr;
-	private String disPort;
+//	private String disPort;
 	private String fsAddr;
-	private String fsPort;
+//	private String fsPort;
 	private String disRecordPath;
 	private String disMusicPath;
 	private String peerCodec;
@@ -64,12 +64,12 @@ public class ConfigManager {
 
 		disAddr = getProperties().getProperty("disAddr").trim();
 		logger.debug("{} disAddr {} {}",s,s,disAddr);
-		disPort = getProperties().getProperty("disPort").trim();
-		logger.debug("{} disPort {} {}",s,s,disPort);
+//		disPort = getProperties().getProperty("disPort").trim();
+//		logger.debug("{} disPort {} {}",s,s,disPort);
 		fsAddr = getProperties().getProperty("fsAddr").trim();
 		logger.debug("{} fsAddr {} {}",s,s,fsAddr);
-		fsPort = getProperties().getProperty("fsPort").trim();
-		logger.debug("{} fsPort {} {}",s,s,fsPort);
+//		fsPort = getProperties().getProperty("fsPort").trim();
+//		logger.debug("{} fsPort {} {}",s,s,fsPort);
 		disRecordPath = getProperties().getProperty("disRecordPath").trim();
 		logger.debug("{} disRecordPath {} {}",s,s,disRecordPath);
 		disMusicPath = getProperties().getProperty("disMusicPath").trim();
@@ -87,13 +87,13 @@ public class ConfigManager {
 		this.disAddr = disAddr;
 	}
 
-	public String getDisPort() {
-		return disPort;
-	}
-
-	public void setDisPort(String disPort) {
-		this.disPort = disPort;
-	}
+//	public String getDisPort() {
+//		return disPort;
+//	}
+//
+//	public void setDisPort(String disPort) {
+//		this.disPort = disPort;
+//	}
 
 	public String getFsAddr() {
 		return fsAddr;
@@ -103,13 +103,13 @@ public class ConfigManager {
 		this.fsAddr = fsAddr;
 	}
 
-	public String getFsPort() {
-		return fsPort;
-	}
-
-	public void setFsPort(String fsPort) {
-		this.fsPort = fsPort;
-	}
+//	public String getFsPort() {
+//		return fsPort;
+//	}
+//
+//	public void setFsPort(String fsPort) {
+//		this.fsPort = fsPort;
+//	}
 
 	public String getDisRecordPath() {
 		return disRecordPath;

@@ -14,10 +14,10 @@ import com.starunion.java.fsccserver.util.ClientDataMap;
  * 
  */
 @Service
-public class TcpFsNotifyProcThread extends Thread {
-	private static final Logger logger = LoggerFactory.getLogger(TcpFsNotifyProcThread.class);
+public class ThreadFsNotifyProc extends Thread {
+	private static final Logger logger = LoggerFactory.getLogger(ThreadFsNotifyProc.class);
 
-	public TcpFsNotifyProcThread() {
+	public ThreadFsNotifyProc() {
 
 	}
 

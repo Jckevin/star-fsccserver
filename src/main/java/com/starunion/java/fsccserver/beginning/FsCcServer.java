@@ -11,16 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.starunion.java.fsccserver.service.InitTerStatus;
-import com.starunion.java.fsccserver.thread.TcpServerSocketThread;
+import com.starunion.java.fsccserver.thread.SocketServerTcpThread;
 import com.starunion.java.fsccserver.util.ConfigManager;
-import com.starunion.java.fsccserver.thread.FsTcpSocket;
-import com.starunion.java.fsccserver.thread.TcpClientRequestRunnable;
-import com.starunion.java.fsccserver.thread.TcpClientRequestThread;
-import com.starunion.java.fsccserver.thread.TcpClientResponseThread;
-import com.starunion.java.fsccserver.thread.TcpFsNotifyProcThread;
-import com.starunion.java.fsccserver.thread.TcpFsSocketThread;
-import com.starunion.java.fsccserver.thread.TcpNotifySendToClientThread;
+import com.starunion.java.fsccserver.thread.ThreadFsNotifyProc;
+import com.starunion.java.fsccserver.thread.SocketFsTcpThread;
+import com.starunion.java.fsccserver.thread.ThreadNotifySendToClient;
 
 /**
  * This project used as an important middler server who connects both the
@@ -64,58 +59,26 @@ public class FsCcServer {
 		// initTerStatus.initSipUserInfo(ConfigManager.getInstance().getFsAddr());
 
 		/** start TCP socket(server) for clients. */
-		// Thread serverThread = new Thread(applicationContext.getBean(
-		// "tcpServerSocketThread", TcpServerSocketThread.class));
-		// TcpServerSocketThread serverThread =
-		// applicationContext.getBean("tcpServerSocketThread",
-		// TcpServerSocketThread.class);
-		// TcpServerSocketThread serverThread = new
-		// TcpServerSocketThread("CcServerTcpThread");
 		Thread serverThread = new Thread(
-				applicationContext.getBean("tcpServerSocketThread", TcpServerSocketThread.class));
+				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
 		serverThread.setName("CcServerThread");
 		serverThread.start();
 
-//		try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		Thread fsThread = new Thread(applicationContext.getBean("tcpFsSocketThread", TcpFsSocketThread.class));
+		/** start FS binding socket for subscribe. */
+		Thread fsThread = new Thread(applicationContext.getBean("socketFsTcpThread", SocketFsTcpThread.class));
 		fsThread.setName("FsSocketThread");
 		fsThread.start();
 
-		Thread fsNotifyThread = new Thread(
-				applicationContext.getBean("tcpFsNotifyProcThread", TcpFsNotifyProcThread.class));
+		/** start FS Notify receive thread. */
+		Thread fsNotifyThread = new Thread(applicationContext.getBean("threadFsNotifyProc", ThreadFsNotifyProc.class));
 		fsNotifyThread.setName("FsNotifyRecvThread");
 		fsNotifyThread.start();
-		
+
+		/** start FS Notify send thread. */
 		Thread fsNotifySendThread = new Thread(
-				applicationContext.getBean("tcpNotifySendToClientThread", TcpNotifySendToClientThread.class));
+				applicationContext.getBean("threadNotifySendToClient", ThreadNotifySendToClient.class));
 		fsNotifySendThread.setName("FsNotifySendThread");
 		fsNotifySendThread.start();
 
-		/** static request message Queue Thread start */
-		// TcpClientRequestThread clientReqThread = new
-		// TcpClientRequestThread("CcClientReqThread");
-		// clientReqThread.start();
-		// TcpClientRequestThread clientReqThread1 = new
-		// TcpClientRequestThread("CcClientReqThread-1");
-		// clientReqThread1.start();
-		/** Thread pool, not clearly enough */
-		// ExecutorService executorService = Executors.newCachedThreadPool();
-		// ExecutorService executorService = Executors.newFixedThreadPool(4);
-		// executorService.execute(new TcpClientRequestRunnable("pool-1"));
-		// executorService.execute(new TcpClientRequestRunnable("pool-2"));
-
-		// TcpClientResponseThread clientRspThread = new
-		// TcpClientResponseThread("CcClientRspThread");
-		// clientRspThread.start();
-		/** start TCP socket(client) for FreeSWITCH. */
-//		 Thread fsThread = new
-//		 Thread(applicationContext.getBean("fsTcpSocket",
-//		 FsTcpSocket.class));
-//		 fsThread.start();
 	}
 }
