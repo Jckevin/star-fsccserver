@@ -33,13 +33,13 @@ import com.starunion.java.fsccserver.util.SpringContextUtil;
 public class TcpServerSocketThread extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(TcpServerSocketThread.class);
 
-	 @Autowired
-	 LoginAndOutService loginService;
-	 @Autowired
-	 MessageClientReqService requestCheckService;
-//	 @Autowired
-//	 TcpClientSocketRunable clientRunable;
-//	 TcpClientSocketThread clientThread;
+	@Autowired
+	LoginAndOutService loginService;
+	@Autowired
+	MessageClientReqService requestCheckService;
+	// @Autowired
+	// TcpClientSocketRunable clientRunable;
+	// TcpClientSocketThread clientThread;
 
 	private ServerSocket serverSocket = null;
 
@@ -56,8 +56,10 @@ public class TcpServerSocketThread extends Thread {
 
 		if (thread == null || !thread.isAlive()) {
 			logger.info("THREAD for the client is NOT EXISTED, create NEW THREAD.");
-//			TcpClientSocketThread clientThread = new TcpClientSocketThread(id,clientSocket);
-			TcpClientSocketThread clientThread = SpringContextUtil.getApplicationContext().getBean("tcpClientSocketThread", TcpClientSocketThread.class);
+			// TcpClientSocketThread clientThread = new
+			// TcpClientSocketThread(id,clientSocket);
+			TcpClientSocketThread clientThread = SpringContextUtil.getApplicationContext()
+					.getBean("tcpClientSocketThread", TcpClientSocketThread.class);
 			clientThread.setClientId(id);
 			clientThread.setName("CcClientThread-" + id);
 			clientThread.setClientSocket(clientSocket);
@@ -71,27 +73,33 @@ public class TcpServerSocketThread extends Thread {
 	}
 
 	private void checkSocket(Socket clientSocket) {
-		String line = null;
-		BufferedReader is = null;
 		logger.info("CLIENT HAD BEEN BIND , WAIT THE [ccLogin] MESSAGE...");
 		try {
 			if (!ClientDataMap.clientSocketMap.containsValue(clientSocket)) {
-				is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				String line = null;
+				BufferedReader is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 				if ((line = is.readLine()) != null) {
 					logger.info("receive request message : {}", line);
-//					RequestMessageCheckService requestCheckService = new RequestMessageCheckService();
 					ClientRequestMessageCc reqMessage = requestCheckService.parseRequestMessage(line);
 					/** check the request message whether standard */
 					if (reqMessage != null && reqMessage.getType().equals(ConstantCc.CC_LOGIN)) {
 						/** check the login request whether success */
-//						LoginAndOutService loginService = new LoginAndOutService();
-						if (loginService.AgentLogin(reqMessage.getClientId(), reqMessage.getContent())) {
-
+						if ((loginService.AgentLogin(reqMessage.getClientId(), reqMessage.getContent())) == ConstantCc.SUCCESS) {
+							BufferedWriter out = new BufferedWriter(
+									new OutputStreamWriter(clientSocket.getOutputStream(), ConstantCc.CODEC_UTF8));
+							StringBuffer buff = new StringBuffer();
+							buff.append(reqMessage.getType()).append(":");
+							buff.append(reqMessage.getClientId()).append(":");
+							buff.append(reqMessage.getContent());
+							buff.append(ConstantCc.DISP_TAIL_SUCC);
+							out.write(buff.toString());
+							out.flush();
 							Socket sock = ClientDataMap.clientSocketMap.get(reqMessage.getClientId());
 							if (sock == null) {
 
 								logger.info("SOCKET info is NOT EXISTED, add to the map.");
 								ClientDataMap.clientSocketMap.put(reqMessage.getClientId(), clientSocket);
+
 								checkThread(reqMessage.getClientId(), clientSocket);
 
 							} else if (sock != clientSocket) {
@@ -107,8 +115,11 @@ public class TcpServerSocketThread extends Thread {
 								// client,and
 								// closed by the client.
 								sock.close();
-								/** it seems here must sleep for blocking socket release ,
-								 * or the blocking thread will not see the new one*/
+								/**
+								 * it seems here must sleep for blocking socket
+								 * release , or the blocking thread may not see
+								 * the new one
+								 */
 								try {
 									Thread.sleep(100);
 								} catch (InterruptedException e) {
@@ -121,6 +132,8 @@ public class TcpServerSocketThread extends Thread {
 								checkThread(reqMessage.getClientId(), clientSocket);
 
 							}
+							/** close the out BufferedWriter */
+//							out.close();
 							logger.debug(
 									"one client login , now binding client count : {}. and client socket count : {}",
 									ClientDataMap.clientSocketMap.size(), ClientDataMap.clientThreadMap.size());
@@ -133,6 +146,8 @@ public class TcpServerSocketThread extends Thread {
 						logger.info("non-standard request message, close the socket connection !");
 						clientSocket.close();
 					}
+					/** close the in BufferedReader */
+//					is.close();
 				}
 			}
 		} catch (IOException e) {

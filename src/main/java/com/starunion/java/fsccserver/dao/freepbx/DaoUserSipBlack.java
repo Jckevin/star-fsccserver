@@ -1,11 +1,12 @@
-package com.starunion.java.fsccserver.dao;
+package com.starunion.java.fsccserver.dao.freepbx;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.starunion.java.fsccserver.po.UserSipBlack;
+import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
+import com.starunion.java.fsccserver.po.freepbx.UserSipBlack;
 
 @Component
 public class DaoUserSipBlack extends DbUtilsTemplate {

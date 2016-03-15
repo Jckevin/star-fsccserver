@@ -1,26 +1,28 @@
 package com.starunion.java.fsccserver.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.starunion.java.fsccserver.dao.freecc.DaoAgentInfo;
+import com.starunion.java.fsccserver.po.freecc.AgentInfo;
+import com.starunion.java.fsccserver.util.ConstantCc;
 
-/** 
-* @author Lings  
-* @date Mar 3, 2016 5:21:22 PM 
-* 
-*/
+/**
+ * @author Lings
+ * @date Mar 3, 2016 5:21:22 PM
+ * 
+ */
 
 @Service
 public class LoginAndOutService {
-	private static final Logger logger = LoggerFactory.getLogger(LoginAndOutService.class);
-	
-	public LoginAndOutService(){
-		
-	}
-	
-	public boolean AgentLogin(String id,String pwd){
-		//:TODO check the agent info from MYSQL ?
-		return true;
+	@Autowired
+	DaoAgentInfo daoAgentInfo;
+
+	public int AgentLogin(String id, String pwd) {
+		AgentInfo agt = daoAgentInfo.findBy(id);
+		if (agt != null && agt.getAgentPwd().equals(pwd)) {
+			return ConstantCc.SUCCESS;
+		}
+		return ConstantCc.FAILED;
 	}
 }

@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.dao;
+package com.starunion.java.fsccserver.dao.freepbx;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -9,7 +9,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.starunion.java.fsccserver.po.UserGpsTrail;
+import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
+import com.starunion.java.fsccserver.po.freepbx.UserGpsTrail;
 
 @Component
 public class DaoUserGpsTrail extends DbUtilsTemplate {

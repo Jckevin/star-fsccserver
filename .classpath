@@ -5,7 +5,7 @@
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/c3p0-0.9.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-dbcp2-2.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-dbutils-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbutils-1.6.jar" sourcepath="F:/study_J/commons-dbutils-1.6-src/commons-dbutils-1.6-src"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-pool2-2.3.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-api-2.5.jar"/>

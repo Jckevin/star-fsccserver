@@ -8,7 +8,7 @@
     	http://www.springframework.org/schema/context/spring-context-4.1.xsd
     	http://www.springframework.org/schema/task
     	http://www.springframework.org/schema/task/spring-task-4.1.xsd">
-	
+
 	<!-- Spring annotation -->
 	<context:annotation-config />
 	<context:component-scan base-package="com.starunion.java" />
@@ -17,8 +17,21 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://192.168.8.12:3306/freepbx" />
-		<property name="username" value="remo" />
+		<property name="url" value="jdbc:mysql://localhost:3306/starpbx" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+		<property name="initialSize" value="1" />
+		<property name="maxTotal" value="10" />
+		<property name="maxIdle" value="3" />
+		<property name="minIdle" value="0" />
+		<property name="maxWaitMillis" value="3000" />
+	</bean>
+
+	<bean id="dsFreecc" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/freecc" />
+		<property name="username" value="root" />
 		<property name="password" value="123456" />
 		<property name="initialSize" value="1" />
 		<property name="maxTotal" value="10" />
@@ -44,54 +57,20 @@
 		method="process" cron="0 0 12 * * ?" /> </task:scheduled-tasks> -->
 
 	<!-- Spring quartz model -->
-	<!-- 
-	<bean id="simpleJobDetail"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject">
-			<bean class="com.starunion.java.fsccserver.service.SpringQuartzTest" />
-		</property>
-		<property name="targetMethod" value="work" />
-		<property name="concurrent" value="true" />
-	</bean>
-	
-	<bean id="complexJobDetail"
-		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
-		<property name="jobClass" value="com.scheduled.ScheduledJob" />
-		<property name="jobDataMap">
-			<map>
-				<entry key="task" value-ref="task"></entry>
-			</map>
-		</property>
-		<property name="durability" value="true" />
-	</bean>
- 	
-	<bean id="simpleTrigger"
-		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-		<property name="jobDetail" ref="simpleJobDetail" />
-		<property name="startDelay" value="1000" />
-		<property name="repeatInterval" value="5000" />
-	</bean>
-	
-	<bean id="cronTrigger"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="complexJobDetail" />
-		<property name="cronExpression" value="0/5 * * ? * SAT-SUN" />
-	</bean>
- 	
-	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-		<property name="jobDetails">
-			<list>
-				<ref bean="simpleJobDetail" />
-				<ref bean="complexJobDetail" />
-			</list>
-		</property>
-
-		<property name="triggers">
-			<list>
-				<ref bean="simpleTrigger" />
-				<ref bean="cronTrigger" />
-			</list>
-		</property>
-	</bean>
-	-->
+	<!-- <bean id="simpleJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> 
+		<property name="targetObject"> <bean class="com.starunion.java.fsccserver.service.SpringQuartzTest" 
+		/> </property> <property name="targetMethod" value="work" /> <property name="concurrent" 
+		value="true" /> </bean> <bean id="complexJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean"> 
+		<property name="jobClass" value="com.scheduled.ScheduledJob" /> <property 
+		name="jobDataMap"> <map> <entry key="task" value-ref="task"></entry> </map> 
+		</property> <property name="durability" value="true" /> </bean> <bean id="simpleTrigger" 
+		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean"> <property 
+		name="jobDetail" ref="simpleJobDetail" /> <property name="startDelay" value="1000" 
+		/> <property name="repeatInterval" value="5000" /> </bean> <bean id="cronTrigger" 
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> <property 
+		name="jobDetail" ref="complexJobDetail" /> <property name="cronExpression" 
+		value="0/5 * * ? * SAT-SUN" /> </bean> <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> 
+		<property name="jobDetails"> <list> <ref bean="simpleJobDetail" /> <ref bean="complexJobDetail" 
+		/> </list> </property> <property name="triggers"> <list> <ref bean="simpleTrigger" 
+		/> <ref bean="cronTrigger" /> </list> </property> </bean> -->
 </beans>

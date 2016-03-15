@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.po;
+package com.starunion.java.fsccserver.po.freepbx;
 
 public class SysOperator {
 	private Integer id;

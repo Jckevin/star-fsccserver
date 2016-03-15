@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,24 +16,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.dao.DaoIntercomGroup;
-import com.starunion.java.fsccserver.dao.DaoIntercomMember;
 import com.starunion.java.fsccserver.dao.DaoPrePlayInfo;
-import com.starunion.java.fsccserver.dao.DaoUserGpsInfo;
-import com.starunion.java.fsccserver.dao.DaoUserGpsTrail;
-import com.starunion.java.fsccserver.dao.DaoUserSip;
-import com.starunion.java.fsccserver.dao.DaoUserSipBlack;
-import com.starunion.java.fsccserver.dao.DaoUserSipCamer;
+import com.starunion.java.fsccserver.dao.freepbx.DaoIntercomGroup;
+import com.starunion.java.fsccserver.dao.freepbx.DaoIntercomMember;
+import com.starunion.java.fsccserver.dao.freepbx.DaoUserGpsInfo;
+import com.starunion.java.fsccserver.dao.freepbx.DaoUserGpsTrail;
+import com.starunion.java.fsccserver.dao.freepbx.DaoUserSip;
+import com.starunion.java.fsccserver.dao.freepbx.DaoUserSipBlack;
+import com.starunion.java.fsccserver.dao.freepbx.DaoUserSipCamer;
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
-import com.starunion.java.fsccserver.po.IntercomGroup;
-import com.starunion.java.fsccserver.po.IntercomMember;
 import com.starunion.java.fsccserver.po.PrePlayInfo;
 import com.starunion.java.fsccserver.po.SipActiveInfo;
-import com.starunion.java.fsccserver.po.UserGpsInfo;
-import com.starunion.java.fsccserver.po.UserGpsTrail;
-import com.starunion.java.fsccserver.po.UserSip;
-import com.starunion.java.fsccserver.po.UserSipBlack;
-import com.starunion.java.fsccserver.po.UserSipCamer;
+import com.starunion.java.fsccserver.po.freecc.AgentInfo;
+import com.starunion.java.fsccserver.po.freepbx.IntercomGroup;
+import com.starunion.java.fsccserver.po.freepbx.IntercomMember;
+import com.starunion.java.fsccserver.po.freepbx.UserGpsInfo;
+import com.starunion.java.fsccserver.po.freepbx.UserGpsTrail;
+import com.starunion.java.fsccserver.po.freepbx.UserSip;
+import com.starunion.java.fsccserver.po.freepbx.UserSipBlack;
+import com.starunion.java.fsccserver.po.freepbx.UserSipCamer;
 import com.starunion.java.fsccserver.service.timer.QuartzTaskService;
 import com.starunion.java.fsccserver.thread.FsTcpSocket;
 import com.starunion.java.fsccserver.util.ConfigManager;
@@ -49,27 +51,13 @@ public class ClientRequestService {
 	private static final Logger logger = LoggerFactory.getLogger(ClientRequestService.class);
 
 	@Autowired
+	LoginAndOutService loginService;
+	@Autowired
 	MessageClientReqService reqMsgService;
 	@Autowired
 	ProcClientReqCmd reqMsgCmdService;
 	@Autowired
-	private DaoUserSip daoUserSip;
-	@Autowired
-	private DaoUserSipBlack daoUserSipBlack;
-	@Autowired
-	private DaoUserSipCamer daoUserSipCamer;
-	@Autowired
-	private DaoPrePlayInfo daoPrePlayInfo;
-	@Autowired
-	private DaoIntercomGroup daoIntercomGroup;
-	@Autowired
-	private DaoIntercomMember daoIntercomMember;
-	@Autowired
-	private DaoUserGpsInfo daoUserGpsInfo;
-	@Autowired
-	private DaoUserGpsTrail daoUserGpsTrail;
-	@Autowired
-	private InitTerStatus initTerStatus;
+	ProcClientReqSql procReqSqlService;
 	@Autowired
 	private QuartzTaskService timerTask;
 	@Autowired
@@ -82,115 +70,71 @@ public class ClientRequestService {
 	public StringBuffer procClientRequest(String reqLine) {
 		StringBuffer rspBuff = new StringBuffer();
 
-		ClientRequestMessageCc message = reqMsgService.parseRequestMessage(reqLine);
-		if (message != null) {
-
-			logger.debug("receive client request type [{}]", message.getType());
-			switch (message.getType()) {
+		ClientRequestMessageCc msg = reqMsgService.parseRequestMessage(reqLine);
+		if (msg != null) {
+			int res = 0;
+			logger.debug("receive client request type [{}]", msg.getType());
+			switch (msg.getType()) {
 			case ConstantCc.CC_LOGIN:
 				logger.debug("begin process login service");
-				rspBuff = makeLastResponse(reqLine, ConstantCc.SUCCESS);
+				res = loginService.AgentLogin(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientResponse(reqLine, ConstantCc.SUCCESS);
 				break;
 			case ConstantCc.CC_LOGOUT:
-				rspBuff = makeLastResponse(reqLine, ConstantCc.FAILED);
+				rspBuff = makeClientResponse(reqLine, ConstantCc.FAILED);
 				logger.debug("begin process log out service");
 				break;
 			case ConstantCc.CC_CTD:
-				int res = reqMsgCmdService.procCmdCTD(message.getClientId(),message.getContent());
-				if(res==0){
-					rspBuff = makeLastResponse(reqLine, ConstantCc.SUCCESS);	
-				}else{
-					rspBuff = makeLastResponse(reqLine, ConstantCc.FAILED);
+				res = reqMsgCmdService.procCmdCTD(msg.getClientId(), msg.getContent());
+				if (res == 0) {
+					rspBuff = makeClientResponse(reqLine, ConstantCc.SUCCESS);
+				} else {
+					rspBuff = makeClientResponse(reqLine, ConstantCc.FAILED);
 				}
 				logger.debug("begin process the third party call service");
 				break;
+			case "ccLogina":
+				rspBuff = makeClientResponse(reqLine, procReqSqlService.insertAgentInfo("1", "password", "0"));
+				break;
+			case "ccLogind":
+				int i = procReqSqlService.delAgentInfo("1");
+				logger.debug("!!!!!!!!!after delete ,result = {}",i);
+				rspBuff = makeClientResponse(reqLine, i);
+				break;
+			case "ccLoginu":
+				// UserSip us = procReqSqlService.findByNumber();
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("agentPwd", "drowssap");
+				map.put("agentType", "9");
+				rspBuff = makeClientResponse(reqLine, procReqSqlService.updateAgentInfo("1", map));
+				break;
+			case "ccLoginq":
+				AgentInfo us = procReqSqlService.findAgentInfo("1");
+				logger.debug("pwd = {},type={}", us.getAgentPwd(), us.getAgentType());
+				rspBuff = makeClientResponse(reqLine, 1);
+				break;
+			case "ccLoginqq":
+				List<AgentInfo> uslist = procReqSqlService.findAgentInfoList();
+				for (AgentInfo in : uslist) {
+					logger.debug("from list pwd = {},type={}", in.getAgentPwd(), in.getAgentType());
+				}
+				rspBuff = makeClientResponse(reqLine, 1);
+				break;
 			default:
 				logger.debug("begin process ctd service");
-				reqMsgCmdService.procCmdCTD1(message.getClientId(),message.getContent());
-				rspBuff = makeLastResponse(reqLine, ConstantCc.SUCCESS);
+				reqMsgCmdService.procCmdCTD1(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientResponse(reqLine, ConstantCc.SUCCESS);
 				break;
 			}
-
 			return rspBuff;
 		} else {
-			rspBuff = makeLastResponse(reqLine, ConstantCc.FAILED);
+			rspBuff = makeClientResponse(reqLine, ConstantCc.FAILED);
 			return rspBuff;
 		}
 
 	}
 
-	
-	private int procTestService(String[] data) {
-		// daoUserSip.batchInsertUser(data[1], data[2], data[3], data[4]);
-		daoUserGpsTrail.batchInsertGps(data[1]);
-		return 0;
-	}
-
-	private StringBuffer procReqDisUsersList(String[] data) {
-		List<UserGpsInfo> gpsList = new ArrayList<UserGpsInfo>();
-		gpsList = daoUserGpsInfo.findAll();
-		StringBuffer buff = new StringBuffer();
-		int len = gpsList.size();
-		for (int i = 0; i < len; i++) {
-			buff.append("extenmapdata:");
-			buff.append(gpsList.get(i).getExten()).append(":");
-			buff.append(gpsList.get(i).getLng()).append(":");
-			buff.append(gpsList.get(i).getLat()).append(":");
-			buff.append(gpsList.get(i).getType());
-			buff.append("\r\n");
-		}
-		return buff;
-	}
-
-	private StringBuffer procExtenGpsShow(String[] data) {
-		String name = data[1];
-		UserGpsInfo gpsInfo = new UserGpsInfo();
-		gpsInfo = daoUserGpsInfo.findByNumber(name);
-		StringBuffer buff = new StringBuffer();
-		buff.append(data[0]);
-		buff.append(":");
-		buff.append(gpsInfo.getExten()).append(":");
-		buff.append(gpsInfo.getLng()).append(":");
-		buff.append(gpsInfo.getLat()).append(":");
-		buff.append(gpsInfo.getType());
-		buff.append("\r\n");
-
-		return buff;
-	}
-
-	private String getBroadPlayMusicName(String musics) {
-		StringBuffer buff = new StringBuffer();
-		String[] music = musics.split(",");
-		int musicLen = music.length;
-		int j = 0;
-		for (j = 0; j < musicLen; j++) {
-			if (j < musicLen) {
-				buff.append(ConfigManager.getInstance().getDisMusicPath());
-				buff.append(music[j]).append("!");
-			} else {
-				buff.append(ConfigManager.getInstance().getDisMusicPath()).append(music[j]);
-			}
-		}
-		return buff.toString();
-	}
-
-	private int getBroadPlayMusicLen(String musics) {
-		int filePlaySecondEstimate = 0;
-		String[] music = musics.split(",");
-		int musicLen = music.length;
-
-		int j = 0;
-		for (j = 0; j < musicLen; j++) {
-			String fileName = ConfigManager.getInstance().getDisMusicPath() + music[j];
-			File file = new File(fileName);
-			logger.debug("get music file length {}", file.length());
-			filePlaySecondEstimate += file.length() * 8 / 160;
-		}
-
-		return filePlaySecondEstimate;
-	}
-
-	private StringBuffer makeLastResponse(String buff, int result) {
+	private StringBuffer makeClientResponse(String buff, int result) {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(buff);
 		if (result == ConstantCc.SUCCESS) {
