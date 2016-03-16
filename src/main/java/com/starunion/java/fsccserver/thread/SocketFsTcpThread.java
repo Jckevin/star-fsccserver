@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.net.Socket;
 import java.util.HashMap;
@@ -87,7 +86,7 @@ public class SocketFsTcpThread extends Thread {
 								logger.debug("server disconected, close the fsClient...");
 								fsClient.close();
 								Map<String, String> msg = new HashMap<String, String>();
-								msg.put("Event-Name", "FS Dis-connected");
+								msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.FS_EVENT_UNBIND);
 								/**
 								 * :TODO Q:why here invoke throw
 								 * interruptedException?
@@ -101,7 +100,7 @@ public class SocketFsTcpThread extends Thread {
 								logger.debug("get content type [{}] WITHOUT process.", contentType);
 							}
 						} else {
-							String eventType = respMap.get("Event-Name");
+							String eventType = respMap.get(ConstantCc.FS_EVENT_HEAD);
 							if (eventType != null) {
 								logger.debug("get a notify message {} put it to blocking queue.", eventType);
 								try {

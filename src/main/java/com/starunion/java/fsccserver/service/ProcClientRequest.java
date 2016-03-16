@@ -55,71 +55,82 @@ public class ProcClientRequest {
 			int res = 0;
 			logger.debug("receive client request type [{}]", msg.getType());
 			switch (msg.getType()) {
-			case ConstantCc.CC_LOGIN:
+			case ConstantCc.CC_LOG_IN:
 				logger.debug("begin process login service");
 				res = loginService.AgentLogin(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientResponse(reqLine, ConstantCc.SUCCESS);
+				rspBuff = makeClientStatusResponse(reqLine, ConstantCc.SUCCESS);
 				break;
-			case ConstantCc.CC_LOGOUT:
-				rspBuff = makeClientResponse(reqLine, ConstantCc.FAILED);
+			case ConstantCc.CC_LOG_OUT:
+				rspBuff = makeClientStatusResponse(reqLine, ConstantCc.FAILED);
 				logger.debug("begin process log out service");
 				break;
 			case ConstantCc.CC_CTD:
-				res = reqMsgCmdService.procCmdCTD(msg.getClientId(), msg.getContent());
-				if (res == 0) {
-					rspBuff = makeClientResponse(reqLine, ConstantCc.SUCCESS);
-				} else {
-					rspBuff = makeClientResponse(reqLine, ConstantCc.FAILED);
-				}
+				res = reqMsgCmdService.execCmdCTD(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
 				logger.debug("begin process the third party call service");
 				break;
+			case ConstantCc.CC_AGENT_QRY:
+				String content = reqMsgCmdService.getCcAgentList(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientContentResponse(content, reqLine);
+				break;
 			case "ccLogina":
-				rspBuff = makeClientResponse(reqLine, procReqSqlService.insertAgentInfo("1", "password", "0"));
+				rspBuff = makeClientStatusResponse(reqLine, procReqSqlService.insertAgentInfo("1", "password", "0"));
 				break;
 			case "ccLogind":
 				int i = procReqSqlService.delAgentInfo("1");
-				logger.debug("!!!!!!!!!after delete ,result = {}",i);
-				rspBuff = makeClientResponse(reqLine, i);
+				logger.debug("!!!!!!!!!after delete ,result = {}", i);
+				rspBuff = makeClientStatusResponse(reqLine, i);
 				break;
 			case "ccLoginu":
 				// UserSip us = procReqSqlService.findByNumber();
 				Map<String, String> map = new HashMap<String, String>();
 				map.put("agentPwd", "drowssap");
 				map.put("agentType", "9");
-				rspBuff = makeClientResponse(reqLine, procReqSqlService.updateAgentInfo("1", map));
+				rspBuff = makeClientStatusResponse(reqLine, procReqSqlService.updateAgentInfo("1", map));
 				break;
 			case "ccLoginq":
 				AgentInfo us = procReqSqlService.findAgentInfo("1");
 				logger.debug("pwd = {},type={}", us.getAgentPwd(), us.getAgentType());
-				rspBuff = makeClientResponse(reqLine, 1);
+				rspBuff = makeClientStatusResponse(reqLine, 1);
 				break;
 			case "ccLoginqq":
 				List<AgentInfo> uslist = procReqSqlService.findAgentInfoList();
 				for (AgentInfo in : uslist) {
 					logger.debug("from list pwd = {},type={}", in.getAgentPwd(), in.getAgentType());
 				}
-				rspBuff = makeClientResponse(reqLine, 1);
+				rspBuff = makeClientStatusResponse(reqLine, 1);
 				break;
 			default:
-				logger.debug("begin process ctd service");
-				reqMsgCmdService.procCmdCTD1(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientResponse(reqLine, ConstantCc.SUCCESS);
+				logger.debug("unknow message type, do nothing...");
+				rspBuff = makeClientStatusResponse(reqLine, ConstantCc.FAILED);
 				break;
 			}
 			return rspBuff;
 		} else {
-			rspBuff = makeClientResponse(reqLine, ConstantCc.FAILED);
+			rspBuff = makeClientStatusResponse(reqLine, ConstantCc.FAILED);
 			return rspBuff;
 		}
 
 	}
 
-	private StringBuffer makeClientResponse(String buff, int result) {
+	private StringBuffer makeClientStatusResponse(String buff, int result) {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(buff);
 		if (result == ConstantCc.SUCCESS) {
 			nBuff.append(ConstantCc.DISP_TAIL_SUCC);
 		} else if (result == ConstantCc.FAILED) {
+			nBuff.append(ConstantCc.DISP_TAIL_FAIL);
+		}
+		return nBuff;
+	}
+
+	private StringBuffer makeClientContentResponse(String content, String request) {
+		StringBuffer nBuff = new StringBuffer();
+		nBuff.append(content);
+		nBuff.append(request);
+		if (content.length() > 0) {
+			nBuff.append(ConstantCc.DISP_TAIL_SUCC);
+		} else {
 			nBuff.append(ConstantCc.DISP_TAIL_FAIL);
 		}
 		return nBuff;

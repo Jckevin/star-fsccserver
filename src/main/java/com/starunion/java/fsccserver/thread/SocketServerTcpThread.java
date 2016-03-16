@@ -76,7 +76,7 @@ public class SocketServerTcpThread extends Thread {
 					logger.info("receive request message : {}", line);
 					ClientRequestMessageCc reqMessage = requestCheckService.parseRequestMessage(line);
 					/** check the request message whether standard */
-					if (reqMessage != null && reqMessage.getType().equals(ConstantCc.CC_LOGIN)) {
+					if (reqMessage != null && reqMessage.getType().equals(ConstantCc.CC_LOG_IN)) {
 						/** check the login request whether success */
 						if ((loginService.AgentLogin(reqMessage.getClientId(),
 								reqMessage.getContent())) == ConstantCc.SUCCESS) {
