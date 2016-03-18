@@ -2,9 +2,6 @@ package com.starunion.java.fsccserver.po;
 
 import java.io.BufferedWriter;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
 public class ClientBindInfo {
 	private String clientIp;
 	private String clientPort;

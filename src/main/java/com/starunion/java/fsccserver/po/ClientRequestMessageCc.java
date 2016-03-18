@@ -1,13 +1,11 @@
 package com.starunion.java.fsccserver.po;
 
-import org.springframework.stereotype.Repository;
 
 /** 
 * @author Lings  
 * @date Mar 4, 2016 10:20:11 AM 
 * 
 */
-@Repository
 public class ClientRequestMessageCc {
 
 	private String type;

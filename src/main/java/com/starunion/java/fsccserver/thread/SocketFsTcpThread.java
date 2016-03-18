@@ -61,8 +61,6 @@ public class SocketFsTcpThread extends Thread {
 						 * it seems this condition is enough for message end.
 						 */
 						Map<String, String> respMap = new HashMap<String, String>();
-						// logger.debug("receive response message from
-						// FreeSWITCH:======>\n{}", notifyBuffer.toString());
 						respMap = msgService.parseFsResponse(notifyBuffer);
 						String contentType = respMap.get("Content-Type");
 						if (contentType != null) {
@@ -100,6 +98,7 @@ public class SocketFsTcpThread extends Thread {
 								logger.debug("get content type [{}] WITHOUT process.", contentType);
 							}
 						} else {
+							logger.error("receive notify from FreeSWITCH:======>\n{}", notifyBuffer.toString());
 							String eventType = respMap.get(ConstantCc.FS_EVENT_HEAD);
 							if (eventType != null) {
 								logger.debug("get a notify message {} put it to blocking queue.", eventType);

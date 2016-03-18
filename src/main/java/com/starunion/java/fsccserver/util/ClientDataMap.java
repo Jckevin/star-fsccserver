@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.starunion.java.fsccserver.po.ClientStatusInfoCc;
+import com.starunion.java.fsccserver.po.ClientStatusInfo;
 import com.starunion.java.fsccserver.thread.SocketClientTcpThread;
 
 /**
@@ -24,7 +24,7 @@ public class ClientDataMap {
 	 * <p>
 	 * @param value: @see class ClientStatusInfo
 	 */
-	public static ConcurrentHashMap<String, ClientStatusInfoCc> clientStatusMap = new ConcurrentHashMap<String, ClientStatusInfoCc>(0);
+	public static ConcurrentHashMap<String, ClientStatusInfo> clientStatusMap = new ConcurrentHashMap<String, ClientStatusInfo>(0);
 	
 	/**
 	 * client socket structure 

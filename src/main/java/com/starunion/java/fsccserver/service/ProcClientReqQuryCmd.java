@@ -14,11 +14,11 @@ import com.starunion.java.fsccserver.beginning.FsCcServer;
 import com.starunion.java.fsccserver.thread.CallableFsExecCmdProc;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
-/** 
-* @author Lings  
-* @date Mar 17, 2016 10:45:34 AM 
-* 
-*/
+/**
+ * @author Lings
+ * @date Mar 17, 2016 10:45:34 AM
+ * 
+ */
 @Service
 public class ProcClientReqQuryCmd {
 	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqQuryCmd.class);
@@ -28,6 +28,45 @@ public class ProcClientReqQuryCmd {
 
 	public ProcClientReqQuryCmd() {
 
+	}
+
+	/**
+	 * @param requester
+	 *            check the requester whether has permission.
+	 * @param callee
+	 *            for sigle one or whole list.
+	 * @return useful and simple reply.
+	 * 
+	 * @inner message structure (1.)userid|(2.)context|(3.)domain |(4.)group
+	 *        |(5.)contact|(6.)callgroup|(7.)effective_caller_id_name|(8.)
+	 *        effective_caller_id_number (1.)800
+	 *        |(2.)default|(3.)192.168.8.12|(4.)default|(5.)sofia/internal/sip:
+	 *        800@192.168.8.166:5060|(6.)techsupport|(7.)800|(8.)800
+	 * 
+	 *        (END.) +OK
+	 * @date 2016-03-16
+	 * @author Lings
+	 */
+//	userid|context|domain|group|contact|callgroup|effective_caller_id_name|effective_caller_id_number
+//	800|default|192.168.8.12|default|sofia/internal/sip:800@192.168.8.166:5060|techsupport|800|800
+//	801|default|192.168.8.12|default|sofia/internal/sip:801@192.168.8.37:5060|techsupport|801|801
+
+	public String getServTerList() {
+		String cmd = "api list_users" + ConstantCc.FS_CMD_TAIL;
+		String res = null;
+		task.setSendCmd(cmd);
+		Future<String> result = FsCcServer.executor.submit(task);
+		try {
+			res = result.get(5000, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			logger.debug("cmd response time-out...");
+			e.printStackTrace();
+		}
+		return res;
 	}
 
 	/**
@@ -57,7 +96,7 @@ public class ProcClientReqQuryCmd {
 	 */
 	public String getCcAgentList(String requester, String callee) {
 		// :TODO judge requestor whether has permission.
-		String cmd = "api callcenter_config agent list1" + ConstantCc.FS_CMD_TAIL;
+		String cmd = "api callcenter_config agent list" + ConstantCc.FS_CMD_TAIL;
 		StringBuffer buff = new StringBuffer();
 
 		task.setSendCmd(cmd);

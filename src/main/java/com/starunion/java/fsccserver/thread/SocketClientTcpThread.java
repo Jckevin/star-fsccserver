@@ -64,7 +64,7 @@ public class SocketClientTcpThread extends Thread {
 					} else {
 						long interval = System.currentTimeMillis() - firsttime;
 						// socket disconnect, thread hold one minute
-						if (interval > ConstantCc.TIMEOUT_CLT_SOCK) {
+						if (interval > ConstantCc.CLT_TIMEOUT_SOCK) {
 							interrupt();
 							logger.debug("after interrupt ,thread status = {}", Thread.currentThread().getState());
 							// Thread.currentThread().destroy();

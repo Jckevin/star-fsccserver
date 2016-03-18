@@ -1,8 +1,5 @@
 package com.starunion.java.fsccserver.po;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
 public class PrePlayInfo {
 
 	private Integer id;

@@ -1,9 +1,6 @@
 package com.starunion.java.fsccserver.po;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
-public class ClientStatusInfoCc {
+public class ClientStatusInfo {
 
 	private String number;
 	private int status;
@@ -11,9 +8,9 @@ public class ClientStatusInfoCc {
 	private String uuidOwn;
 	private String uuidPeer;
 	private String callWith;
-	
-	public ClientStatusInfoCc(){
-		
+
+	public ClientStatusInfo() {
+
 	}
 
 	public String getNumber() {
@@ -63,5 +60,5 @@ public class ClientStatusInfoCc {
 	public void setCallType(int callType) {
 		this.callType = callType;
 	}
-	
+
 }

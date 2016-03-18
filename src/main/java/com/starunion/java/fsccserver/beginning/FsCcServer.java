@@ -14,6 +14,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.starunion.java.fsccserver.thread.SocketServerTcpThread;
 import com.starunion.java.fsccserver.util.ConfigManager;
 import com.starunion.java.fsccserver.thread.ThreadFsNotifyProc;
+import com.starunion.java.fsccserver.service.InitialService;
 import com.starunion.java.fsccserver.thread.SocketFsTcpThread;
 import com.starunion.java.fsccserver.thread.ThreadNotifySendToClient;
 
@@ -53,11 +54,6 @@ public class FsCcServer {
 		ConfigManager configManager = applicationContext.getBean("configManager", ConfigManager.class);
 		configManager.getInstance().setConfigurationPath("conf/appParams.conf");
 
-		/** initial server static data structure. */
-		// InitTerStatus initTerStatus = applicationContext.getBean(
-		// "initTerStatus", InitTerStatus.class);
-		// initTerStatus.initSipUserInfo(ConfigManager.getInstance().getFsAddr());
-
 		/** start TCP socket(server) for clients. */
 		Thread serverThread = new Thread(
 				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
@@ -80,5 +76,8 @@ public class FsCcServer {
 		fsNotifySendThread.setName("FsNotifySendThread");
 		fsNotifySendThread.start();
 
+		/** initial server terminal info */
+		InitialService initServ = applicationContext.getBean("initialService", InitialService.class);
+		initServ.initTerInfo();
 	}
 }

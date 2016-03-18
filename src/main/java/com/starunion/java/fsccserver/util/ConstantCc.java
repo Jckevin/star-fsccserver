@@ -21,13 +21,23 @@ public class ConstantCc {
 	public final static String FS_CMD_TAIL = "\n\n";
 	public final static String FS_CMD_SUCC = "+OK";
 	public final static String FS_DEF_NUMBER = "000";
+	public final static int FS_TIMEOUT_CMD = 1000 * 5;
+	
+	// for terminal info 
+	public final static String TER_STATUS_UNREG = "0";
+	public final static String TER_STATUS_REGED = "1";
+	public final static String TER_STATUS_START_CALL = "2";
+	public final static String TER_STATUS_RING = "3";
+	public final static String TER_STATUS_EARLY = "4";
+	public final static String TER_STATUS_CONN = "5";
 	
 	// CLIENT REQUEST COMMAND TYPE
 	// client connect thread delayed timeout 1 minite
-	public final static int TIMEOUT_CLT_SOCK = 1000 * 30;
+	public final static int CLT_TIMEOUT_SOCK = 1000 * 60;
 	
 	// CC MESSAGE TYPE
 	public final static int CC_REQ_PARTS_LMT = 3;
+	
 	public final static String CC_REQ_PARTS_SPLIT = ":";
 	public final static String CC_SUCC_TAIL = ":OK\r\n";
 	public final static String CC_FAIL_TAIL = ":FAIL\r\n";
