@@ -26,8 +26,8 @@ import com.starunion.java.fsccserver.util.ConstantCc;
  * 
  */
 @Service
-public class CallableFsCmdRequest implements Callable<String> {
-	private static final Logger logger = LoggerFactory.getLogger(CallableFsCmdRequest.class);
+public class CallableFsExecCmdProc implements Callable<String> {
+	private static final Logger logger = LoggerFactory.getLogger(CallableFsExecCmdProc.class);
 
 	BufferedWriter out = null;
 	private String sendCmd;
@@ -35,7 +35,7 @@ public class CallableFsCmdRequest implements Callable<String> {
 	MessageFsNotifyService msgService;
 	boolean isStandard = true;
 
-	public CallableFsCmdRequest() {
+	public CallableFsExecCmdProc() {
 
 	}
 
@@ -98,6 +98,7 @@ public class CallableFsCmdRequest implements Callable<String> {
 									respBuffer.toString());
 							isStandard = true;
 							result = respBuffer.toString();
+							respBuffer.delete(0, respBuffer.length());
 							break;
 						}
 					}

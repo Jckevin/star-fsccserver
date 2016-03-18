@@ -11,22 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.beginning.FsCcServer;
-import com.starunion.java.fsccserver.thread.CallableFsCmdRequest;
+import com.starunion.java.fsccserver.thread.CallableFsExecCmdProc;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
-/**
- * @author Lings
- * @date Mar 4, 2016 5:38:54 PM
- * 
- */
+/** 
+* @author Lings  
+* @date Mar 17, 2016 10:45:34 AM 
+* 
+*/
 @Service
-public class ProcClientReqCmd {
-	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqCmd.class);
+public class ProcClientReqQuryCmd {
+	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqQuryCmd.class);
 
 	@Autowired
-	CallableFsCmdRequest task;
+	CallableFsExecCmdProc task;
 
-	public ProcClientReqCmd() {
+	public ProcClientReqQuryCmd() {
 
 	}
 
@@ -57,7 +57,7 @@ public class ProcClientReqCmd {
 	 */
 	public String getCcAgentList(String requester, String callee) {
 		// :TODO judge requestor whether has permission.
-		String cmd = "api callcenter_config agent list" + ConstantCc.FS_CMD_TAIL;
+		String cmd = "api callcenter_config agent list1" + ConstantCc.FS_CMD_TAIL;
 		StringBuffer buff = new StringBuffer();
 
 		task.setSendCmd(cmd);
@@ -85,35 +85,5 @@ public class ProcClientReqCmd {
 			e.printStackTrace();
 		}
 		return buff.toString();
-	}
-
-	public int execCmdCTD(String caller, String callee) {
-		StringBuffer buff = new StringBuffer();
-		buff.append("bgapi originate {origination_caller_id_number=000}user/");
-		buff.append(caller);
-		buff.append(" &bridge(user/");
-		buff.append(callee);
-		buff.append(")");
-		buff.append(ConstantCc.FS_CMD_TAIL);
-		logger.debug("make command : {}", buff.toString());
-		task.setSendCmd(buff.toString());
-		Future<String> result = FsCcServer.executor.submit(task);
-		try {
-			String res = result.get(5000, TimeUnit.MILLISECONDS);
-			logger.debug("task运行结果" + res);
-			if (res.equals(ConstantCc.FS_CMD_SUCC)) {
-				return ConstantCc.SUCCESS;
-			} else {
-				return ConstantCc.FAILED;
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			logger.debug("cmd response time-out...");
-			e.printStackTrace();
-		}
-		return 0;
 	}
 }

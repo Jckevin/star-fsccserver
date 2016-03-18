@@ -35,7 +35,9 @@ public class ProcClientRequest {
 	@Autowired
 	MessageClientReqService reqMsgService;
 	@Autowired
-	ProcClientReqCmd reqMsgCmdService;
+	ProcClientReqExecCmd reqMsgCmdService;
+	@Autowired
+	ProcClientReqQuryCmd reqMsgQuryCmdService;
 	@Autowired
 	ProcClientReqSql procReqSqlService;
 	@Autowired
@@ -69,8 +71,18 @@ public class ProcClientRequest {
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				logger.debug("begin process the third party call service");
 				break;
+			case ConstantCc.CC_AGENT_SIGN:
+				res = reqMsgCmdService.execCmdAgentSign(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				logger.debug("begin process the third party call service");
+				break;
+			case ConstantCc.CC_MONITOR:
+				res = reqMsgCmdService.execCmdAgentSign(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				logger.debug("begin process the third party call service");
+				break;
 			case ConstantCc.CC_AGENT_QRY:
-				String content = reqMsgCmdService.getCcAgentList(msg.getClientId(), msg.getContent());
+				String content = reqMsgQuryCmdService.getCcAgentList(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientContentResponse(content, reqLine);
 				break;
 			case "ccLogina":
@@ -117,9 +129,9 @@ public class ProcClientRequest {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(buff);
 		if (result == ConstantCc.SUCCESS) {
-			nBuff.append(ConstantCc.DISP_TAIL_SUCC);
+			nBuff.append(ConstantCc.CC_SUCC_TAIL);
 		} else if (result == ConstantCc.FAILED) {
-			nBuff.append(ConstantCc.DISP_TAIL_FAIL);
+			nBuff.append(ConstantCc.CC_FAIL_TAIL);
 		}
 		return nBuff;
 	}
@@ -129,9 +141,9 @@ public class ProcClientRequest {
 		nBuff.append(content);
 		nBuff.append(request);
 		if (content.length() > 0) {
-			nBuff.append(ConstantCc.DISP_TAIL_SUCC);
+			nBuff.append(ConstantCc.CC_SUCC_TAIL);
 		} else {
-			nBuff.append(ConstantCc.DISP_TAIL_FAIL);
+			nBuff.append(ConstantCc.CC_FAIL_TAIL);
 		}
 		return nBuff;
 	}

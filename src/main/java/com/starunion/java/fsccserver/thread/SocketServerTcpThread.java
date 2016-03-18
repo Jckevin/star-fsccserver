@@ -86,7 +86,7 @@ public class SocketServerTcpThread extends Thread {
 							buff.append(reqMessage.getType()).append(":");
 							buff.append(reqMessage.getClientId()).append(":");
 							buff.append(reqMessage.getContent());
-							buff.append(ConstantCc.DISP_TAIL_SUCC);
+							buff.append(ConstantCc.CC_SUCC_TAIL);
 							out.write(buff.toString());
 							out.flush();
 							Socket sock = ClientDataMap.clientSocketMap.get(reqMessage.getClientId());
