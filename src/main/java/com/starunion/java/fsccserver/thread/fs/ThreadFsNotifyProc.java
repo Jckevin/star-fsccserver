@@ -27,7 +27,7 @@ public class ThreadFsNotifyProc extends Thread {
 
 	@Autowired
 	ProcFsNotifyService procFsNotifyService;
-	
+
 	public ThreadFsNotifyProc() {
 
 	}
@@ -49,46 +49,86 @@ public class ThreadFsNotifyProc extends Thread {
 		try {
 			while (!Thread.interrupted()) {
 				// TimeUnit.MILLISECONDS.sleep(100 + rand.nextInt(500));
-				logger.debug("i am wating on recv Queue.....");
+				logger.debug("i am wating on recv freeswitch NOTIFY Queue.....");
 				Map<String, String> eventMap = ClientDataMap.fsNotifyRecvQueue.take();
 				logger.debug("get a notify with Event-Name : {} ", eventMap.get("Event-Name"));
 				String caller = "";
 				String callee = "";
-				String uuidCaller = "";
-				String uuidCallee = "";
-
+				/** Channel-Status(Number):CS_CONSUME_MEDIA(7) */
 				if (eventMap.get(ConstantCc.FS_EVENT_HEAD).equals("CHANNEL_CALLSTATE")) {
 					if (eventMap.get("Answer-State").equals("ringing")
-							&& eventMap.get("Caller-Direction").equals("outbound")) {
+							&& eventMap.get("Channel-State-Number").equals("7")) {
+						String uuidCaller = "";
+						String uuidCallee = "";
+						// update caller status
+						caller = eventMap.get("Caller-Caller-ID-Number");
+						if (!caller.equals(ConstantCc.FS_DEF_NUMBER)) {
+							uuidCaller = eventMap.get("Other-Leg-Unique-ID");
+							procFsNotifyService.updateMapTerStatus(caller, ConstantCc.TER_STATUS_EARLY, uuidCaller);
+							// make caller status notify
+							procFsNotifyService.makeNotifyTerStatus(caller, ConstantCc.TER_STATUS_EARLY);
+						}
 						// update callee status
 						callee = eventMap.get("Caller-Callee-ID-Number");
 						uuidCallee = eventMap.get("Caller-Unique-ID");
-						procFsNotifyService.updateMapTerStatus(callee, uuidCallee, ConstantCc.TER_STATUS_RING);
-						// update caller status
-						caller = eventMap.get("Caller-Caller-ID-Number");
-						uuidCaller = eventMap.get("Other-Leg-Unique-ID");
-						procFsNotifyService.updateMapTerStatus(caller, uuidCaller, ConstantCc.TER_STATUS_EARLY);
-						
-						new ToolsUtil().printTerMap();
-						
-						// make  caller status notify
-						procFsNotifyService.makeNotifyTerStatus(caller, ConstantCc.TER_STATUS_EARLY);
-						// make  callee status notify
+						procFsNotifyService.updateMapTerStatus(callee, ConstantCc.TER_STATUS_RING, uuidCallee);
+						// make callee status notify
 						procFsNotifyService.makeNotifyTerStatus(callee, ConstantCc.TER_STATUS_RING);
 
-					} else if (true) {
+						new ToolsUtil().printTerMap();
 
+					} else if (eventMap.get("Answer-State").equals("answered")
+							&& eventMap.get("Channel-State-Number").equals("7")) {
+						caller = eventMap.get("Caller-Caller-ID-Number");
+						if (!caller.equals(ConstantCc.FS_DEF_NUMBER)) {
+							procFsNotifyService.updateMapTerStatus(caller, ConstantCc.TER_STATUS_CONN);
+							procFsNotifyService.makeNotifyTerStatus(caller, ConstantCc.TER_STATUS_CONN);
+						}
+						callee = eventMap.get("Caller-Callee-ID-Number");
+						procFsNotifyService.updateMapTerStatus(callee, ConstantCc.TER_STATUS_CONN);
+						procFsNotifyService.makeNotifyTerStatus(callee, ConstantCc.TER_STATUS_CONN);
+
+						new ToolsUtil().printTerMap();
+
+					} else if (eventMap.get("Answer-State").equals("hangup")
+							&& eventMap.get("Call-Direction").equals("inbound")) {
+						/** for ANI = 000, no hangup for inbound */
+						caller = eventMap.get("Caller-Caller-ID-Number");
+						procFsNotifyService.updateMapTerStatus(caller, ConstantCc.TER_STATUS_REGED, null);
+						procFsNotifyService.makeNotifyTerStatus(caller, ConstantCc.TER_STATUS_REGED);
+
+						new ToolsUtil().printTerMap();
+
+					} else if (eventMap.get("Answer-State").equals("hangup")
+							&& eventMap.get("Call-Direction").equals("outbound")) {
+						// update callee status
+						callee = eventMap.get("Caller-Callee-ID-Number");
+						/**
+						 * this logic may FreeSWITCH notify BUG when call by
+						 * cmd[originate]
+						 */
+						if (!callee.equals(ConstantCc.FS_DEF_NUMBER)) {
+							procFsNotifyService.updateMapTerStatus(callee, ConstantCc.TER_STATUS_REGED, null);
+							procFsNotifyService.makeNotifyTerStatus(callee, ConstantCc.TER_STATUS_REGED);
+						} else {
+							caller = eventMap.get("Caller-Caller-ID-Number");
+							procFsNotifyService.updateMapTerStatus(caller, ConstantCc.TER_STATUS_REGED, null);
+							procFsNotifyService.makeNotifyTerStatus(caller, ConstantCc.TER_STATUS_REGED);
+						}
+
+						new ToolsUtil().printTerMap();
+
+					} else {
+						logger.debug("for normal call , useless call message?");
 					}
+
 				} else {
 					logger.debug("receive unknown Event-Name : {}", eventMap.get("Event-Name"));
 				}
-				logger.debug("receive notify :\n{}", eventMap);
-				ClientDataMap.fsNotifySendQueue.put(eventMap.get("Event-Name") + "\n");
 			}
 		} catch (InterruptedException e) {
 
 		}
-		System.out.println("Butterer off");
 	}
-	
+
 }

@@ -1,5 +1,6 @@
 package com.starunion.java.fsccserver.service.client;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.starunion.java.fsccserver.beginning.FsCcServer;
 import com.starunion.java.fsccserver.thread.client.CallableFsQueryCmdProc;
 import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ServerDataMap;
 
 /**
  * @author Lings
@@ -41,6 +43,41 @@ public class ProcClientReqExecCmd {
 		return result;
 	}
 
+	public int execCmdInsert(String caller, String callee) {
+		// w1:current one. w2:opposite one. w3:three way.
+		StringBuffer buff = new StringBuffer();
+		String uuid = ServerDataMap.terStatusMap.get(callee).getCallUUid();
+		buff.append("bgapi originate {origination_caller_id_number=");
+		buff.append(ConstantCc.FS_DEF_NUMBER);
+		buff.append("}user/");
+		buff.append(caller);
+		buff.append(" \'queue_dtmf:w2@500,eavesdrop:");
+		buff.append(uuid);
+		buff.append("\' inline");
+		buff.append(ConstantCc.FS_CMD_TAIL);
+
+		taskInt.setSendCmd(buff.toString());
+
+		return getResult(taskInt);
+	}
+
+	public int execCmdMonitor(String caller, String callee) {
+		StringBuffer buff = new StringBuffer();
+		String uuid = ServerDataMap.terStatusMap.get(callee).getCallUUid();
+		buff.append("bgapi originate {origination_caller_id_number=");
+		buff.append(ConstantCc.FS_DEF_NUMBER);
+		buff.append("}user/");
+		buff.append(caller);
+		buff.append(" &eavesdrop(");
+		buff.append(uuid);
+		buff.append(")");
+		buff.append(ConstantCc.FS_CMD_TAIL);
+
+		taskInt.setSendCmd(buff.toString());
+
+		return getResult(taskInt);
+	}
+
 	public int execCmdCTD(String caller, String callee) {
 		StringBuffer buff = new StringBuffer();
 		buff.append("bgapi originate {origination_caller_id_number=");
@@ -51,7 +88,6 @@ public class ProcClientReqExecCmd {
 		buff.append(callee);
 		buff.append(")");
 		buff.append(ConstantCc.FS_CMD_TAIL);
-		logger.debug("make command : {}", buff.toString());
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -79,7 +115,7 @@ public class ProcClientReqExecCmd {
 		}
 		buff.append("'");
 		buff.append(ConstantCc.FS_CMD_TAIL);
-		
+
 		taskInt.setSendCmd(buff.toString());
 
 		return getResult(taskInt);

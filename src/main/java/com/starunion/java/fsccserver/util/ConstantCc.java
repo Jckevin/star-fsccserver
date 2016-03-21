@@ -55,6 +55,9 @@ public class ConstantCc {
 
 	public final static String SYS_EXEC_CTD = "sysExecCtd";
 	public final static String SYS_EXEC_MONITOR = "sysExecMonitor";
+	public final static String SYS_EXEC_INSERT = "sysExecInsert";
+	public final static String SYS_EXEC_DEMOLITSH = "sysExecDemolish";
+	public final static String SYS_EXEC_BRIDGE = "sysExecBridge";
 
 	// system notify message define and example
 	/** e.g. sysNotifyTerStatus:800:0\r\n */

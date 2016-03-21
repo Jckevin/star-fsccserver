@@ -38,8 +38,8 @@ public class ToolsUtil {
 		while (iter.hasNext()) {
 			Entry<String, TerStatusInfo> entry = iter.next();
 
-			logger.debug("key : {}", entry.getKey());
-			logger.debug("value status : {},{},{},{},{}", entry.getValue().getStatus(),entry.getValue().getCallDirection(),
+			logger.error("key : {}", entry.getKey());
+			logger.error("value status : {},{},{},{},{}", entry.getValue().getStatus(),entry.getValue().getCallDirection(),
 					entry.getValue().getCallType(),entry.getValue().getCallUUid(),entry.getValue().getPeerNumber());
 
 		}		

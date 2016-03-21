@@ -15,12 +15,16 @@ import com.starunion.java.fsccserver.util.ServerDataMap;
 
 @Service
 public class ProcFsNotifyService {
-
-	public void updateMapTerStatus(String id, String uuid, String status) {
-		TerStatusInfo terInfo = new TerStatusInfo();
-		terInfo.setCallUUid(uuid);
+	
+	public void updateMapTerStatus(String id, String status) {
+		TerStatusInfo terInfo = ServerDataMap.terStatusMap.get(id);
 		terInfo.setStatus(status);
-		ServerDataMap.terStatusMap.put(id, terInfo);
+	}
+	
+	public void updateMapTerStatus(String id, String status, String uuid) {
+		TerStatusInfo terInfo = ServerDataMap.terStatusMap.get(id);
+		terInfo.setStatus(status);
+		terInfo.setCallUUid(uuid);
 	}
 	
 	public void makeNotifyTerStatus(String id, String status) throws InterruptedException {
@@ -29,7 +33,7 @@ public class ProcFsNotifyService {
 		buff.append(ConstantCc.SYS_SPLIT);
 		buff.append(id);
 		buff.append(ConstantCc.SYS_SPLIT);
-		buff.append(ConstantCc.TER_STATUS_START_CALL);
+		buff.append(status);
 		buff.append(ConstantCc.SYS_TAIL_END);
 
 		ClientDataMap.fsNotifySendQueue.put(buff.toString());

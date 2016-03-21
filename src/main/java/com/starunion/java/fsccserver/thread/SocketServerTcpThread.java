@@ -84,10 +84,10 @@ public class SocketServerTcpThread extends Thread {
 							BufferedWriter out = new BufferedWriter(
 									new OutputStreamWriter(clientSocket.getOutputStream(), ConstantCc.CODEC_UTF8));
 							StringBuffer buff = new StringBuffer();
-							buff.append(reqMessage.getType()).append(":");
-							buff.append(reqMessage.getClientId()).append(":");
+							buff.append(reqMessage.getType()).append(ConstantCc.SYS_SPLIT);
+							buff.append(reqMessage.getClientId()).append(ConstantCc.SYS_SPLIT);
 							buff.append(reqMessage.getContent());
-							buff.append(ConstantCc.SYS_REG_MSG_LMT);
+							buff.append(ConstantCc.SYS_SPLIT);
 							buff.append(ConstantCc.SYS_TAIL_SUCC);
 							buff.append(ConstantCc.SYS_TAIL_END);
 							out.write(buff.toString());

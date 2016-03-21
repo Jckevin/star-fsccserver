@@ -71,17 +71,22 @@ public class ProcClientRequest {
 			case ConstantCc.SYS_EXEC_CTD:
 				res = reqMsgCmdService.execCmdCTD(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
-				logger.debug("begin process the third party call service");
+				break;
+			case ConstantCc.SYS_EXEC_MONITOR:
+				res = reqMsgCmdService.execCmdMonitor(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantCc.SYS_EXEC_INSERT:
+				res = reqMsgCmdService.execCmdInsert(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantCc.SYS_EXEC_DEMOLITSH:
+				res = reqMsgCmdService.execCmdInsert(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantCc.CC_AGENT_SIGN:
 				res = reqMsgCmdService.execCmdAgentSign(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
-				logger.debug("begin process the third party call service");
-				break;
-			case ConstantCc.SYS_EXEC_MONITOR:
-				res = reqMsgCmdService.execCmdAgentSign(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				logger.debug("begin process the third party call service");
 				break;
 			case ConstantCc.CC_AGENT_QRY:
 				String content = reqMsgQuryCmdService.getCcAgentList(msg.getClientId(), msg.getContent());
@@ -130,15 +135,13 @@ public class ProcClientRequest {
 	private StringBuffer makeClientStatusResponse(String buff, int result) {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(buff);
+		nBuff.append(ConstantCc.SYS_SPLIT);
 		if (result == ConstantCc.SUCCESS) {
-			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
 			nBuff.append(ConstantCc.SYS_TAIL_SUCC);
-			nBuff.append(ConstantCc.SYS_TAIL_END);
 		} else if (result == ConstantCc.FAILED) {
-			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
 			nBuff.append(ConstantCc.SYS_TAIL_FAIL);
-			nBuff.append(ConstantCc.SYS_TAIL_END);
 		}
+		nBuff.append(ConstantCc.SYS_TAIL_END);
 		return nBuff;
 	}
 
@@ -146,15 +149,13 @@ public class ProcClientRequest {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(content);
 		nBuff.append(request);
+		nBuff.append(ConstantCc.SYS_SPLIT);
 		if (content.length() > 0) {
-			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
 			nBuff.append(ConstantCc.SYS_TAIL_SUCC);
-			nBuff.append(ConstantCc.SYS_TAIL_END);
 		} else {
-			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
 			nBuff.append(ConstantCc.SYS_TAIL_FAIL);
-			nBuff.append(ConstantCc.SYS_TAIL_END);
 		}
+		nBuff.append(ConstantCc.SYS_TAIL_END);
 		return nBuff;
 	}
 
