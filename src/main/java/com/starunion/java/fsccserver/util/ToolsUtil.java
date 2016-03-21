@@ -37,11 +37,12 @@ public class ToolsUtil {
 		Iterator<Entry<String, TerStatusInfo>> iter = ServerDataMap.terStatusMap.entrySet().iterator();
 		while (iter.hasNext()) {
 			Entry<String, TerStatusInfo> entry = iter.next();
-
-			logger.error("key : {}", entry.getKey());
-			logger.error("value status : {},{},{},{},{}", entry.getValue().getStatus(),entry.getValue().getCallDirection(),
-					entry.getValue().getCallType(),entry.getValue().getCallUUid(),entry.getValue().getPeerNumber());
-
+			if(entry.getKey().equals("800")||entry.getKey().equals("801")||entry.getKey().equals("810")){
+				logger.error("key : {}", entry.getKey());
+				logger.error("value status : {},{},{},{},{}", entry.getValue().getStatus(),entry.getValue().getCallDirection(),
+						entry.getValue().getCallType(),entry.getValue().getCallUUid(),entry.getValue().getPeerNumber());	
+			}
+			
 		}		
 	}
 

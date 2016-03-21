@@ -81,7 +81,7 @@ public class ProcClientRequest {
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantCc.SYS_EXEC_DEMOLITSH:
-				res = reqMsgCmdService.execCmdInsert(msg.getClientId(), msg.getContent());
+				res = reqMsgCmdService.execCmdDemolish(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantCc.CC_AGENT_SIGN:

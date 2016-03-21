@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.beginning.FsCcServer;
+import com.starunion.java.fsccserver.po.TerParkingInfo;
 import com.starunion.java.fsccserver.thread.client.CallableFsQueryCmdProc;
 import com.starunion.java.fsccserver.util.ConstantCc;
 import com.starunion.java.fsccserver.util.ServerDataMap;
@@ -32,15 +33,24 @@ public class ProcClientReqExecCmd {
 
 	}
 
-	private int getResult(CallableFsQueryCmdProc task) {
-		Integer result = ConstantCc.FAILED;
-		Future<Integer> future = FsCcServer.executor.submit(taskInt);
-		try {
-			result = future.get(5000, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			e.printStackTrace();
-		}
-		return result;
+	public int execCmdDemolish(String caller, String callee) {
+		// w1:current one. w2:opposite one. w3:three way.
+		StringBuffer buff = new StringBuffer();
+		TerParkingInfo info = new TerParkingInfo();
+		info.setType(ConstantCc.SYS_EXEC_DEMOLITSH);
+		info.setCallee(callee);
+		ServerDataMap.terParkingMap.put(caller, info);
+
+		buff.append("bgapi originate {origination_caller_id_number=");
+		buff.append(ConstantCc.FS_DEF_NUMBER);
+		buff.append("}user/");
+		buff.append(caller);
+		buff.append(" &park");
+		buff.append(ConstantCc.FS_CMD_TAIL);
+
+		taskInt.setSendCmd(buff.toString());
+
+		return getResult(taskInt);
 	}
 
 	public int execCmdInsert(String caller, String callee) {
@@ -119,6 +129,16 @@ public class ProcClientReqExecCmd {
 		taskInt.setSendCmd(buff.toString());
 
 		return getResult(taskInt);
+	}
 
+	private int getResult(CallableFsQueryCmdProc task) {
+		Integer result = ConstantCc.FAILED;
+		Future<Integer> future = FsCcServer.executor.submit(taskInt);
+		try {
+			result = future.get(5000, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

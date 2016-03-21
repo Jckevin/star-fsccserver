@@ -11,6 +11,7 @@ public class TerStatusInfo {
 	private String callDirection;
 	private String callUUid;
 	private String peerNumber;
+	private String peerUUid;
 
 	public String getStatus() {
 		return status;
@@ -50,6 +51,14 @@ public class TerStatusInfo {
 
 	public void setPeerNumber(String peerNumber) {
 		this.peerNumber = peerNumber;
+	}
+
+	public String getPeerUUid() {
+		return peerUUid;
+	}
+
+	public void setPeerUUid(String peerUUid) {
+		this.peerUUid = peerUUid;
 	}
 
 }

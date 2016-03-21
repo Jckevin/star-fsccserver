@@ -72,7 +72,7 @@ public class CallableFsQueryCmdProc implements Callable<Integer>{
 										} else if(parts[0].equals(ConstantCc.FS_CMD_SUCC)){
 											result = ConstantCc.SUCCESS;
 											break;
-										} 
+										}
 									} else if (contentType.equals("api/response")) {
 										logger.debug("this type message mean that follow byte without end indicator [\\n]");
 										nonStandardMsgLen = Integer.parseInt(respMap.get("Content-Length").trim());
