@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.service;
+package com.starunion.java.fsccserver.service.client;
 
 import java.util.List;
 import java.util.Map;

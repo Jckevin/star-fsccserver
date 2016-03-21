@@ -13,10 +13,10 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.starunion.java.fsccserver.thread.SocketServerTcpThread;
 import com.starunion.java.fsccserver.util.ConfigManager;
-import com.starunion.java.fsccserver.thread.ThreadFsNotifyProc;
+import com.starunion.java.fsccserver.thread.fs.SocketFsTcpThread;
+import com.starunion.java.fsccserver.thread.fs.ThreadFsNotifyProc;
+import com.starunion.java.fsccserver.thread.fs.ThreadNotifySendToClient;
 import com.starunion.java.fsccserver.service.InitialService;
-import com.starunion.java.fsccserver.thread.SocketFsTcpThread;
-import com.starunion.java.fsccserver.thread.ThreadNotifySendToClient;
 
 /**
  * This project used as an important middler server who connects both the

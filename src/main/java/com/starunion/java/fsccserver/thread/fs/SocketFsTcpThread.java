@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.thread;
+package com.starunion.java.fsccserver.thread.fs;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.service.MessageFsNotifyService;
+import com.starunion.java.fsccserver.service.fs.MessageFsNotifyService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConfigManager;
 import com.starunion.java.fsccserver.util.ConstantCc;
@@ -84,7 +84,7 @@ public class SocketFsTcpThread extends Thread {
 								logger.debug("server disconected, close the fsClient...");
 								fsClient.close();
 								Map<String, String> msg = new HashMap<String, String>();
-								msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.FS_EVENT_UNBIND);
+								msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.SYS_NOTIFY_SERVER_UNBIND);
 								/**
 								 * :TODO Q:why here invoke throw
 								 * interruptedException?
@@ -122,7 +122,7 @@ public class SocketFsTcpThread extends Thread {
 				try {
 					sleep(10000);
 					Map<String, String> msg = new HashMap<String, String>();
-					msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.FS_EVENT_UNBIND);
+					msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.SYS_NOTIFY_SERVER_UNBIND);
 					ClientDataMap.fsNotifyRecvQueue.put(msg);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();

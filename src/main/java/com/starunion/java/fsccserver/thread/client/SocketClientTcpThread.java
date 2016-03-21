@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.thread;
+package com.starunion.java.fsccserver.thread.client;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import com.starunion.java.fsccserver.service.ProcClientRequest;
+
+import com.starunion.java.fsccserver.service.client.ProcClientRequest;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 

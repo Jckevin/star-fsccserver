@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
 import com.starunion.java.fsccserver.service.LoginAndOutService;
-import com.starunion.java.fsccserver.service.MessageClientReqService;
+import com.starunion.java.fsccserver.service.client.MessageClientReqService;
+import com.starunion.java.fsccserver.thread.client.SocketClientTcpThread;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 import com.starunion.java.fsccserver.util.SpringContextUtil;
@@ -86,7 +87,9 @@ public class SocketServerTcpThread extends Thread {
 							buff.append(reqMessage.getType()).append(":");
 							buff.append(reqMessage.getClientId()).append(":");
 							buff.append(reqMessage.getContent());
-							buff.append(ConstantCc.CC_SUCC_TAIL);
+							buff.append(ConstantCc.SYS_REG_MSG_LMT);
+							buff.append(ConstantCc.SYS_TAIL_SUCC);
+							buff.append(ConstantCc.SYS_TAIL_END);
 							out.write(buff.toString());
 							out.flush();
 							Socket sock = ClientDataMap.clientSocketMap.get(reqMessage.getClientId());

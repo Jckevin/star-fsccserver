@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.starunion.java.fsccserver.po.ClientStatusInfo;
-import com.starunion.java.fsccserver.thread.SocketClientTcpThread;
+import com.starunion.java.fsccserver.thread.client.SocketClientTcpThread;
 
 /**
  * @author Lings

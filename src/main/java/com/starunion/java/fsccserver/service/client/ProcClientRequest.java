@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.service;
+package com.starunion.java.fsccserver.service.client;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
 import com.starunion.java.fsccserver.po.freecc.AgentInfo;
+import com.starunion.java.fsccserver.service.LoginAndOutService;
+import com.starunion.java.fsccserver.service.ProcLinuxCommand;
 import com.starunion.java.fsccserver.service.timer.QuartzTaskService;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
@@ -66,7 +68,7 @@ public class ProcClientRequest {
 				rspBuff = makeClientStatusResponse(reqLine, ConstantCc.FAILED);
 				logger.debug("begin process log out service");
 				break;
-			case ConstantCc.CC_CTD:
+			case ConstantCc.SYS_EXEC_CTD:
 				res = reqMsgCmdService.execCmdCTD(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				logger.debug("begin process the third party call service");
@@ -76,7 +78,7 @@ public class ProcClientRequest {
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				logger.debug("begin process the third party call service");
 				break;
-			case ConstantCc.CC_MONITOR:
+			case ConstantCc.SYS_EXEC_MONITOR:
 				res = reqMsgCmdService.execCmdAgentSign(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				logger.debug("begin process the third party call service");
@@ -129,9 +131,13 @@ public class ProcClientRequest {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(buff);
 		if (result == ConstantCc.SUCCESS) {
-			nBuff.append(ConstantCc.CC_SUCC_TAIL);
+			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
+			nBuff.append(ConstantCc.SYS_TAIL_SUCC);
+			nBuff.append(ConstantCc.SYS_TAIL_END);
 		} else if (result == ConstantCc.FAILED) {
-			nBuff.append(ConstantCc.CC_FAIL_TAIL);
+			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
+			nBuff.append(ConstantCc.SYS_TAIL_FAIL);
+			nBuff.append(ConstantCc.SYS_TAIL_END);
 		}
 		return nBuff;
 	}
@@ -141,9 +147,13 @@ public class ProcClientRequest {
 		nBuff.append(content);
 		nBuff.append(request);
 		if (content.length() > 0) {
-			nBuff.append(ConstantCc.CC_SUCC_TAIL);
+			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
+			nBuff.append(ConstantCc.SYS_TAIL_SUCC);
+			nBuff.append(ConstantCc.SYS_TAIL_END);
 		} else {
-			nBuff.append(ConstantCc.CC_FAIL_TAIL);
+			nBuff.append(ConstantCc.SYS_REG_MSG_LMT);
+			nBuff.append(ConstantCc.SYS_TAIL_FAIL);
+			nBuff.append(ConstantCc.SYS_TAIL_END);
 		}
 		return nBuff;
 	}

@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.service;
+package com.starunion.java.fsccserver.service.client;
 
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,9 @@ public class MessageClientReqService {
 
 	public boolean isRequestMessage(String cmd) {
 		boolean b = false;
-		if (!cmd.contains(ConstantCc.CC_REQ_PARTS_SPLIT)) {
+		if (!cmd.contains(ConstantCc.SYS_SPLIT)) {
 			b = false;
-		} else if (cmd.split(ConstantCc.CC_REQ_PARTS_SPLIT).length < ConstantCc.CC_REQ_PARTS_LMT) {
+		} else if (cmd.split(ConstantCc.SYS_SPLIT).length < ConstantCc.SYS_REG_MSG_LMT) {
 			b = false;
 		} else {
 			b = true;
@@ -30,9 +30,9 @@ public class MessageClientReqService {
 	}
 
 	public ClientRequestMessageCc parseRequestMessage(String cmd) {
-		if (cmd.contains(ConstantCc.CC_REQ_PARTS_SPLIT)) {
-			String[] parts = cmd.split(ConstantCc.CC_REQ_PARTS_SPLIT);
-			if (cmd.split(ConstantCc.CC_REQ_PARTS_SPLIT).length < ConstantCc.CC_REQ_PARTS_LMT) {
+		if (cmd.contains(ConstantCc.SYS_SPLIT)) {
+			String[] parts = cmd.split(ConstantCc.SYS_SPLIT);
+			if (cmd.split(ConstantCc.SYS_SPLIT).length < ConstantCc.SYS_REG_MSG_LMT) {
 				return null;
 			} else {
 				ClientRequestMessageCc reqMsg = new ClientRequestMessageCc();

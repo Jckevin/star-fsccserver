@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.service;
+package com.starunion.java.fsccserver.service.fs;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

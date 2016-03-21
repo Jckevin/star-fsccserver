@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.thread;
+package com.starunion.java.fsccserver.thread.fs;
 
 import java.io.IOException;
 import java.net.Socket;

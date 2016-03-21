@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.service;
+package com.starunion.java.fsccserver.service.client;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.beginning.FsCcServer;
-import com.starunion.java.fsccserver.thread.CallableFsQueryCmdProc;
+import com.starunion.java.fsccserver.thread.client.CallableFsQueryCmdProc;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
 /**

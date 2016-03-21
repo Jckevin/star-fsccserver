@@ -1,16 +1,20 @@
-package com.starunion.java.fsccserver.thread;
+package com.starunion.java.fsccserver.thread.fs;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.starunion.java.fsccserver.po.ClientNotifyMessageCc;
 import com.starunion.java.fsccserver.po.TerStatusInfo;
+import com.starunion.java.fsccserver.service.fs.ProcFsNotifyService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 import com.starunion.java.fsccserver.util.ServerDataMap;
+import com.starunion.java.fsccserver.util.ToolsUtil;
 
 /**
  * @author Lings
@@ -21,6 +25,9 @@ import com.starunion.java.fsccserver.util.ServerDataMap;
 public class ThreadFsNotifyProc extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(ThreadFsNotifyProc.class);
 
+	@Autowired
+	ProcFsNotifyService procFsNotifyService;
+	
 	public ThreadFsNotifyProc() {
 
 	}
@@ -49,7 +56,6 @@ public class ThreadFsNotifyProc extends Thread {
 				String callee = "";
 				String uuidCaller = "";
 				String uuidCallee = "";
-				TerStatusInfo terInfo = null;
 
 				if (eventMap.get(ConstantCc.FS_EVENT_HEAD).equals("CHANNEL_CALLSTATE")) {
 					if (eventMap.get("Answer-State").equals("ringing")
@@ -57,15 +63,20 @@ public class ThreadFsNotifyProc extends Thread {
 						// update callee status
 						callee = eventMap.get("Caller-Callee-ID-Number");
 						uuidCallee = eventMap.get("Caller-Unique-ID");
-						terInfo.setCallUUid(uuidCaller);
-						terInfo.setStatus(ConstantCc.TER_STATUS_RING);
-						ServerDataMap.terStatusMap.put(callee, terInfo);
-						// update caller status						
+						procFsNotifyService.updateMapTerStatus(callee, uuidCallee, ConstantCc.TER_STATUS_RING);
+						// update caller status
 						caller = eventMap.get("Caller-Caller-ID-Number");
 						uuidCaller = eventMap.get("Other-Leg-Unique-ID");
-						terInfo.setCallUUid(uuidCaller);
-						terInfo.setStatus(ConstantCc.TER_STATUS_EARLY);
-						ServerDataMap.terStatusMap.put(caller, terInfo);
+						procFsNotifyService.updateMapTerStatus(caller, uuidCaller, ConstantCc.TER_STATUS_EARLY);
+						
+						new ToolsUtil().printTerMap();
+						
+						// make  caller status notify
+						procFsNotifyService.makeNotifyTerStatus(caller, ConstantCc.TER_STATUS_EARLY);
+						// make  callee status notify
+						procFsNotifyService.makeNotifyTerStatus(callee, ConstantCc.TER_STATUS_RING);
+
+					} else if (true) {
 
 					}
 				} else {
@@ -79,4 +90,5 @@ public class ThreadFsNotifyProc extends Thread {
 		}
 		System.out.println("Butterer off");
 	}
+	
 }
