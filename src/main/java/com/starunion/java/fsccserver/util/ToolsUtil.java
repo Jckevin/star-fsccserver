@@ -39,8 +39,8 @@ public class ToolsUtil {
 			Entry<String, TerStatusInfo> entry = iter.next();
 			if(entry.getKey().equals("800")||entry.getKey().equals("801")||entry.getKey().equals("810")){
 				logger.error("key : {}", entry.getKey());
-				logger.error("value status : {},{},{},{},{}", entry.getValue().getStatus(),entry.getValue().getCallDirection(),
-						entry.getValue().getCallType(),entry.getValue().getCallUUid(),entry.getValue().getPeerNumber());	
+				logger.error("value status : {},{},{},{},{},{}", entry.getValue().getStatus(),entry.getValue().getCallDirection(),
+						entry.getValue().getCallType(),entry.getValue().getCallUUid(),entry.getValue().getPeerNumber(),entry.getValue().getPeerUUid());	
 			}
 			
 		}		

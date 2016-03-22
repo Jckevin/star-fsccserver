@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.service.fs.MessageFsNotifyService;
+import com.starunion.java.fsccserver.service.fs.FsNotifyMsgCheckService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConfigManager;
 import com.starunion.java.fsccserver.util.ConstantCc;
@@ -29,7 +29,7 @@ import com.starunion.java.fsccserver.util.ConstantCc;
 public class SocketFsTcpThread extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(SocketFsTcpThread.class);
 	@Autowired
-	MessageFsNotifyService msgService;
+	FsNotifyMsgCheckService msgService;
 	private BufferedWriter out = null;
 
 	private String fsIp;

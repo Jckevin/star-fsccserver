@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 import com.starunion.java.fsccserver.beginning.FsCcServer;
 import com.starunion.java.fsccserver.po.TerParkingInfo;
 import com.starunion.java.fsccserver.po.TerStatusInfo;
-import com.starunion.java.fsccserver.thread.client.CallableFsQueryCmdProc;
+import com.starunion.java.fsccserver.service.client.ProcClientReqExecCmd;
+import com.starunion.java.fsccserver.thread.client.CallableFsExecCmdProc;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 import com.starunion.java.fsccserver.util.ServerDataMap;
+import com.starunion.java.fsccserver.util.ToolsUtil;
 
 /**
  * @author Lings
@@ -25,31 +27,32 @@ import com.starunion.java.fsccserver.util.ServerDataMap;
 @Service
 public class ProcFsNotifyService {
 	@Autowired
-	CallableFsQueryCmdProc taskInt;
-	
+	ProcClientReqExecCmd procCmd;
+
 	public void procTerParking(String id, String uuid) {
 		TerParkingInfo terInfo = ServerDataMap.terParkingMap.get(id);
 		String callee = terInfo.getCallee();
 		String type = terInfo.getType();
-		StringBuffer buff = new StringBuffer();
-		buff.append("bgapi uuid_bridge ");
-		buff.append(uuid);
-		buff.append(" ");
-		if (type.equals(ConstantCc.SYS_EXEC_DEMOLITSH) || type.equals("123")) {
-			buff.append(ServerDataMap.terStatusMap.get(callee).getPeerUUid());
+		String uuidCallee = "";
+		String updateId = "";
+		if (type.equals(ConstantCc.SYS_EXEC_DEMOLITSH) || type.equals(ConstantCc.SYS_EXEC_INTERCEPT)) {
+			uuidCallee = ServerDataMap.terStatusMap.get(callee).getPeerUUid();
+			updateId = ServerDataMap.terStatusMap.get(callee).getPeerNumber();
 		} else if (type.equals(ConstantCc.SYS_EXEC_BRIDGE) || type.equals("12")) {
-			buff.append(ServerDataMap.terStatusMap.get(callee).getCallUUid());
+			uuidCallee = ServerDataMap.terStatusMap.get(callee).getCallUUid();
+			updateId = callee;
 		}
-		buff.append(ConstantCc.SYS_TAIL_END);
 		
-		taskInt.setSendCmd(buff.toString());
-		Integer result = ConstantCc.FAILED;
-		Future<Integer> future = FsCcServer.executor.submit(taskInt);
-		try {
-			result = future.get(5000, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			e.printStackTrace();
+		int res = procCmd.execCmdUUbridge(uuid, uuidCallee);
+		
+		if (res == ConstantCc.SUCCESS) {
+			updateMapTerStatus(id, ConstantCc.TER_STATUS_CONN, uuid, uuidCallee,updateId);
+			updateMapTerStatus(updateId, ConstantCc.TER_STATUS_CONN, uuidCallee, uuid,id);
 		}
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		new ToolsUtil().printTerMap();
+		System.out.println("==========================");
+
 	}
 
 	public void updateMapTerStatus(String id, String status) {
@@ -57,11 +60,12 @@ public class ProcFsNotifyService {
 		terInfo.setStatus(status);
 	}
 
-	public void updateMapTerStatus(String id, String status, String uuid, String puid) {
+	public void updateMapTerStatus(String id, String status, String uuid, String puid,String peer) {
 		TerStatusInfo terInfo = ServerDataMap.terStatusMap.get(id);
 		terInfo.setStatus(status);
 		terInfo.setCallUUid(uuid);
 		terInfo.setPeerUUid(puid);
+		terInfo.setPeerNumber(peer);
 	}
 
 	public void makeNotifyTerStatus(String id, String status) throws InterruptedException {

@@ -1,6 +1,5 @@
 package com.starunion.java.fsccserver.service.client;
 
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.beginning.FsCcServer;
 import com.starunion.java.fsccserver.po.TerParkingInfo;
-import com.starunion.java.fsccserver.thread.client.CallableFsQueryCmdProc;
+import com.starunion.java.fsccserver.thread.client.CallableFsExecCmdProc;
 import com.starunion.java.fsccserver.util.ConstantCc;
 import com.starunion.java.fsccserver.util.ServerDataMap;
 
@@ -27,17 +26,29 @@ public class ProcClientReqExecCmd {
 	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqExecCmd.class);
 
 	@Autowired
-	CallableFsQueryCmdProc taskInt;
+	CallableFsExecCmdProc taskInt;
 
 	public ProcClientReqExecCmd() {
 
 	}
 
-	public int execCmdDemolish(String caller, String callee) {
-		// w1:current one. w2:opposite one. w3:three way.
+	public int execCmdUUbridge(String uuider, String uuidee) {
+		StringBuffer buff = new StringBuffer();
+		buff.append("bgapi uuid_bridge ");
+		buff.append(uuider);
+		buff.append(" ");
+		buff.append(uuidee);
+		buff.append(ConstantCc.FS_CMD_TAIL);
+
+		taskInt.setSendCmd(buff.toString());
+
+		return getResult(taskInt);
+	}
+	
+	public int execCmdDemolishBridge(String type, String caller, String callee) {
 		StringBuffer buff = new StringBuffer();
 		TerParkingInfo info = new TerParkingInfo();
-		info.setType(ConstantCc.SYS_EXEC_DEMOLITSH);
+		info.setType(type);
 		info.setCallee(callee);
 		ServerDataMap.terParkingMap.put(caller, info);
 
@@ -131,7 +142,7 @@ public class ProcClientReqExecCmd {
 		return getResult(taskInt);
 	}
 
-	private int getResult(CallableFsQueryCmdProc task) {
+	private int getResult(CallableFsExecCmdProc task) {
 		Integer result = ConstantCc.FAILED;
 		Future<Integer> future = FsCcServer.executor.submit(taskInt);
 		try {

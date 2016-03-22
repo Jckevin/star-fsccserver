@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  * 
  */
 @Service
-public class MessageFsNotifyService {
+public class FsNotifyMsgCheckService {
 
-	public MessageFsNotifyService() {
+	public FsNotifyMsgCheckService() {
 
 	}
 

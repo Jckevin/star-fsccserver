@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.service.client.ProcClientRequest;
+import com.starunion.java.fsccserver.service.client.ClientReqMsgLogicService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
@@ -36,7 +36,7 @@ public class SocketClientTcpThread extends Thread {
 	private Socket clientSocket;
 	private String clientId;
 	@Autowired
-	ProcClientRequest clientReqService;
+	ClientReqMsgLogicService clientReqService;
 
 	private long firsttime = 0;
 	private boolean isFrist = true;

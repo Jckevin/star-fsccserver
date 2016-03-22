@@ -29,13 +29,13 @@ import com.starunion.java.fsccserver.util.ConstantCc;
  */
 
 @Service
-public class ProcClientRequest {
-	private static final Logger logger = LoggerFactory.getLogger(ProcClientRequest.class);
+public class ClientReqMsgLogicService {
+	private static final Logger logger = LoggerFactory.getLogger(ClientReqMsgLogicService.class);
 
 	@Autowired
 	LoginAndOutService loginService;
 	@Autowired
-	MessageClientReqService reqMsgService;
+	ClientReqMsgCheckService reqMsgService;
 	@Autowired
 	ProcClientReqExecCmd reqMsgCmdService;
 	@Autowired
@@ -47,7 +47,7 @@ public class ProcClientRequest {
 	@Autowired
 	private ProcLinuxCommand procLinuxCmd;
 
-	public ProcClientRequest() {
+	public ClientReqMsgLogicService() {
 
 	}
 
@@ -81,7 +81,15 @@ public class ProcClientRequest {
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantCc.SYS_EXEC_DEMOLITSH:
-				res = reqMsgCmdService.execCmdDemolish(msg.getClientId(), msg.getContent());
+				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantCc.SYS_EXEC_BRIDGE:
+				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantCc.SYS_EXEC_INTERCEPT:
+				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantCc.CC_AGENT_SIGN:

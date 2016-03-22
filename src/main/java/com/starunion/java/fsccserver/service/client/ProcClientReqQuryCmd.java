@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.beginning.FsCcServer;
-import com.starunion.java.fsccserver.thread.client.CallableFsExecCmdProc;
+import com.starunion.java.fsccserver.thread.client.CallableFsQueryCmdProc;
 import com.starunion.java.fsccserver.util.ConstantCc;
 
 /**
@@ -24,7 +24,7 @@ public class ProcClientReqQuryCmd {
 	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqQuryCmd.class);
 
 	@Autowired
-	CallableFsExecCmdProc task;
+	CallableFsQueryCmdProc task;
 
 	public ProcClientReqQuryCmd() {
 
