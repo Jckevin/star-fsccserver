@@ -1,5 +1,7 @@
 package com.starunion.java.fsccserver.service.client;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.starunion.java.fsccserver.beginning.FsCcServer;
 import com.starunion.java.fsccserver.po.TerParkingInfo;
 import com.starunion.java.fsccserver.thread.client.CallableFsExecCmdProc;
+import com.starunion.java.fsccserver.util.ConfigManager;
 import com.starunion.java.fsccserver.util.ConstantCc;
 import com.starunion.java.fsccserver.util.ServerDataMap;
 
@@ -32,6 +35,45 @@ public class ProcClientReqExecCmd {
 
 	}
 
+	public int execCmdRecord(String caller) {
+		String uuid = ServerDataMap.terStatusMap.get(caller).getCallUUid();
+		
+		Date time = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
+		String timeStr = formatter.format(time);
+		String[] timePart = timeStr.split("-");
+		StringBuffer buff = new StringBuffer();
+		buff.append("bgapi uuid_record ");
+		buff.append(uuid);
+		buff.append(" start ");
+		buff.append(ConfigManager.getInstance().getDisRecordPath());
+		buff.append(timePart[0]);
+		buff.append("/");
+		buff.append(caller);
+		buff.append("_");
+		buff.append(timePart[1]);
+		buff.append(".wav");
+		buff.append(ConstantCc.FS_CMD_TAIL);
+		
+		logger.debug("!!!!!!!!!!!!!!!!!!!!!!!make cmd :{}",buff.toString());
+		taskInt.setSendCmd(buff.toString());
+
+		return getResult(taskInt);
+	}
+	
+	public int execCmdHangup(String caller, String callee) {
+		//check wether the caller has the permission.
+		StringBuffer buff = new StringBuffer();
+		String uuid = ServerDataMap.terStatusMap.get(callee).getCallUUid();
+		buff.append("bgapi uuid_kill ");
+		buff.append(uuid);
+		buff.append(ConstantCc.FS_CMD_TAIL);
+
+		taskInt.setSendCmd(buff.toString());
+
+		return getResult(taskInt);
+	}
+	
 	public int execCmdUUbridge(String uuider, String uuidee) {
 		StringBuffer buff = new StringBuffer();
 		buff.append("bgapi uuid_bridge ");

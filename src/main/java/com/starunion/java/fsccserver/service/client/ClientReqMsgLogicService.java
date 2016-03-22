@@ -92,6 +92,14 @@ public class ClientReqMsgLogicService {
 				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
+			case ConstantCc.SYS_EXEC_HANGUP:
+				res = reqMsgCmdService.execCmdHangup(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantCc.SYS_EXEC_RECORD:
+				res = reqMsgCmdService.execCmdRecord(msg.getClientId());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
 			case ConstantCc.CC_AGENT_SIGN:
 				res = reqMsgCmdService.execCmdAgentSign(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);

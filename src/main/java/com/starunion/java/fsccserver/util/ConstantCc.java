@@ -25,17 +25,6 @@ public class ConstantCc {
 	public final static String FS_DEF_NUMBER = "000";
 	public final static int FS_TIMEOUT_CMD = 1000 * 5;
 
-	// freeswitch navie status
-	public final static String FS_AGENT_SIGN_IN = "Available";
-	public final static String FS_AGENT_SIGN_OUT = "Logged Out";
-	public final static String FS_AGENT_SIGN_BREAK = "On Break";
-	public final static String FS_AGENT_TYPE_ONHOOK = "callback";
-	public final static String FS_AGENT_TYPE_OFFHOOK = "uuid-standby";
-	public final static String FS_AGENT_STATUS_IDLE = "Idle";
-	public final static String FS_AGENT_STATUS_WAIT = "Waiting";
-	public final static String FS_AGENT_STATUS_RECV = "Receiving";
-	public final static String FS_AGENT_STATUS_INQUECALL = "In a queue call";
-
 	// for terminal info
 	public final static String TER_STATUS_UNREG = "0";
 	public final static String TER_STATUS_REGED = "1";
@@ -44,23 +33,25 @@ public class ConstantCc {
 	public final static String TER_STATUS_EARLY = "4";
 	public final static String TER_STATUS_CONN = "5";
 
-	// public system API and command and notify
+	// public system command params
 	public final static int SYS_REG_MSG_LMT = 3;
 	public final static String SYS_SPLIT = ":";
 	public final static String SYS_TAIL_SUCC = "OK";
 	public final static String SYS_TAIL_FAIL = "FAIL";
 	public final static String SYS_TAIL_END = "\r\n";
-
+	// public system API (query)
 	public final static String SYS_QUERY_TER_INFO = "sysQueryTerInfo";
-
+	// public system API (command)
 	public final static String SYS_EXEC_CTD = "sysExecCtd";
 	public final static String SYS_EXEC_MONITOR = "sysExecMonitor";
 	public final static String SYS_EXEC_INSERT = "sysExecInsert";
 	public final static String SYS_EXEC_DEMOLITSH = "sysExecDemolish";
 	public final static String SYS_EXEC_BRIDGE = "sysExecBridge";
 	public final static String SYS_EXEC_INTERCEPT = "sysExecIntercept";
+	public final static String SYS_EXEC_HANGUP = "sysExecHangup";
+	public final static String SYS_EXEC_RECORD = "sysExecRecord";
 
-	// system notify message define and example
+	// public system API (notify)
 	/** e.g. sysNotifyTerStatus:800:0\r\n */
 	public final static String SYS_NOTIFY_TER_STATUS = "sysNotifyTerStatus";
 	/** e.g. sysNotifyServerUnbind\r\n */
@@ -75,6 +66,17 @@ public class ConstantCc {
 	public final static String CC_AGENT_SIGN_IN = "1";
 	public final static String CC_AGENT_SIGN_OUT = "2";
 	public final static String CC_AGENT_SIGN_BUSY = "3";
+	
+	// freeswitch cc navie status
+	public final static String FS_AGENT_SIGN_IN = "Available";
+	public final static String FS_AGENT_SIGN_OUT = "Logged Out";
+	public final static String FS_AGENT_SIGN_BREAK = "On Break";
+	public final static String FS_AGENT_TYPE_ONHOOK = "callback";
+	public final static String FS_AGENT_TYPE_OFFHOOK = "uuid-standby";
+	public final static String FS_AGENT_STATUS_IDLE = "Idle";
+	public final static String FS_AGENT_STATUS_WAIT = "Waiting";
+	public final static String FS_AGENT_STATUS_RECV = "Receiving";
+	public final static String FS_AGENT_STATUS_INQUECALL = "In a queue call";
 
 	// for mysql operate result code [dbutils]
 	public final static int DB_SUCCESS = 1;

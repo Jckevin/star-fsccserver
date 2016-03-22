@@ -51,7 +51,6 @@ public class ThreadFsNotifyProc extends Thread {
 				// TimeUnit.MILLISECONDS.sleep(100 + rand.nextInt(500));
 				logger.debug("i am wating on recv freeswitch NOTIFY Queue.....");
 				Map<String, String> eventMap = ClientDataMap.fsNotifyRecvQueue.take();
-				logger.debug("get a notify with Event-Name : {} ", eventMap.get("Event-Name"));
 				String caller = "";
 				String callee = "";
 				String uuidCaller = null;
@@ -145,9 +144,16 @@ public class ThreadFsNotifyProc extends Thread {
 						// this logic may FreeSWITCH notify BUG when call by cmd
 						// [originate]
 						if (!callee.equals(ConstantCc.FS_DEF_NUMBER)) {
-							procFsNotifyService.updateMapTerStatus(callee, ConstantCc.TER_STATUS_REGED, null, null,
-									null);
-							procFsNotifyService.makeNotifyTerStatus(callee, ConstantCc.TER_STATUS_REGED);
+							if(eventMap.get("Caller-ANI").equals(ConstantCc.FS_DEF_NUMBER)){
+								callee = eventMap.get("Caller-Destination-Number");
+								procFsNotifyService.updateMapTerStatus(callee, ConstantCc.TER_STATUS_REGED, null, null,
+										null);
+								procFsNotifyService.makeNotifyTerStatus(callee, ConstantCc.TER_STATUS_REGED);
+							}else{
+								procFsNotifyService.updateMapTerStatus(callee, ConstantCc.TER_STATUS_REGED, null, null,
+										null);
+								procFsNotifyService.makeNotifyTerStatus(callee, ConstantCc.TER_STATUS_REGED);	
+							}
 						} else {
 							caller = eventMap.get("Caller-Caller-ID-Number");
 							procFsNotifyService.updateMapTerStatus(caller, ConstantCc.TER_STATUS_REGED, null, null,

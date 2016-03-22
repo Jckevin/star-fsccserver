@@ -98,10 +98,10 @@ public class SocketFsTcpThread extends Thread {
 								logger.debug("get content type [{}] WITHOUT process.", contentType);
 							}
 						} else {
-							logger.error("receive notify from FreeSWITCH:======>\n{}", notifyBuffer.toString());
 							String eventType = respMap.get(ConstantCc.FS_EVENT_HEAD);
-							if (eventType != null) {
-								logger.debug("get a notify message {} put it to blocking queue.", eventType);
+							logger.debug("get a notify message {} put it to blocking queue.", eventType);
+							if (eventType != null && eventType.startsWith("CHANNEL_")) {
+								logger.info("receive notify from FreeSWITCH:======>\n{}", notifyBuffer.toString());
 								try {
 									ClientDataMap.fsNotifyRecvQueue.put(respMap);
 								} catch (InterruptedException e) {
