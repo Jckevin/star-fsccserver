@@ -1,457 +1,216 @@
 package com.starunion.java.fsccserver.dao;
 
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.dbutils.handlers.MapHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
- * 调用Apache Commons DBUtil组件的数据库操作, 采用DBCP作为数据源，数据源在Spring中已经配置好,
- * 本类已经在Spring中配置好，在初始化的地方，set注入后即可调用. <code> 
- * private DbUtilsTemplate dbUtilsTemplate; 
- * public void setDbUtilsTemplate(DbUtilsTemplate dbUtilsTemplate) { 
- *     this.dbUtilsTemplate = dbUtilsTemplate; 
- * } 
- * </code>
+ * @author Lings
+ * @date Mar 14, 2016 6:04:17 PM
  * 
- * @author Sunshine
- * @version 1.0 2009-07-29
  */
-
-@Component
+@Repository
 public class DbUtilsTemplate {
-
-	@Autowired
-	DataSource dataSource;
 	private QueryRunner queryRunner;
+	private final static int DB_SUCC = 1;
 	private static final Logger logger = LoggerFactory.getLogger(DbUtilsTemplate.class);
 
-	public void setDataSource(BasicDataSource dataSource) {
-		this.dataSource = dataSource;
+	public DbUtilsTemplate() {
+
 	}
 
 	/**
-	 * 执行sql语句
+	 * mostly used method without params.
 	 * 
 	 * @param sql
-	 *            sql语句
-	 * @return 受影响的行数
+	 *            statement for operation [insert,delete,update]
+	 * @return need a convert 1->0
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T> T insert(Class<T> entityClass, String sql, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		Object object = null;
+
+	public int update(DataSource ds, String sql) {
+		queryRunner = new QueryRunner(ds);
 		try {
-			if (params == null) {
-				object = queryRunner.insert(sql, new BeanHandler(entityClass));
-			} else {
-				object = queryRunner.insert(sql, new BeanHandler(entityClass), params);
-			}
-		} catch (SQLException e) {
-			logger.error("Error occured while attempting to insert data", e);
-		}
-		return (T) object; 
-		
-	}
-	
-	/**
-	 * 执行sql语句
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @return 受影响的行数
-	 */
-	public int update(String sql) {
-		return update(sql, null);
-	}
-
-	/**
-	 * 执行sql语句 <code> 
-	 * executeUpdate("update user set username = 'kitty' where username = ?", "hello kitty"); 
-	 * </code>
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param param
-	 *            参数
-	 * @return 受影响的行数
-	 */
-	public int update(String sql, Object param) {
-		return update(sql, new Object[] { param });
-	}
-
-	/**
-	 * 执行sql语句
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param params
-	 *            参数数组
-	 * @return 受影响的行数
-	 */
-	public int update(String sql, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		int affectedRows = 0;
-		try {
-			if (params == null) {
-				affectedRows = queryRunner.update(sql);
-			} else {
-				affectedRows = queryRunner.update(sql, params);
+			if (queryRunner.update(sql) == DB_SUCC) {
+				return ConstantSystem.SUCCESS;
 			}
 		} catch (SQLException e) {
 			logger.error("Error occured while attempting to update data", e);
 		}
-		return affectedRows;
+		return ConstantSystem.FAILED;
 	}
 
 	/**
-	 * 执行批量sql语句
+	 * mostly used method with params.
 	 * 
 	 * @param sql
-	 *            sql语句
-	 * @param params
-	 *            二维参数数组
-	 * @return 受影响的行数的数�?
+	 *            statement for operation [insert,delete,update]
+	 * @return need a convert 1->0
 	 */
-	public int[] batchUpdate(String sql, Object[][] params) {
-		queryRunner = new QueryRunner(dataSource);
-		int[] affectedRows = new int[0];
+
+	public int update(DataSource ds, String sql, Object[] params) {
+		queryRunner = new QueryRunner(ds);
 		try {
-			affectedRows = queryRunner.batch(sql, params);
-		} catch (SQLException e) {
-			logger.error("Error occured while attempting to batch update data", e);
-		}
-		return affectedRows;
-	}
-
-	/**
-	 * 执行查询，将每行的结果保存到�?��Map对象中，然后将所有Map对象保存到List�?
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @return 查询结果
-	 */
-	public List<Map<String, Object>> find(String sql) {
-		return find(sql, null);
-	}
-
-	/**
-	 * 执行查询，将每行的结果保存到�?��Map对象中，然后将所有Map对象保存到List�?
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param param
-	 *            参数
-	 * @return 查询结果
-	 */
-	public List<Map<String, Object>> find(String sql, Object param) {
-		return find(sql, new Object[] { param });
-	}
-
-	/**
-	 * 执行查询，将每行的结果保存到�?��Map对象中，然后将所有Map对象保存到List�?
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param params
-	 *            参数数组
-	 * @return 查询结果
-	 */
-	public List<Map<String, Object>> find(String sql, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		try {
-			if (params == null) {
-				list = (List<Map<String, Object>>) queryRunner.query(sql, new MapListHandler());
-			} else {
-				list = (List<Map<String, Object>>) queryRunner.query(sql, new MapListHandler(), params);
+			if (queryRunner.update(sql, params) == DB_SUCC) {
+				return ConstantSystem.SUCCESS;
 			}
 		} catch (SQLException e) {
-			logger.error("Error occured while attempting to query data", e);
+			logger.error("Error occured while attempting to update data", e);
 		}
-		return list;
+		return ConstantSystem.FAILED;
 	}
 
 	/**
-	 * 执行查询，将每行的结果保存到Bean中，然后将所有Bean保存到List�?
+	 * method for query sigle object.
 	 * 
-	 * @param entityClass
-	 *            类名
 	 * @param sql
-	 *            sql语句
-	 * @return 查询结果
+	 *            statement for operation [query]
+	 * @param entityClass
+	 *            input a class template
+	 * @return T class template result
 	 */
-	public <T> List<T> find(Class<T> entityClass, String sql) {
-		return find(entityClass, sql, null);
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> T findOne(DataSource ds, String sql, Class<T> entityClass) {
+		queryRunner = new QueryRunner(ds);
+		try {
+			return (T) queryRunner.query(sql, new BeanHandler(entityClass));
+		} catch (SQLException e) {
+			logger.error("Error occured while attempting to update data", e);
+		}
+		return null;
 	}
 
 	/**
-	 * 执行查询，将每行的结果保存到Bean中，然后将所有Bean保存到List�?
+	 * method for query sigle object with params.
 	 * 
-	 * @param entityClass
-	 *            类名
 	 * @param sql
-	 *            sql语句
-	 * @param param
-	 *            参数
-	 * @return 查询结果
-	 */
-	public <T> List<T> find(Class<T> entityClass, String sql, Object param) {
-		return find(entityClass, sql, new Object[] { param });
-	}
-
-	/**
-	 * 执行查询，将每行的结果保存到Bean中，然后将所有Bean保存到List�?
-	 * 
+	 *            statement for operation [query]
 	 * @param entityClass
-	 *            类名
-	 * @param sql
-	 *            sql语句
+	 *            input a class template
 	 * @param params
-	 *            参数数组
-	 * @return 查询结果
+	 *            for condition of the T
+	 * 
+	 * @return T class template result
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T> List<T> find(Class<T> entityClass, String sql, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		List<T> list = new ArrayList<T>();
+	public <T> T findOne(DataSource ds, String sql, Class<T> entityClass, Object[] params) {
+		queryRunner = new QueryRunner(ds);
 		try {
-			if (params == null) {
-				list = (List<T>) queryRunner.query(sql, new BeanListHandler(entityClass));
-			} else {
-				list = (List<T>) queryRunner.query(sql, new BeanListHandler(entityClass), params);
-			}
+			return (T) queryRunner.query(sql, new BeanHandler(entityClass), params);
 		} catch (SQLException e) {
-			logger.error("Error occured while attempting to query data", e);
+			logger.error("Error occured while attempting to update data", e);
 		}
-		return list;
+		return null;
 	}
 
 	/**
-	 * 查询出结果集中的第一条记录，并封装成对象
+	 * method for query a list of object.
 	 * 
-	 * @param entityClass
-	 *            类名
 	 * @param sql
-	 *            sql语句
-	 * @return 对象
+	 *            statement for operation [query]
+	 * @param entityClass
+	 *            input a class template
+	 * @return T class template result
 	 */
-	public <T> T findFirst(Class<T> entityClass, String sql) {
-		return findFirst(entityClass, sql, null);
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> List<T> findList(DataSource ds, String sql, Class<T> entityClass) {
+		queryRunner = new QueryRunner(ds);
+		try {
+			return queryRunner.query(sql, new BeanListHandler(entityClass));
+		} catch (SQLException e) {
+			logger.error("Error occured while attempting to update data", e);
+		}
+		return null;
 	}
 
 	/**
-	 * 查询出结果集中的第一条记录，并封装成对象
+	 * method for query a list of object with params.
 	 * 
-	 * @param entityClass
-	 *            类名
 	 * @param sql
-	 *            sql语句
-	 * @param param
-	 *            参数
-	 * @return 对象
-	 */
-	public <T> T findFirst(Class<T> entityClass, String sql, Object param) {
-		return findFirst(entityClass, sql, new Object[] { param });
-	}
-
-	/**
-	 * 查询出结果集中的第一条记录，并封装成对象
-	 * 
+	 *            statement for operation [query]
 	 * @param entityClass
-	 *            类名
-	 * @param sql
-	 *            sql语句
+	 *            input a class template
 	 * @param params
-	 *            参数数组
-	 * @return 对象
+	 *            extra params for query
+	 * @return T class template result
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T> T findFirst(Class<T> entityClass, String sql, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		Object object = null;
+	public <T> List<T> findList(DataSource ds, String sql, Class<T> entityClass, Object[] params) {
+		queryRunner = new QueryRunner(ds);
 		try {
-			if (params == null) {
-				object = queryRunner.query(sql, new BeanHandler(entityClass));
-			} else {
-				object = queryRunner.query(sql, new BeanHandler(entityClass), params);
-			}
+			return queryRunner.query(sql, new BeanListHandler(entityClass), params);
 		} catch (SQLException e) {
-			logger.error("Error occured while attempting to query data", e);
+			logger.error("Error occured while attempting to update data", e);
 		}
-		return (T) object;
+		return null;
 	}
 
 	/**
-	 * 查询出结果集中的第一条记录，并封装成Map对象
+	 * method for batch operation with params.
 	 * 
 	 * @param sql
-	 *            sql语句
-	 * @return 封装为Map的对�?
-	 */
-	public Map<String, Object> findFirst(String sql) {
-		return findFirst(sql, null);
-	}
-
-	/**
-	 * 查询出结果集中的第一条记录，并封装成Map对象
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param param
-	 *            参数
-	 * @return 封装为Map的对�?
-	 */
-	public Map<String, Object> findFirst(String sql, Object param) {
-		return findFirst(sql, new Object[] { param });
-	}
-
-	/**
-	 * 查询出结果集中的第一条记录，并封装成Map对象
-	 * 
-	 * @param sql
-	 *            sql语句
+	 *            statement for operation [insert,delete,update]
 	 * @param params
-	 *            参数数组
-	 * @return 封装为Map的对�?
+	 *            extra params for operate
+	 * @return T class template result
 	 */
-
-	public Map<String, Object> findFirst(String sql, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		Map<String, Object> map = null;
+	public int[] batch(DataSource ds, String sql, Object[][] params) {
+		queryRunner = new QueryRunner(ds);
 		try {
-			if (params == null) {
-				map = (Map<String, Object>) queryRunner.query(sql, new MapHandler());
-			} else {
-				map = (Map<String, Object>) queryRunner.query(sql, new MapHandler(), params);
-			}
+			return queryRunner.batch(sql, params);
 		} catch (SQLException e) {
-			logger.error("Error occured while attempting to query data", e);
+			logger.error("Error occured while attempting to update data", e);
 		}
-		return map;
-	}
-	
-	/**
-	 * 查询某一条记录，并将指定列的数据转换为Object
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param columnName
-	 *            列名
-	 * @return 结果对象
-	 */
-	public Object findBy(String sql, String columnName) {
-		return findBy(sql, columnName, null);
+		return null;
 	}
 
 	/**
-	 * 查询某一条记录，并将指定列的数据转换为Object
 	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param columnName
-	 *            列名
-	 * @param param
-	 *            参数
-	 * @return 结果对象
-	 */
-	public Object findBy(String sql, String columnName, Object param) {
-		return findBy(sql, columnName, new Object[] { param });
-	}
-
-	/**
-	 * 查询某一条记录，并将指定列的数据转换为Object
 	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param columnName
-	 *            列名
-	 * @param params
-	 *            参数数组
-	 * @return 结果对象
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object findBy(String sql, String columnName, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		Object object = null;
+	public int getCount(DataSource ds, String sql) {
+		queryRunner = new QueryRunner(ds);
 		try {
-			if (params == null) {
-				object = queryRunner.query(sql, new ScalarHandler(columnName));
-			} else {
-				object = queryRunner.query(sql, new ScalarHandler(columnName), params);
-			}
+			return ((Long) queryRunner.query(sql, new ScalarHandler())).intValue();
 		} catch (SQLException e) {
-			logger.error("Error occured while attempting to query data", e);
+			logger.error("Error occured while attempting to update data", e);
 		}
-		return object;
+		return ConstantSystem.FAILED;
 	}
 
-	/**
-	 * 查询某一条记录，并将指定列的数据转换为Object
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param columnIndex
-	 *            列索引
-	 * @return 结果对象
-	 */
-	public Object findBy(String sql, int columnIndex) {
-		return findBy(sql, columnIndex, null);
-	}
-
-	/**
-	 * 查询某一条记录，并将指定列的数据转换为Object
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param columnIndex
-	 *            列索引
-	 * @param param
-	 *            参数
-	 * @return 结果对象
-	 */
-	public Object findBy(String sql, int columnIndex, Object param) {
-		return findBy(sql, columnIndex, new Object[] { param });
-	}
-
-	/**
-	 * 查询某一条记录，并将指定列的数据转换为Object
-	 * 
-	 * @param sql
-	 *            sql语句
-	 * @param columnIndex
-	 *            列索引
-	 * @param params
-	 *            参数数组
-	 * @return 结果对象
-	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object findBy(String sql, int columnIndex, Object[] params) {
-		queryRunner = new QueryRunner(dataSource);
-		Object object = null;
+	public int getCountByConn(DataSource ds, String sql) {
+		queryRunner = new QueryRunner();
+		Connection conn = null;
 		try {
-			if (params == null) {
-				object = queryRunner.query(sql, new ScalarHandler(columnIndex));
-			} else {
-				object = queryRunner.query(sql, new ScalarHandler(columnIndex), params);
-			}
+			conn = ds.getConnection();
+			return ((Long) queryRunner.query(conn, sql, new ScalarHandler())).intValue();
 		} catch (SQLException e) {
-			logger.error("Error occured while attempting to query data", e);
+			logger.error("Error occured while attempting to update data", e);
+		} finally {
+			// if use conn, it must be close after invoke,or the conn will be
+			// hold and never used by other invoke.
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (Exception e) {
+			}
 		}
-		return object;
+		return ConstantSystem.FAILED;
 	}
+
 }

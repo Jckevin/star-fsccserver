@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.service.client.ClientReqMsgLogicService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -65,7 +65,7 @@ public class SocketClientTcpThread extends Thread {
 					} else {
 						long interval = System.currentTimeMillis() - firsttime;
 						// socket disconnect, thread hold one minute
-						if (interval > ConstantCc.CLT_TIMEOUT_SOCK) {
+						if (interval > ConstantSystem.CLT_TIMEOUT_SOCK) {
 							interrupt();
 							logger.debug("after interrupt ,thread status = {}", Thread.currentThread().getState());
 							// Thread.currentThread().destroy();
@@ -90,7 +90,7 @@ public class SocketClientTcpThread extends Thread {
 					StringBuffer sendBuff = new StringBuffer();
 					BufferedReader is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 					BufferedWriter out = new BufferedWriter(
-							new OutputStreamWriter(clientSocket.getOutputStream(), ConstantCc.CODEC_UTF8));
+							new OutputStreamWriter(clientSocket.getOutputStream(), ConstantSystem.CODEC_UTF8));
 					while ((line = is.readLine()) != null) {
 						if (line.length() > 0) {
 							logger.info("receive client request message : {}", line);

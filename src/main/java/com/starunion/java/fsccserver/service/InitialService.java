@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.po.TerStatusInfo;
 import com.starunion.java.fsccserver.service.client.ProcClientReqQuryCmd;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 import com.starunion.java.fsccserver.util.ServerDataMap;
 
 /**
@@ -40,7 +40,7 @@ public class InitialService {
 	 * @author Lings
 	 */
 	public void initTerInfo() {
-		String res = procQueryCmd.getServTerList();
+		String res = procQueryCmd.getServTerInfoList();
 		String[] parts = res.split("\n");
 		int len = parts.length - 1;
 		String[] subParts = new String[len];
@@ -52,9 +52,9 @@ public class InitialService {
 				String[] subs = p.split("\\|");
 
 				if (subs[4].equals("error/user_not_registered")) {
-					terInfo.setStatus(ConstantCc.TER_STATUS_UNREG);
+					terInfo.setStatus(ConstantSystem.TER_STATUS_UNREG);
 				} else {
-					terInfo.setStatus(ConstantCc.TER_STATUS_REGED);
+					terInfo.setStatus(ConstantSystem.TER_STATUS_REGED);
 				}
 				ServerDataMap.terStatusMap.put(subs[0], terInfo);
 

@@ -9,9 +9,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.starunion.java.fsccserver.dao.MyDbUtilsTemplate;
+import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
 import com.starunion.java.fsccserver.po.freepbx.UserSip;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -19,7 +19,7 @@ import com.starunion.java.fsccserver.util.ConstantCc;
  * 
  */
 @Repository
-public class DaoStarAddrBook extends MyDbUtilsTemplate {
+public class DaoStarAddrBook extends DbUtilsTemplate {
 
 	// public List<DaoStarAddrBook> findAll() {
 	// List<DaoStarAddrBook> list = new ArrayList<DaoStarAddrBook>();
@@ -28,12 +28,12 @@ public class DaoStarAddrBook extends MyDbUtilsTemplate {
 	// return list;
 	// }
 	@Autowired
-	DataSource dsFreecc;
+	DataSource dsStarCc;
 
 	public int add() {
 		String sql = "insert into addr_book (workId,name,workPost,workBranch,mobile,exten) values (?,?,?,?,?,?)";
 		Object[] params = { 1, "凌松", "研发工程师", "研发部", "13811505291", "809" };
-		return update(dsFreecc, sql, params);
+		return update(dsStarCc, sql, params);
 	}
 
 }

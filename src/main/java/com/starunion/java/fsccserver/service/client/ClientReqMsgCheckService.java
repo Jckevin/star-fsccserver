@@ -3,7 +3,7 @@ package com.starunion.java.fsccserver.service.client;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -19,9 +19,9 @@ public class ClientReqMsgCheckService {
 
 	public boolean isRequestMessage(String cmd) {
 		boolean b = false;
-		if (!cmd.contains(ConstantCc.SYS_SPLIT)) {
+		if (!cmd.contains(ConstantSystem.SYS_SPLIT)) {
 			b = false;
-		} else if (cmd.split(ConstantCc.SYS_SPLIT).length < ConstantCc.SYS_REG_MSG_LMT) {
+		} else if (cmd.split(ConstantSystem.SYS_SPLIT).length < ConstantSystem.SYS_REG_MSG_LMT) {
 			b = false;
 		} else {
 			b = true;
@@ -30,9 +30,9 @@ public class ClientReqMsgCheckService {
 	}
 
 	public ClientRequestMessageCc parseRequestMessage(String cmd) {
-		if (cmd.contains(ConstantCc.SYS_SPLIT)) {
-			String[] parts = cmd.split(ConstantCc.SYS_SPLIT);
-			if (cmd.split(ConstantCc.SYS_SPLIT).length < ConstantCc.SYS_REG_MSG_LMT) {
+		if (cmd.contains(ConstantSystem.SYS_SPLIT)) {
+			String[] parts = cmd.split(ConstantSystem.SYS_SPLIT);
+			if (cmd.split(ConstantSystem.SYS_SPLIT).length < ConstantSystem.SYS_REG_MSG_LMT) {
 				return null;
 			} else {
 				ClientRequestMessageCc reqMsg = new ClientRequestMessageCc();

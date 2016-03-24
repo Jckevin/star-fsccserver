@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.beginning.FsCcServer;
 import com.starunion.java.fsccserver.thread.client.CallableFsQueryCmdProc;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -24,7 +24,7 @@ public class ProcClientReqQuryCmd {
 	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqQuryCmd.class);
 
 	@Autowired
-	CallableFsQueryCmdProc task;
+	CallableFsQueryCmdProc procTask;
 
 	public ProcClientReqQuryCmd() {
 
@@ -51,11 +51,11 @@ public class ProcClientReqQuryCmd {
 //	800|default|192.168.8.12|default|sofia/internal/sip:800@192.168.8.166:5060|techsupport|800|800
 //	801|default|192.168.8.12|default|sofia/internal/sip:801@192.168.8.37:5060|techsupport|801|801
 
-	public String getServTerList() {
-		String cmd = "api list_users" + ConstantCc.FS_CMD_TAIL;
+	public String getServTerInfoList() {
+		String cmd = "api list_users" + ConstantSystem.FS_CMD_TAIL;
 		String res = null;
-		task.setSendCmd(cmd);
-		Future<String> result = FsCcServer.executor.submit(task);
+		procTask.setSendCmd(cmd);
+		Future<String> result = FsCcServer.executor.submit(procTask);
 		try {
 			res = result.get(5000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
@@ -94,13 +94,13 @@ public class ProcClientReqQuryCmd {
 	 * @date 2016-03-16
 	 * @author Lings
 	 */
-	public String getCcAgentList(String requester, String callee) {
+	public String getCcAgentInfoList(String requester, String callee) {
 		// :TODO judge requestor whether has permission.
-		String cmd = "api callcenter_config agent list" + ConstantCc.FS_CMD_TAIL;
+		String cmd = "api callcenter_config agent list" + ConstantSystem.FS_CMD_TAIL;
 		StringBuffer buff = new StringBuffer();
 
-		task.setSendCmd(cmd);
-		Future<String> result = FsCcServer.executor.submit(task);
+		procTask.setSendCmd(cmd);
+		Future<String> result = FsCcServer.executor.submit(procTask);
 		try {
 			String res = result.get(5000, TimeUnit.MILLISECONDS);
 			String[] parts = res.split("\n");

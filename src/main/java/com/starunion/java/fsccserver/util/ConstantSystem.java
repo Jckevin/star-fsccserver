@@ -5,7 +5,7 @@ package com.starunion.java.fsccserver.util;
  * @date Feb 25, 2016 10:56:55 AM
  * 
  */
-public class ConstantCc {
+public class ConstantSystem {
 
 	// for the project
 	public final static int TCP_SERV_PORT = 6099;
@@ -41,6 +41,9 @@ public class ConstantCc {
 	public final static String SYS_TAIL_END = "\r\n";
 	// public system API (query)
 	public final static String SYS_QUERY_TER_INFO = "sysQueryTerInfo";
+	public final static String SYS_QUERY_STATISTICS_CALL_INFO = "sysQueryStatisticsCallInfo";
+	public final static String STATISTIC_SESSION = "sessionCount";
+	
 	// public system API (command)
 	public final static String SYS_EXEC_CTD = "sysExecCtd";
 	public final static String SYS_EXEC_MONITOR = "sysExecMonitor";
@@ -66,32 +69,7 @@ public class ConstantCc {
 	public final static String CC_AGENT_SIGN_IN = "1";
 	public final static String CC_AGENT_SIGN_OUT = "2";
 	public final static String CC_AGENT_SIGN_BUSY = "3";
-	
-	// freeswitch cc navie status
 	public final static String FS_AGENT_SIGN_IN = "Available";
 	public final static String FS_AGENT_SIGN_OUT = "Logged Out";
 	public final static String FS_AGENT_SIGN_BREAK = "On Break";
-	public final static String FS_AGENT_TYPE_ONHOOK = "callback";
-	public final static String FS_AGENT_TYPE_OFFHOOK = "uuid-standby";
-	public final static String FS_AGENT_STATUS_IDLE = "Idle";
-	public final static String FS_AGENT_STATUS_WAIT = "Waiting";
-	public final static String FS_AGENT_STATUS_RECV = "Receiving";
-	public final static String FS_AGENT_STATUS_INQUECALL = "In a queue call";
-
-	// for mysql operate result code [dbutils]
-	public final static int DB_SUCCESS = 1;
-	public final static int DB_FAIL_INSERT = -101;
-	public final static int DB_FAIL_BATCH_INSERT = -102;
-
-	// for json result code
-	public final static int LOGIN_NO_USER = -1;
-	public final static int LOGIN_ERR_PWD = -2;
-	public final static int NUMBER_EXISTED = -3;
-
-	// for user add function
-	public final static int TERTYPE_DIS = 0;
-	public final static int TERTYPE_BRO = 1;
-	public final static String PWD_SAME_NAME = "0";
-	public final static String PWD_STATIC_STR = "1";
-
 }

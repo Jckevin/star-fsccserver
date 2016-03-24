@@ -20,7 +20,7 @@ import com.starunion.java.fsccserver.po.freecc.AgentInfo;
 import com.starunion.java.fsccserver.service.LoginAndOutService;
 import com.starunion.java.fsccserver.service.ProcLinuxCommand;
 import com.starunion.java.fsccserver.service.timer.QuartzTaskService;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -57,56 +57,67 @@ public class ClientReqMsgLogicService {
 		ClientRequestMessageCc msg = reqMsgService.parseRequestMessage(reqLine);
 		if (msg != null) {
 			int res = 0;
+			String content = "";
 			logger.debug("receive client request type [{}]", msg.getType());
 			switch (msg.getType()) {
-			case ConstantCc.CC_LOG_IN:
+			case ConstantSystem.CC_LOG_IN:
 				logger.debug("begin process login service");
 				res = loginService.AgentLogin(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, ConstantCc.SUCCESS);
+				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.SUCCESS);
 				break;
-			case ConstantCc.CC_LOG_OUT:
-				rspBuff = makeClientStatusResponse(reqLine, ConstantCc.FAILED);
+			case ConstantSystem.CC_LOG_OUT:
+				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
 				logger.debug("begin process log out service");
 				break;
-			case ConstantCc.SYS_EXEC_CTD:
-				res = reqMsgCmdService.execCmdCTD(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.SYS_EXEC_MONITOR:
-				res = reqMsgCmdService.execCmdMonitor(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.SYS_EXEC_INSERT:
-				res = reqMsgCmdService.execCmdInsert(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.SYS_EXEC_DEMOLITSH:
-				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.SYS_EXEC_BRIDGE:
-				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.SYS_EXEC_INTERCEPT:
-				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.SYS_EXEC_HANGUP:
-				res = reqMsgCmdService.execCmdHangup(msg.getClientId(), msg.getContent());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.SYS_EXEC_RECORD:
-				res = reqMsgCmdService.execCmdRecord(msg.getClientId());
-				rspBuff = makeClientStatusResponse(reqLine, res);
-				break;
-			case ConstantCc.CC_AGENT_SIGN:
+			case ConstantSystem.CC_AGENT_SIGN:
 				res = reqMsgCmdService.execCmdAgentSign(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
-			case ConstantCc.CC_AGENT_QRY:
-				String content = reqMsgQuryCmdService.getCcAgentList(msg.getClientId(), msg.getContent());
+			case ConstantSystem.SYS_EXEC_CTD:
+				res = reqMsgCmdService.execCmdCTD(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantSystem.SYS_EXEC_MONITOR:
+				res = reqMsgCmdService.execCmdMonitor(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantSystem.SYS_EXEC_INSERT:
+				res = reqMsgCmdService.execCmdInsert(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantSystem.SYS_EXEC_DEMOLITSH:
+				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantSystem.SYS_EXEC_BRIDGE:
+				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantSystem.SYS_EXEC_INTERCEPT:
+				res = reqMsgCmdService.execCmdDemolishBridge(msg.getType(), msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantSystem.SYS_EXEC_HANGUP:
+				res = reqMsgCmdService.execCmdHangup(msg.getClientId(), msg.getContent());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			case ConstantSystem.SYS_EXEC_RECORD:
+				res = reqMsgCmdService.execCmdRecord(msg.getClientId());
+				rspBuff = makeClientStatusResponse(reqLine, res);
+				break;
+			/** UP IS EXEC PART, DOWN IS QUERY PART */
+			case ConstantSystem.CC_AGENT_QRY:
+				content = reqMsgQuryCmdService.getCcAgentInfoList(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientContentResponse(content, reqLine);
+				break;
+			case ConstantSystem.SYS_QUERY_STATISTICS_CALL_INFO:
+				int count = procReqSqlService.getCdrSessionCount(msg.getClientId(), msg.getContent());
+				StringBuffer buff = new StringBuffer();
+				buff.append(ConstantSystem.STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(count));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
 				break;
 			case "ccLogina":
 				rspBuff = makeClientStatusResponse(reqLine, procReqSqlService.insertAgentInfo("1", "password", "0"));
@@ -137,12 +148,12 @@ public class ClientReqMsgLogicService {
 				break;
 			default:
 				logger.debug("unknow message type, do nothing...");
-				rspBuff = makeClientStatusResponse(reqLine, ConstantCc.FAILED);
+				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
 				break;
 			}
 			return rspBuff;
 		} else {
-			rspBuff = makeClientStatusResponse(reqLine, ConstantCc.FAILED);
+			rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
 			return rspBuff;
 		}
 
@@ -151,13 +162,13 @@ public class ClientReqMsgLogicService {
 	private StringBuffer makeClientStatusResponse(String buff, int result) {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(buff);
-		nBuff.append(ConstantCc.SYS_SPLIT);
-		if (result == ConstantCc.SUCCESS) {
-			nBuff.append(ConstantCc.SYS_TAIL_SUCC);
-		} else if (result == ConstantCc.FAILED) {
-			nBuff.append(ConstantCc.SYS_TAIL_FAIL);
+		nBuff.append(ConstantSystem.SYS_SPLIT);
+		if (result == ConstantSystem.SUCCESS) {
+			nBuff.append(ConstantSystem.SYS_TAIL_SUCC);
+		} else if (result == ConstantSystem.FAILED) {
+			nBuff.append(ConstantSystem.SYS_TAIL_FAIL);
 		}
-		nBuff.append(ConstantCc.SYS_TAIL_END);
+		nBuff.append(ConstantSystem.SYS_TAIL_END);
 		return nBuff;
 	}
 
@@ -165,13 +176,13 @@ public class ClientReqMsgLogicService {
 		StringBuffer nBuff = new StringBuffer();
 		nBuff.append(content);
 		nBuff.append(request);
-		nBuff.append(ConstantCc.SYS_SPLIT);
+		nBuff.append(ConstantSystem.SYS_SPLIT);
 		if (content.length() > 0) {
-			nBuff.append(ConstantCc.SYS_TAIL_SUCC);
+			nBuff.append(ConstantSystem.SYS_TAIL_SUCC);
 		} else {
-			nBuff.append(ConstantCc.SYS_TAIL_FAIL);
+			nBuff.append(ConstantSystem.SYS_TAIL_FAIL);
 		}
-		nBuff.append(ConstantCc.SYS_TAIL_END);
+		nBuff.append(ConstantSystem.SYS_TAIL_END);
 		return nBuff;
 	}
 

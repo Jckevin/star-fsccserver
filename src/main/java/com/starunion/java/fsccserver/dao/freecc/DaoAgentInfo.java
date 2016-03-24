@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.starunion.java.fsccserver.dao.MyDbUtilsTemplate;
+import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
 import com.starunion.java.fsccserver.po.freecc.AgentInfo;
 
 /**
@@ -21,30 +21,30 @@ import com.starunion.java.fsccserver.po.freecc.AgentInfo;
  */
 
 @Repository
-public class DaoAgentInfo extends MyDbUtilsTemplate {
+public class DaoAgentInfo extends DbUtilsTemplate {
 
 	@Autowired
-	DataSource dsFreecc;
+	DataSource dsStarCc;
 
 	public AgentInfo findBy(String agId) {
 		String sql = "select * from agent_info where agentId = " + agId;
-		return findFirst(dsFreecc, sql, AgentInfo.class);
+		return findOne(dsStarCc, sql, AgentInfo.class);
 	}
 
 	public List<AgentInfo> findAll() {
 		String sql = "select * from agent_info";
-		return findList(dsFreecc, sql, AgentInfo.class);
+		return findList(dsStarCc, sql, AgentInfo.class);
 	}
 
 	public int add(String agId, String agPwd, String agType) {
 		String sql = "insert into agent_info (agentId,agentPwd,agentType) values (?,?,?)";
 		Object[] params = { agId, agPwd, agType };
-		return update(dsFreecc, sql, params);
+		return update(dsStarCc, sql, params);
 	}
 
 	public int delById(String agId) {
 		String sql = "delete from agent_info where agentId = " + agId;
-		return update(dsFreecc, sql);
+		return update(dsStarCc, sql);
 	}
 
 	public int updateAll(String agId, Map<String, String> map) {
@@ -65,7 +65,7 @@ public class DaoAgentInfo extends MyDbUtilsTemplate {
 		sql.append(" where agentId = \"");
 		sql.append(agId);
 		sql.append("\"");
-		return update(dsFreecc, sql.toString());
+		return update(dsStarCc, sql.toString());
 	}
 
 }

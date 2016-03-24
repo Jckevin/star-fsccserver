@@ -16,7 +16,7 @@ import com.starunion.java.fsccserver.beginning.FsCcServer;
 import com.starunion.java.fsccserver.po.TerParkingInfo;
 import com.starunion.java.fsccserver.thread.client.CallableFsExecCmdProc;
 import com.starunion.java.fsccserver.util.ConfigManager;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 import com.starunion.java.fsccserver.util.ServerDataMap;
 
 /**
@@ -53,7 +53,7 @@ public class ProcClientReqExecCmd {
 		buff.append("_");
 		buff.append(timePart[1]);
 		buff.append(".wav");
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 		
 		logger.debug("!!!!!!!!!!!!!!!!!!!!!!!make cmd :{}",buff.toString());
 		taskInt.setSendCmd(buff.toString());
@@ -67,7 +67,7 @@ public class ProcClientReqExecCmd {
 		String uuid = ServerDataMap.terStatusMap.get(callee).getCallUUid();
 		buff.append("bgapi uuid_kill ");
 		buff.append(uuid);
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -80,7 +80,7 @@ public class ProcClientReqExecCmd {
 		buff.append(uuider);
 		buff.append(" ");
 		buff.append(uuidee);
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -95,11 +95,11 @@ public class ProcClientReqExecCmd {
 		ServerDataMap.terParkingMap.put(caller, info);
 
 		buff.append("bgapi originate {origination_caller_id_number=");
-		buff.append(ConstantCc.FS_DEF_NUMBER);
+		buff.append(ConstantSystem.FS_DEF_NUMBER);
 		buff.append("}user/");
 		buff.append(caller);
 		buff.append(" &park");
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -111,13 +111,13 @@ public class ProcClientReqExecCmd {
 		StringBuffer buff = new StringBuffer();
 		String uuid = ServerDataMap.terStatusMap.get(callee).getCallUUid();
 		buff.append("bgapi originate {origination_caller_id_number=");
-		buff.append(ConstantCc.FS_DEF_NUMBER);
+		buff.append(ConstantSystem.FS_DEF_NUMBER);
 		buff.append("}user/");
 		buff.append(caller);
 		buff.append(" \'queue_dtmf:w2@500,eavesdrop:");
 		buff.append(uuid);
 		buff.append("\' inline");
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -128,13 +128,13 @@ public class ProcClientReqExecCmd {
 		StringBuffer buff = new StringBuffer();
 		String uuid = ServerDataMap.terStatusMap.get(callee).getCallUUid();
 		buff.append("bgapi originate {origination_caller_id_number=");
-		buff.append(ConstantCc.FS_DEF_NUMBER);
+		buff.append(ConstantSystem.FS_DEF_NUMBER);
 		buff.append("}user/");
 		buff.append(caller);
 		buff.append(" &eavesdrop(");
 		buff.append(uuid);
 		buff.append(")");
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -144,13 +144,13 @@ public class ProcClientReqExecCmd {
 	public int execCmdCTD(String caller, String callee) {
 		StringBuffer buff = new StringBuffer();
 		buff.append("bgapi originate {origination_caller_id_number=");
-		buff.append(ConstantCc.FS_DEF_NUMBER);
+		buff.append(ConstantSystem.FS_DEF_NUMBER);
 		buff.append("}user/");
 		buff.append(caller);
 		buff.append(" &bridge(user/");
 		buff.append(callee);
 		buff.append(")");
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -163,21 +163,21 @@ public class ProcClientReqExecCmd {
 		buff.append(caller);
 		buff.append(" '");
 		switch (type) {
-		case ConstantCc.CC_AGENT_SIGN_IN:
-			buff.append(ConstantCc.FS_AGENT_SIGN_IN);
+		case ConstantSystem.CC_AGENT_SIGN_IN:
+			buff.append(ConstantSystem.FS_AGENT_SIGN_IN);
 			break;
-		case ConstantCc.CC_AGENT_SIGN_OUT:
-			buff.append(ConstantCc.FS_AGENT_SIGN_OUT);
+		case ConstantSystem.CC_AGENT_SIGN_OUT:
+			buff.append(ConstantSystem.FS_AGENT_SIGN_OUT);
 			break;
-		case ConstantCc.CC_AGENT_SIGN_BUSY:
-			buff.append(ConstantCc.FS_AGENT_SIGN_BREAK);
+		case ConstantSystem.CC_AGENT_SIGN_BUSY:
+			buff.append(ConstantSystem.FS_AGENT_SIGN_BREAK);
 			break;
 		default:
 			logger.error("UNKNOWN sign type {} ,return failed", type);
-			return ConstantCc.FAILED;
+			return ConstantSystem.FAILED;
 		}
 		buff.append("'");
-		buff.append(ConstantCc.FS_CMD_TAIL);
+		buff.append(ConstantSystem.FS_CMD_TAIL);
 
 		taskInt.setSendCmd(buff.toString());
 
@@ -185,7 +185,7 @@ public class ProcClientReqExecCmd {
 	}
 
 	private int getResult(CallableFsExecCmdProc task) {
-		Integer result = ConstantCc.FAILED;
+		Integer result = ConstantSystem.FAILED;
 		Future<Integer> future = FsCcServer.executor.submit(taskInt);
 		try {
 			result = future.get(5000, TimeUnit.MILLISECONDS);

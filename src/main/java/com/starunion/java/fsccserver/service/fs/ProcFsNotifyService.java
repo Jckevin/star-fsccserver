@@ -7,7 +7,7 @@ import com.starunion.java.fsccserver.po.TerParkingInfo;
 import com.starunion.java.fsccserver.po.TerStatusInfo;
 import com.starunion.java.fsccserver.service.client.ProcClientReqExecCmd;
 import com.starunion.java.fsccserver.util.ClientDataMap;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 import com.starunion.java.fsccserver.util.ServerDataMap;
 
 /**
@@ -27,19 +27,19 @@ public class ProcFsNotifyService {
 		String type = terInfo.getType();
 		String uuidCallee = "";
 		String updateId = "";
-		if (type.equals(ConstantCc.SYS_EXEC_DEMOLITSH) || type.equals(ConstantCc.SYS_EXEC_INTERCEPT)) {
+		if (type.equals(ConstantSystem.SYS_EXEC_DEMOLITSH) || type.equals(ConstantSystem.SYS_EXEC_INTERCEPT)) {
 			uuidCallee = ServerDataMap.terStatusMap.get(callee).getPeerUUid();
 			updateId = ServerDataMap.terStatusMap.get(callee).getPeerNumber();
-		} else if (type.equals(ConstantCc.SYS_EXEC_BRIDGE) || type.equals("12")) {
+		} else if (type.equals(ConstantSystem.SYS_EXEC_BRIDGE) || type.equals("12")) {
 			uuidCallee = ServerDataMap.terStatusMap.get(callee).getCallUUid();
 			updateId = callee;
 		}
 
 		int res = procCmd.execCmdUUbridge(uuid, uuidCallee);
 
-		if (res == ConstantCc.SUCCESS) {
-			updateMapTerStatus(id, ConstantCc.TER_STATUS_CONN, uuid, uuidCallee, updateId);
-			updateMapTerStatus(updateId, ConstantCc.TER_STATUS_CONN, uuidCallee, uuid, id);
+		if (res == ConstantSystem.SUCCESS) {
+			updateMapTerStatus(id, ConstantSystem.TER_STATUS_CONN, uuid, uuidCallee, updateId);
+			updateMapTerStatus(updateId, ConstantSystem.TER_STATUS_CONN, uuidCallee, uuid, id);
 		}
 
 	}
@@ -63,12 +63,12 @@ public class ProcFsNotifyService {
 
 	public void makeNotifyTerStatus(String id, String status) throws InterruptedException {
 		StringBuffer buff = new StringBuffer();
-		buff.append(ConstantCc.SYS_NOTIFY_TER_STATUS);
-		buff.append(ConstantCc.SYS_SPLIT);
+		buff.append(ConstantSystem.SYS_NOTIFY_TER_STATUS);
+		buff.append(ConstantSystem.SYS_SPLIT);
 		buff.append(id);
-		buff.append(ConstantCc.SYS_SPLIT);
+		buff.append(ConstantSystem.SYS_SPLIT);
 		buff.append(status);
-		buff.append(ConstantCc.SYS_TAIL_END);
+		buff.append(ConstantSystem.SYS_TAIL_END);
 
 		ClientDataMap.fsNotifySendQueue.put(buff.toString());
 	}

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.dao.freecc.DaoAgentInfo;
 import com.starunion.java.fsccserver.po.freecc.AgentInfo;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -21,8 +21,8 @@ public class LoginAndOutService {
 	public int AgentLogin(String id, String pwd) {
 		AgentInfo agt = daoAgentInfo.findBy(id);
 		if (agt != null && agt.getAgentPwd().equals(pwd)) {
-			return ConstantCc.SUCCESS;
+			return ConstantSystem.SUCCESS;
 		}
-		return ConstantCc.FAILED;
+		return ConstantSystem.FAILED;
 	}
 }

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.service.fs.FsNotifyMsgCheckService;
 import com.starunion.java.fsccserver.util.ConfigManager;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /** 
 * @author Lings  
@@ -38,11 +38,11 @@ public class CallableFsExecCmdProc implements Callable<Integer>{
 
 		@Override
 		public Integer call() throws Exception {
-			int result = ConstantCc.FAILED;
+			int result = ConstantSystem.FAILED;
 			logger.debug("get cmd = {}", sendCmd);
 			try {
 				String ipAddr = ConfigManager.getInstance().getFsAddr();
-				Socket fsClient = new Socket(ipAddr, ConstantCc.FS_SERV_PORT);
+				Socket fsClient = new Socket(ipAddr, ConstantSystem.FS_SERV_PORT);
 
 				BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
 				out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));
@@ -69,8 +69,8 @@ public class CallableFsExecCmdProc implements Callable<Integer>{
 										String[] parts = reply.split(" ");
 										if (parts[1].equals("accepted")) {
 											fsSendCommand(sendCmd);
-										} else if(parts[0].equals(ConstantCc.FS_CMD_SUCC)){
-											result = ConstantCc.SUCCESS;
+										} else if(parts[0].equals(ConstantSystem.FS_CMD_SUCC)){
+											result = ConstantSystem.SUCCESS;
 											break;
 										}
 									} else if (contentType.equals("api/response")) {
@@ -91,8 +91,8 @@ public class CallableFsExecCmdProc implements Callable<Integer>{
 								logger.debug("receive [whole] non-standard response message from FreeSWITCH:======>\n{}",
 										respBuffer.toString());
 								isStandard = true;
-								if(respBuffer.toString().startsWith(ConstantCc.FS_CMD_SUCC)){
-									result = ConstantCc.SUCCESS;
+								if(respBuffer.toString().startsWith(ConstantSystem.FS_CMD_SUCC)){
+									result = ConstantSystem.SUCCESS;
 								}
 								respBuffer.delete(0, respBuffer.length());
 								break;

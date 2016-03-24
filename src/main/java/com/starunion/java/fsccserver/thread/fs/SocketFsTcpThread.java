@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import com.starunion.java.fsccserver.service.fs.FsNotifyMsgCheckService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConfigManager;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -46,7 +46,7 @@ public class SocketFsTcpThread extends Thread {
 		while (true) {
 			try {
 
-				fsClient = new Socket(fsIp, ConstantCc.FS_SERV_PORT);
+				fsClient = new Socket(fsIp, ConstantSystem.FS_SERV_PORT);
 
 				BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
 				out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));
@@ -84,7 +84,7 @@ public class SocketFsTcpThread extends Thread {
 								logger.debug("server disconected, close the fsClient...");
 								fsClient.close();
 								Map<String, String> msg = new HashMap<String, String>();
-								msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.SYS_NOTIFY_SERVER_UNBIND);
+								msg.put(ConstantSystem.FS_EVENT_HEAD, ConstantSystem.SYS_NOTIFY_SERVER_UNBIND);
 								/**
 								 * :TODO Q:why here invoke throw
 								 * interruptedException?
@@ -98,7 +98,7 @@ public class SocketFsTcpThread extends Thread {
 								logger.debug("get content type [{}] WITHOUT process.", contentType);
 							}
 						} else {
-							String eventType = respMap.get(ConstantCc.FS_EVENT_HEAD);
+							String eventType = respMap.get(ConstantSystem.FS_EVENT_HEAD);
 							logger.debug("get a notify message {} put it to blocking queue.", eventType);
 							if (eventType != null && eventType.startsWith("CHANNEL_")) {
 								logger.info("receive notify from FreeSWITCH:======>\n{}", notifyBuffer.toString());
@@ -122,7 +122,7 @@ public class SocketFsTcpThread extends Thread {
 				try {
 					sleep(10000);
 					Map<String, String> msg = new HashMap<String, String>();
-					msg.put(ConstantCc.FS_EVENT_HEAD, ConstantCc.SYS_NOTIFY_SERVER_UNBIND);
+					msg.put(ConstantSystem.FS_EVENT_HEAD, ConstantSystem.SYS_NOTIFY_SERVER_UNBIND);
 					ClientDataMap.fsNotifyRecvQueue.put(msg);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();

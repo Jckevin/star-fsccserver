@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.service.fs.FsNotifyMsgCheckService;
 import com.starunion.java.fsccserver.util.ConfigManager;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
  * @author Lings
@@ -46,7 +46,7 @@ public class CallableFsQueryCmdProc implements Callable<String> {
 		logger.debug("get cmd = {}", sendCmd);
 		try {
 			String ipAddr = ConfigManager.getInstance().getFsAddr();
-			Socket fsClient = new Socket(ipAddr, ConstantCc.FS_SERV_PORT);
+			Socket fsClient = new Socket(ipAddr, ConstantSystem.FS_SERV_PORT);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));

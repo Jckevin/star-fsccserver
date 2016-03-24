@@ -19,7 +19,7 @@ import com.starunion.java.fsccserver.service.LoginAndOutService;
 import com.starunion.java.fsccserver.service.client.ClientReqMsgCheckService;
 import com.starunion.java.fsccserver.thread.client.SocketClientTcpThread;
 import com.starunion.java.fsccserver.util.ClientDataMap;
-import com.starunion.java.fsccserver.util.ConstantCc;
+import com.starunion.java.fsccserver.util.ConstantSystem;
 import com.starunion.java.fsccserver.util.SpringContextUtil;
 
 /*
@@ -45,7 +45,7 @@ public class SocketServerTcpThread extends Thread {
 	public SocketServerTcpThread(String name) {
 		super(name);
 	}
-
+	
 	private void checkThread(String id, Socket clientSocket) {
 		SocketClientTcpThread thread = ClientDataMap.clientThreadMap.get(id);
 
@@ -77,19 +77,19 @@ public class SocketServerTcpThread extends Thread {
 					logger.info("receive request message : {}", line);
 					ClientRequestMessageCc reqMessage = requestCheckService.parseRequestMessage(line);
 					/** check the request message whether standard */
-					if (reqMessage != null && reqMessage.getType().equals(ConstantCc.CC_LOG_IN)) {
+					if (reqMessage != null && reqMessage.getType().equals(ConstantSystem.CC_LOG_IN)) {
 						/** check the login request whether success */
 						if ((loginService.AgentLogin(reqMessage.getClientId(),
-								reqMessage.getContent())) == ConstantCc.SUCCESS) {
+								reqMessage.getContent())) == ConstantSystem.SUCCESS) {
 							BufferedWriter out = new BufferedWriter(
-									new OutputStreamWriter(clientSocket.getOutputStream(), ConstantCc.CODEC_UTF8));
+									new OutputStreamWriter(clientSocket.getOutputStream(), ConstantSystem.CODEC_UTF8));
 							StringBuffer buff = new StringBuffer();
-							buff.append(reqMessage.getType()).append(ConstantCc.SYS_SPLIT);
-							buff.append(reqMessage.getClientId()).append(ConstantCc.SYS_SPLIT);
+							buff.append(reqMessage.getType()).append(ConstantSystem.SYS_SPLIT);
+							buff.append(reqMessage.getClientId()).append(ConstantSystem.SYS_SPLIT);
 							buff.append(reqMessage.getContent());
-							buff.append(ConstantCc.SYS_SPLIT);
-							buff.append(ConstantCc.SYS_TAIL_SUCC);
-							buff.append(ConstantCc.SYS_TAIL_END);
+							buff.append(ConstantSystem.SYS_SPLIT);
+							buff.append(ConstantSystem.SYS_TAIL_SUCC);
+							buff.append(ConstantSystem.SYS_TAIL_END);
 							out.write(buff.toString());
 							out.flush();
 							Socket sock = ClientDataMap.clientSocketMap.get(reqMessage.getClientId());
@@ -158,7 +158,7 @@ public class SocketServerTcpThread extends Thread {
 		try {
 
 			if (serverSocket == null) {
-				serverSocket = new ServerSocket(ConstantCc.TCP_SERV_PORT);
+				serverSocket = new ServerSocket(ConstantSystem.TCP_SERV_PORT);
 			}
 
 			logger.debug("server tcp thread had been started, wait for client binding...");
