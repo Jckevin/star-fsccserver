@@ -5,7 +5,8 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
+import com.starunion.java.fsccserver.dao.DbUtilService;
+import com.starunion.java.fsccserver.dao.DbUtilTemplate;
 
 /**
  * @author Lings
@@ -13,23 +14,11 @@ import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
  * 
  */
 @Service
-public class DaoCallCenterCallInfo extends DbUtilsTemplate {
+public class DaoCallCenterCallInfo extends DbUtilService {
 	@Autowired
 	DataSource dsFreeSs;
 
 	public int getCcCallCount(String dateStart, String dateEnd) {
-		int count = -1;
-		if (dateStart.equals("0") && dateStart.equals("0")) {
-			count = getCount(dsFreeSs, "select count(*) from members");
-		} else {
-			StringBuffer buff = new StringBuffer();
-			buff.append("select count(*) from members where start_stamp > '");
-			buff.append(dateStart);
-			buff.append("' and start_stamp < '");
-			buff.append(dateEnd);
-			buff.append("'");
-			count = getCount(dsFreeSs, buff.toString());
-		}
-		return count;
+		return getCountByTime(dsFreeSs, dateStart, dateEnd, "members");
 	}
 }

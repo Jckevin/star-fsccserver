@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
+import com.starunion.java.fsccserver.dao.DbUtilTemplate;
 import com.starunion.java.fsccserver.po.freecc.AgentInfo;
 
 /**
@@ -21,7 +21,7 @@ import com.starunion.java.fsccserver.po.freecc.AgentInfo;
  */
 
 @Repository
-public class DaoAgentInfo extends DbUtilsTemplate {
+public class DaoAgentInfo extends DbUtilTemplate {
 
 	@Autowired
 	DataSource dsStarCc;

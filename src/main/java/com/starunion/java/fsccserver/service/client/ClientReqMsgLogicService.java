@@ -110,14 +110,23 @@ public class ClientReqMsgLogicService {
 				content = reqMsgQuryCmdService.getCcAgentInfoList(msg.getClientId(), msg.getContent());
 				rspBuff = makeClientContentResponse(content, reqLine);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_CALL_INFO:
+			case ConstantSystem.SYS_QUERY_STATISTICS_SESSION_INFO:
 				int count = procReqSqlService.getCdrSessionCount(msg.getClientId(), msg.getContent());
 				StringBuffer buff = new StringBuffer();
-				buff.append(ConstantSystem.STATISTIC_SESSION);
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
 				buff.append(ConstantSystem.SYS_SPLIT);
 				buff.append(Integer.toString(count));
 				buff.append("\n");
 				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				break;
+			case ConstantSystem.SYS_QUERY_STATISTICS_AGENT_SESSION_INFO:
+//				int count = procReqSqlService.getCdrSessionCount(msg.getClientId(), msg.getContent());
+//				StringBuffer buff = new StringBuffer();
+//				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+//				buff.append(ConstantSystem.SYS_SPLIT);
+//				buff.append(Integer.toString(count));
+//				buff.append("\n");
+//				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
 				break;
 			case "ccLogina":
 				rspBuff = makeClientStatusResponse(reqLine, procReqSqlService.insertAgentInfo("1", "password", "0"));

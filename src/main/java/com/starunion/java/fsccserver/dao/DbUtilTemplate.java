@@ -22,12 +22,12 @@ import com.starunion.java.fsccserver.util.ConstantSystem;
  * 
  */
 @Repository
-public class DbUtilsTemplate {
+public class DbUtilTemplate {
 	private QueryRunner queryRunner;
 	private final static int DB_SUCC = 1;
-	private static final Logger logger = LoggerFactory.getLogger(DbUtilsTemplate.class);
+	private static final Logger logger = LoggerFactory.getLogger(DbUtilTemplate.class);
 
-	public DbUtilsTemplate() {
+	public DbUtilTemplate() {
 
 	}
 
@@ -178,7 +178,7 @@ public class DbUtilsTemplate {
 	}
 
 	/**
-	 * 
+	 * getCount need ScalarHandler return columns info
 	 * 
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -192,6 +192,9 @@ public class DbUtilsTemplate {
 		return ConstantSystem.FAILED;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public int getCountByConn(DataSource ds, String sql) {
 		queryRunner = new QueryRunner();

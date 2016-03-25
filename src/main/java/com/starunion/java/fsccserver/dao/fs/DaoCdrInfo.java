@@ -5,7 +5,8 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
+import com.starunion.java.fsccserver.dao.DbUtilService;
+import com.starunion.java.fsccserver.dao.DbUtilTemplate;
 import com.starunion.java.fsccserver.po.fs.CdrInfo;
 
 /**
@@ -15,26 +16,22 @@ import com.starunion.java.fsccserver.po.fs.CdrInfo;
  */
 
 @Repository
-public class DaoCdrInfo extends DbUtilsTemplate {
+public class DaoCdrInfo extends DbUtilService {
 	@Autowired
 	DataSource dsFreeSs;
 
-	public int getSessionCount(String dateStart, String dateEnd) {
-		int count = -1;
-		if (dateStart.equals("0") && dateStart.equals("0")) {
-			count = getCount(dsFreeSs, "select count(*) from cdr");
-		} else {
-			StringBuffer buff = new StringBuffer();
-			buff.append("select count(*) from cdr where start_stamp > '");
-			buff.append(dateStart);
-			buff.append("' and start_stamp < '");
-			buff.append(dateEnd);
-			buff.append("'");
-			count = getCount(dsFreeSs, buff.toString());
-		}
-		return count;
+	public int getCdrSessionCountAll() {
+		return getCountAll(dsFreeSs, "cdr");
 	}
 
+	public int getCdrSessionCountByTime(String dateStart, String dateEnd) {
+		return getCountByTime(dsFreeSs, dateStart, dateEnd, "cdr");
+	}
+
+	public int getCdrSessionCountByTimeAgent(String dateStart, String dateEnd,String agent ) {
+		return getCountByTime(dsFreeSs, dateStart, dateEnd, "cdr");
+	}
+	
 	public CdrInfo findBy(String agId) {
 		String sql = "select * from cdr where hangup_cause = NORMAL_CLEARING";
 		return findOne(dsFreeSs, sql, CdrInfo.class);

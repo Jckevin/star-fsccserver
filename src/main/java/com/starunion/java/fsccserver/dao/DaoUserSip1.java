@@ -13,7 +13,7 @@ import com.starunion.java.fsccserver.po.freepbx.UserSip;
  * 
  */
 @Repository
-public class DaoUserSip1 extends DbUtilsTemplate {
+public class DaoUserSip1 extends DbUtilTemplate {
 
 	// public DaoUserSip1(){
 	//

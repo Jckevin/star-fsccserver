@@ -38,12 +38,14 @@ public class ProcClientReqSql {
 
 	}
 
-	public int getCdrSessionCount(String start, String end) {
-		if (start.equals("0") && end.equals("0")) {
-			return daoCdrInfo.getSessionCount(start, end);
+	public int getCdrSessionCount(String id, String content) {
+		//:TODO check the id permission
+		String[] body = content.split("\\|");
+		if (body[0].equals("0") && body[1].equals("0")) {
+			return daoCdrInfo.getCdrSessionCountAll();
 		} else {
-			return daoCdrInfo.getSessionCount(timeStringService.String2TimestampFormat(start),
-					timeStringService.String2TimestampFormat(end));
+			return daoCdrInfo.getCdrSessionCountByTime(timeStringService.String2TimestampFormat(body[0]),
+					timeStringService.String2TimestampFormat(body[1]));
 		}
 
 	}

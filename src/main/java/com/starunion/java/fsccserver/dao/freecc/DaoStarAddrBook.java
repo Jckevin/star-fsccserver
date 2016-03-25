@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.starunion.java.fsccserver.dao.DbUtilsTemplate;
+import com.starunion.java.fsccserver.dao.DbUtilTemplate;
 import com.starunion.java.fsccserver.po.freepbx.UserSip;
 import com.starunion.java.fsccserver.util.ConstantSystem;
 
@@ -19,7 +19,7 @@ import com.starunion.java.fsccserver.util.ConstantSystem;
  * 
  */
 @Repository
-public class DaoStarAddrBook extends DbUtilsTemplate {
+public class DaoStarAddrBook extends DbUtilTemplate {
 
 	// public List<DaoStarAddrBook> findAll() {
 	// List<DaoStarAddrBook> list = new ArrayList<DaoStarAddrBook>();
