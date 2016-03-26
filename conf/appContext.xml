@@ -33,7 +33,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/freecc" />
 		<property name="username" value="root" />
-		<property name="password" value="123456" />
+		<property name="password" value="" />
 		<property name="initialSize" value="1" />
 		<property name="maxTotal" value="10" />
 		<property name="maxIdle" value="3" />

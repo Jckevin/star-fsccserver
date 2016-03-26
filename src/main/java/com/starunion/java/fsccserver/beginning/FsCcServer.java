@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.starunion.java.fsccserver.thread.SocketServerTcpJsonThread;
 import com.starunion.java.fsccserver.thread.SocketServerTcpThread;
 import com.starunion.java.fsccserver.util.ConfigManager;
 import com.starunion.java.fsccserver.thread.fs.SocketFsTcpThread;
@@ -56,28 +57,29 @@ public class FsCcServer {
 
 		/** start TCP socket(server) for clients. */
 		Thread serverThread = new Thread(
-				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
+				applicationContext.getBean("socketServerTcpJsonThread", SocketServerTcpJsonThread.class));
+//				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
 		serverThread.setName("CcServerThread");
 		serverThread.start();
 
 		/** start FS binding socket for subscribe. */
 		Thread fsThread = new Thread(applicationContext.getBean("socketFsTcpThread", SocketFsTcpThread.class));
 		fsThread.setName("FsSocketThread");
-		fsThread.start();
+//		fsThread.start();
 
 		/** start FS Notify receive thread. */
 		Thread fsNotifyThread = new Thread(applicationContext.getBean("threadFsNotifyProc", ThreadFsNotifyProc.class));
 		fsNotifyThread.setName("FsNotifyRecvThread");
-		fsNotifyThread.start();
+//		fsNotifyThread.start();
 
 		/** start FS Notify send thread. */
 		Thread fsNotifySendThread = new Thread(
 				applicationContext.getBean("threadNotifySendToClient", ThreadNotifySendToClient.class));
 		fsNotifySendThread.setName("FsNotifySendThread");
-		fsNotifySendThread.start();
+//		fsNotifySendThread.start();
 
 		/** initial server terminal info */
 		InitialService initServ = applicationContext.getBean("initialService", InitialService.class);
-		initServ.initTerInfo();
+//		initServ.initTerInfo();
 	}
 }

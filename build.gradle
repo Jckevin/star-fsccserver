@@ -1,3 +1,4 @@
+apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -11,17 +12,14 @@ dependencies {
     compile 'commons-dbutils:commons-dbutils:1.6'
     compile 'org.quartz-scheduler:quartz:2.2.1'
     compile 'mysql:mysql-connector-java:5.1.35'
+    compile 'com.google.code.gson:gson:2.6.2'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.5'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.5'
     compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.5'
 }
 
-jar {                                                                                                                                                        
-    from {configurations.compile.collect {it.isDirectory()?it:zipTree(it)}}
-    manifest {
-        attributes 'Main-Class':'com.starunion.jee.fsdiserver.astart.FsDiserver'
-    }   
-}
+mainClassName = 'com.starunion.java.fsccserver.beginning.FsCcServer'
+
 task copyXml(type: Copy){                                                                                                                                    
     from 'conf/log4j2.xml'
     from 'conf/context.xml'

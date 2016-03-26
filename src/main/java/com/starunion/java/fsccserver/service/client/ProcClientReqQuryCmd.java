@@ -94,7 +94,7 @@ public class ProcClientReqQuryCmd {
 	 * @date 2016-03-16
 	 * @author Lings
 	 */
-	public String getCcAgentInfoList(String requester, String callee) {
+	public String getCcAgentInfoList(String requester) {
 		// :TODO judge requestor whether has permission.
 		String cmd = "api callcenter_config agent list" + ConstantSystem.FS_CMD_TAIL;
 		StringBuffer buff = new StringBuffer();

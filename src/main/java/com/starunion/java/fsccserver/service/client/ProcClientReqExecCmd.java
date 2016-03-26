@@ -61,7 +61,7 @@ public class ProcClientReqExecCmd {
 		return getResult(taskInt);
 	}
 	
-	public int execCmdHangup(String caller, String callee) {
+	public int execCmdHangup(String callee) {
 		//check wether the caller has the permission.
 		StringBuffer buff = new StringBuffer();
 		String uuid = ServerDataMap.terStatusMap.get(callee).getCallUUid();

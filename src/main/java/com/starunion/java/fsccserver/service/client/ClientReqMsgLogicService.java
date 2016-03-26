@@ -98,7 +98,7 @@ public class ClientReqMsgLogicService {
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantSystem.SYS_EXEC_HANGUP:
-				res = reqMsgCmdService.execCmdHangup(msg.getClientId(), msg.getContent());
+				res = reqMsgCmdService.execCmdHangup(msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantSystem.SYS_EXEC_RECORD:
@@ -107,7 +107,7 @@ public class ClientReqMsgLogicService {
 				break;
 			/** UP IS EXEC PART, DOWN IS QUERY PART */
 			case ConstantSystem.CC_AGENT_QRY:
-				content = reqMsgQuryCmdService.getCcAgentInfoList(msg.getClientId(), msg.getContent());
+				content = reqMsgQuryCmdService.getCcAgentInfoList(msg.getClientId());
 				rspBuff = makeClientContentResponse(content, reqLine);
 				break;
 			case ConstantSystem.SYS_QUERY_STATISTICS_SESSION_INFO:
