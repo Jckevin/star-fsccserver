@@ -36,10 +36,10 @@ public class SocketClientTcpThread extends Thread {
 
 	private Socket clientSocket;
 	private String clientId;
-//	@Autowired
-//	ClientReqMsgLogicService clientReqService;
 	@Autowired
-	ClientReqJsonMsgLogicService clientReqService;
+	ClientReqMsgLogicService clientReqService;
+//	@Autowired
+//	ClientReqJsonMsgLogicService clientReqJsonService;
 
 	private long firsttime = 0;
 	private boolean isFrist = true;
@@ -90,7 +90,7 @@ public class SocketClientTcpThread extends Thread {
 					}
 
 					String line = null;
-					StringBuffer sendBuff = new StringBuffer();
+					String response = null;
 					BufferedReader is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 					BufferedWriter out = new BufferedWriter(
 							new OutputStreamWriter(clientSocket.getOutputStream(), ConstantSystem.CODEC_UTF8));
@@ -99,11 +99,12 @@ public class SocketClientTcpThread extends Thread {
 							logger.info("receive client request message : {}", line);
 							// RequestClientService reqClientService = new
 							// RequestClientService();
-							sendBuff = clientReqService.procClientRequest(line);
-							out.write(sendBuff.toString());
+							response = clientReqService.procClientRequest(line);
+//							response = clientReqJsonService.procClientRequest(line);
+							out.write(response);
 							out.flush();
-							logger.info("send client response message : {}", sendBuff.toString());
-							sendBuff.delete(0, sendBuff.length());
+							logger.info("send client response message : {}", response);
+							response = null;
 						} else {
 							logger.debug("get special characters like [\\r][\\n] etc, drop it.");
 						}

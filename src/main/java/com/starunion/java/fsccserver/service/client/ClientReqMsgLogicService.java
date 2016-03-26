@@ -51,7 +51,7 @@ public class ClientReqMsgLogicService {
 
 	}
 
-	public StringBuffer procClientRequest(String reqLine) {
+	public String procClientRequest(String reqLine) {
 		StringBuffer rspBuff = new StringBuffer();
 
 		ClientRequestMessageCc msg = reqMsgService.parseRequestMessage(reqLine);
@@ -160,10 +160,10 @@ public class ClientReqMsgLogicService {
 				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
 				break;
 			}
-			return rspBuff;
+			return rspBuff.toString();
 		} else {
 			rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
-			return rspBuff;
+			return rspBuff.toString();
 		}
 
 	}

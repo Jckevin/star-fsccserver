@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.msg.MsgBase;
+import com.starunion.java.fsccserver.msg.RspMsgBase;
 import com.starunion.java.fsccserver.msg.cc.ReqMsgCcSign;
 import com.starunion.java.fsccserver.msg.fs.ReqMsgSysCallSatistics;
 import com.starunion.java.fsccserver.msg.fs.ReqMsgSysGenCall;
@@ -17,6 +18,7 @@ import com.starunion.java.fsccserver.msg.fs.ReqMsgSysGenOper;
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
 import com.starunion.java.fsccserver.po.freecc.AgentInfo;
 import com.starunion.java.fsccserver.service.LoginAndOutService;
+import com.starunion.java.fsccserver.service.JsonMsgService;
 import com.starunion.java.fsccserver.service.ProcLinuxCommand;
 import com.starunion.java.fsccserver.service.timer.QuartzTaskService;
 import com.starunion.java.fsccserver.util.ConstantSystem;
@@ -33,13 +35,15 @@ public class ClientReqJsonMsgLogicService {
 	@Autowired
 	LoginAndOutService loginService;
 	@Autowired
-	ClientReqJsonMsgParseService reqMsgParse;
+	JsonMsgService reqMsgParse;
 	@Autowired
 	ProcClientReqExecCmd reqMsgCmdService;
 	@Autowired
 	ProcClientReqQuryCmd reqMsgQuryCmdService;
 	@Autowired
 	ProcClientReqSql procReqSqlService;
+	@Autowired
+	JsonMsgService jsonService;
 	@Autowired
 	private QuartzTaskService timerTask;
 	@Autowired
@@ -49,9 +53,9 @@ public class ClientReqJsonMsgLogicService {
 
 	}
 
-	public StringBuffer procClientRequest(String reqLine) {
-		StringBuffer rspBuff = new StringBuffer();
-		MsgBase msgBase = reqMsgParse.parseObj(reqLine, MsgBase.class);
+	public String procClientRequest(String reqLine) {
+		String rspBuff = null;
+		MsgBase msgBase = reqMsgParse.convToObj(reqLine, MsgBase.class);
 		if (msgBase != null) {
 			int res = 0;
 			String content = "";
@@ -59,61 +63,61 @@ public class ClientReqJsonMsgLogicService {
 			logger.debug("receive client request type [{}]", msgBase.getMsgType());
 			switch (msgBase.getMsgType()) {
 			case ConstantSystem.CC_LOG_OUT:
-				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
+//				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
 				logger.debug("begin process log out service");
 				break;
 			case ConstantSystem.CC_AGENT_SIGN:
-				ReqMsgCcSign msgCcSign = reqMsgParse.parseObj(reqLine, ReqMsgCcSign.class);
+				ReqMsgCcSign msgCcSign = reqMsgParse.convToObj(reqLine, ReqMsgCcSign.class);
 				res = reqMsgCmdService.execCmdAgentSign(msgCcSign.getCaller(), msgCcSign.getStatus());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_CTD:
-				msg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenCall.class);
+				msg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenCall.class);
 				res = reqMsgCmdService.execCmdCTD(msg.getCaller(), msg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_MONITOR:
-				msg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenCall.class);
+				msg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenCall.class);
 				res = reqMsgCmdService.execCmdMonitor(msg.getCaller(), msg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_INSERT:
-				msg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenCall.class);
+				msg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenCall.class);
 				res = reqMsgCmdService.execCmdInsert(msg.getCaller(), msg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_DEMOLITSH:
-				msg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenCall.class);
+				msg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenCall.class);
 				res = reqMsgCmdService.execCmdDemolishBridge(msg.getMsgType(), msg.getCaller(), msg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_BRIDGE:
-				msg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenCall.class);
+				msg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenCall.class);
 				res = reqMsgCmdService.execCmdDemolishBridge(msg.getMsgType(), msg.getCaller(), msg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_INTERCEPT:
-				msg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenCall.class);
+				msg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenCall.class);
 				res = reqMsgCmdService.execCmdDemolishBridge(msg.getMsgType(), msg.getCaller(), msg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_HANGUP:
-				ReqMsgSysGenOper hangupMsg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenOper.class);
+				ReqMsgSysGenOper hangupMsg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenOper.class);
 				res = reqMsgCmdService.execCmdHangup(hangupMsg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_EXEC_RECORD:
-				ReqMsgSysGenOper recordMsg = reqMsgParse.parseObj(reqLine, ReqMsgSysGenOper.class);
+				ReqMsgSysGenOper recordMsg = reqMsgParse.convToObj(reqLine, ReqMsgSysGenOper.class);
 				res = reqMsgCmdService.execCmdRecord(recordMsg.getCallee());
-				rspBuff = makeClientStatusResponse(reqLine, res);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			/** UP IS EXEC PART, DOWN IS QUERY PART */
 			case ConstantSystem.CC_AGENT_QRY:
 				content = reqMsgQuryCmdService.getCcAgentInfoList(msgBase.getClientId());
-				rspBuff = makeClientContentResponse(content, reqLine);
+				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
 			case ConstantSystem.SYS_QUERY_STATISTICS_SESSION_INFO:
-				ReqMsgSysCallSatistics msgCallSatis = reqMsgParse.parseObj(reqLine, ReqMsgSysCallSatistics.class);
+				ReqMsgSysCallSatistics msgCallSatis = reqMsgParse.convToObj(reqLine, ReqMsgSysCallSatistics.class);
 				int count = procReqSqlService.getCdrSessionCount(msgCallSatis.getTimeStart(),
 						msgCallSatis.getTimeEnd());
 				StringBuffer buff = new StringBuffer();
@@ -121,7 +125,7 @@ public class ClientReqJsonMsgLogicService {
 				buff.append(ConstantSystem.SYS_SPLIT);
 				buff.append(Integer.toString(count));
 				buff.append("\n");
-				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+//				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
 				break;
 			case ConstantSystem.SYS_QUERY_STATISTICS_AGENT_SESSION_INFO:
 
@@ -129,15 +133,27 @@ public class ClientReqJsonMsgLogicService {
 
 			default:
 				logger.debug("unknow message type, do nothing...");
-				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
+				rspBuff = "unkown message\n";
 				break;
 			}
 			return rspBuff;
 		} else {
-			rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);
+			rspBuff = makeClientMsgJsonResp(msgBase, -1);
 			return rspBuff;
 		}
 
+	}
+
+	private String makeClientMsgJsonResp(MsgBase msg, int res) {
+		RspMsgBase msgRsp = new RspMsgBase();
+		msgRsp.setMsgType(msg.getMsgType());
+		msgRsp.setMsgId(msg.getMsgId());
+		msgRsp.setClientId(msg.getClientId());
+		msgRsp.setRspCode(res);
+		if (res == ConstantSystem.SUCCESS) {
+			msgRsp.setRspReason("success");
+		}
+		return jsonService.convToJString(msgRsp);
 	}
 
 	private StringBuffer makeClientStatusResponse(String buff, int result) {

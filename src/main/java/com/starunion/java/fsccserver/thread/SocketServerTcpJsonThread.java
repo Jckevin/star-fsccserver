@@ -21,6 +21,7 @@ import com.starunion.java.fsccserver.msg.cc.ReqMsgCcLogin;
 import com.starunion.java.fsccserver.po.ClientRequestMessageCc;
 import com.starunion.java.fsccserver.service.LoginAndOutService;
 import com.starunion.java.fsccserver.service.client.ClientReqMsgCheckService;
+import com.starunion.java.fsccserver.thread.client.SocketClientTcpJsonThread;
 import com.starunion.java.fsccserver.thread.client.SocketClientTcpThread;
 import com.starunion.java.fsccserver.util.ClientDataMap;
 import com.starunion.java.fsccserver.util.ConstantSystem;
@@ -49,13 +50,13 @@ public class SocketServerTcpJsonThread extends Thread {
 			logger.info("THREAD for the client is NOT EXISTED, create NEW THREAD.");
 			// TcpClientSocketThread clientThread = new
 			// TcpClientSocketThread(id,clientSocket);
-			SocketClientTcpThread clientThread = SpringContextUtil.getApplicationContext()
-					.getBean("socketClientTcpThread", SocketClientTcpThread.class);
+			SocketClientTcpJsonThread clientThread = SpringContextUtil.getApplicationContext()
+					.getBean("socketClientTcpJsonThread", SocketClientTcpJsonThread.class);
 			clientThread.setClientId(id);
 			clientThread.setName("CcClientThread-" + id);
 			clientThread.setClientSocket(clientSocket);
 			clientThread.start();
-			ClientDataMap.clientThreadMap.put(id, clientThread);
+			ClientDataMap.clientThreadJsonMap.put(id, clientThread);
 
 		} else {
 			logger.info("THREAD for the client is EXISTED, change the relation SOCKET info.");

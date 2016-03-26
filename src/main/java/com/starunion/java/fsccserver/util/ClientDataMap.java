@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.starunion.java.fsccserver.po.ClientStatusInfo;
+import com.starunion.java.fsccserver.thread.client.SocketClientTcpJsonThread;
 import com.starunion.java.fsccserver.thread.client.SocketClientTcpThread;
 
 /**
@@ -43,6 +44,7 @@ public class ClientDataMap {
 	 * @param value: TcpClientSocketThread
 	 */
 	public static ConcurrentHashMap<String, SocketClientTcpThread> clientThreadMap = new ConcurrentHashMap<String, SocketClientTcpThread>(0);
+	public static ConcurrentHashMap<String, SocketClientTcpJsonThread> clientThreadJsonMap = new ConcurrentHashMap<String, SocketClientTcpJsonThread>(0);
 //	public static ConcurrentHashMap<String, Thread> clientThreadMap = new ConcurrentHashMap<String, Thread>(0);
 
 	/**
