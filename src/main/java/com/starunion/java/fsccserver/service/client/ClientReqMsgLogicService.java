@@ -102,7 +102,7 @@ public class ClientReqMsgLogicService {
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			case ConstantSystem.SYS_EXEC_RECORD:
-				res = reqMsgCmdService.execCmdRecord(msg.getClientId());
+				res = reqMsgCmdService.execCmdRecord(msg.getContent());
 				rspBuff = makeClientStatusResponse(reqLine, res);
 				break;
 			/** UP IS EXEC PART, DOWN IS QUERY PART */
@@ -110,8 +110,8 @@ public class ClientReqMsgLogicService {
 				content = reqMsgQuryCmdService.getCcAgentInfoList(msg.getClientId());
 				rspBuff = makeClientContentResponse(content, reqLine);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_SESSION_INFO:
-				int count = procReqSqlService.getCdrSessionCount(msg.getClientId(), msg.getContent());
+			case ConstantSystem.SYS_QUERY_STATISTICS_ALL:
+				int count = procReqSqlService.getCdrSessionCount(msg.getContent());
 				StringBuffer buff = new StringBuffer();
 				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
 				buff.append(ConstantSystem.SYS_SPLIT);
@@ -119,14 +119,18 @@ public class ClientReqMsgLogicService {
 				buff.append("\n");
 				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_AGENT_SESSION_INFO:
-//				int count = procReqSqlService.getCdrSessionCount(msg.getClientId(), msg.getContent());
-//				StringBuffer buff = new StringBuffer();
-//				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
-//				buff.append(ConstantSystem.SYS_SPLIT);
-//				buff.append(Integer.toString(count));
-//				buff.append("\n");
-//				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+			case ConstantSystem.SYS_QUERY_STATISTICS_CALLID:
+				/** type:requester:agentId|startTime|endTime */
+				// int count =
+				// procReqSqlService.getCdrSessionCount(msg.getClientId(),
+				// msg.getContent());
+				// StringBuffer buff = new StringBuffer();
+				// buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				// buff.append(ConstantSystem.SYS_SPLIT);
+				// buff.append(Integer.toString(count));
+				// buff.append("\n");
+				// rspBuff = makeClientContentResponse(buff.toString(),
+				// reqLine);
 				break;
 			case "ccLogina":
 				rspBuff = makeClientStatusResponse(reqLine, procReqSqlService.insertAgentInfo("1", "password", "0"));

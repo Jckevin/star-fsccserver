@@ -56,15 +56,15 @@ public class FsCcServer {
 		configManager.getInstance().setConfigurationPath("conf/appParams.conf");
 
 		/** start TCP socket(server) for clients. */
-		Thread serverJsonThread = new Thread(
-				applicationContext.getBean("socketServerTcpJsonThread", SocketServerTcpJsonThread.class));
-		serverJsonThread.setName("CcServerJsonThread");
-		serverJsonThread.start();
+//		Thread serverJsonThread = new Thread(
+//				applicationContext.getBean("socketServerTcpJsonThread", SocketServerTcpJsonThread.class));
+//		serverJsonThread.setName("CcServerJsonThread");
+//		serverJsonThread.start();
 		
-//		Thread serverThread = new Thread(
-//				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
-//		serverThread.setName("CcServerThread");
-//		serverThread.start();
+		Thread serverThread = new Thread(
+				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
+		serverThread.setName("CcServerThread");
+		serverThread.start();
 		
 		/** start FS binding socket for subscribe. */
 		Thread fsThread = new Thread(applicationContext.getBean("socketFsTcpThread", SocketFsTcpThread.class));

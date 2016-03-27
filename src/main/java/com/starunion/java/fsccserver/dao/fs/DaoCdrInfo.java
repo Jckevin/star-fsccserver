@@ -24,14 +24,20 @@ public class DaoCdrInfo extends DbUtilService {
 		return getCountAll(dsFreeSs, "cdr");
 	}
 
+	public int getCdrSessionCountByAgentId(String agentId) {
+		String condition = "agentId=" + agentId;
+		return getCountAllByCondition(dsFreeSs, "cdr", condition);
+	}
+
 	public int getCdrSessionCountByTime(String dateStart, String dateEnd) {
 		return getCountByTime(dsFreeSs, dateStart, dateEnd, "cdr");
 	}
 
-	public int getCdrSessionCountByTimeAgent(String dateStart, String dateEnd,String agent ) {
-		return getCountByTime(dsFreeSs, dateStart, dateEnd, "cdr");
+	public int getCdrSessionCountByTimeAgent(String dateStart, String dateEnd, String agentId) {
+		String condition = "agentId=" + agentId;
+		return getCountByTimeCondition(dsFreeSs, dateStart, dateEnd, "cdr",condition);
 	}
-	
+
 	public CdrInfo findBy(String agId) {
 		String sql = "select * from cdr where hangup_cause = NORMAL_CLEARING";
 		return findOne(dsFreeSs, sql, CdrInfo.class);

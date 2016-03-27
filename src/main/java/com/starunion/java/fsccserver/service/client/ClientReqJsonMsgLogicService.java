@@ -41,7 +41,7 @@ public class ClientReqJsonMsgLogicService {
 	@Autowired
 	ProcClientReqQuryCmd reqMsgQuryCmdService;
 	@Autowired
-	ProcClientReqSql procReqSqlService;
+	ProcClientReqSqlJson procReqSqlService;
 	@Autowired
 	JsonMsgService jsonService;
 	@Autowired
@@ -116,18 +116,18 @@ public class ClientReqJsonMsgLogicService {
 				content = reqMsgQuryCmdService.getCcAgentInfoList(msgBase.getClientId());
 				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_SESSION_INFO:
-				ReqMsgSysCallSatistics msgCallSatis = reqMsgParse.convToObj(reqLine, ReqMsgSysCallSatistics.class);
-				int count = procReqSqlService.getCdrSessionCount(msgCallSatis.getTimeStart(),
-						msgCallSatis.getTimeEnd());
-				StringBuffer buff = new StringBuffer();
-				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
-				buff.append(ConstantSystem.SYS_SPLIT);
-				buff.append(Integer.toString(count));
-				buff.append("\n");
-//				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+			case ConstantSystem.SYS_QUERY_STATISTICS_ALL:
+//				ReqMsgSysCallSatistics msgCallSatis = reqMsgParse.convToObj(reqLine, ReqMsgSysCallSatistics.class);
+//				int count = procReqSqlService.getCdrSessionCount(msgCallSatis.getTimeStart(),
+//						msgCallSatis.getTimeEnd());
+//				StringBuffer buff = new StringBuffer();
+//				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+//				buff.append(ConstantSystem.SYS_SPLIT);
+//				buff.append(Integer.toString(count));
+//				buff.append("\n");
+////				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_AGENT_SESSION_INFO:
+			case ConstantSystem.SYS_QUERY_STATISTICS_CALLID:
 
 				break;
 

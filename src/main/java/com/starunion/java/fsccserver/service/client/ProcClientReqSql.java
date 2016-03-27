@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.dao.DaoUserSip1;
-import com.starunion.java.fsccserver.dao.freecc.DaoAgentInfo;
-import com.starunion.java.fsccserver.dao.freecc.DaoStarAddrBook;
+import com.starunion.java.fsccserver.dao.cc.DaoAgentInfo;
+import com.starunion.java.fsccserver.dao.cc.DaoStarAddrBook;
 import com.starunion.java.fsccserver.dao.fs.DaoCdrInfo;
+import com.starunion.java.fsccserver.dao.fs.DaoCdrInfoNoExtends;
 import com.starunion.java.fsccserver.po.freecc.AgentInfo;
 import com.starunion.java.fsccserver.po.freepbx.UserSip;
 import com.starunion.java.fsccserver.service.TimeStringService;
@@ -32,20 +33,36 @@ public class ProcClientReqSql {
 	@Autowired
 	DaoCdrInfo daoCdrInfo;
 	@Autowired
+	DaoCdrInfoNoExtends daoCdrInfoNew;
+	@Autowired
 	TimeStringService timeStringService;
 
 	public ProcClientReqSql() {
 
 	}
 
-	public int getCdrSessionCount(String id, String content) {
+	public int getCdrSessionCount(String content) {
 		//:TODO check the id permission
-		String[] body = content.split("\\|");
-		if (body[0].equals("0") && body[1].equals("0")) {
+		/** type:requester:startTime|endTime */
+		String[] data = content.split("\\|");
+		if (data[0].equals("0") && data[1].equals("0")) {
 			return daoCdrInfo.getCdrSessionCountAll();
 		} else {
-			return daoCdrInfo.getCdrSessionCountByTime(timeStringService.String2TimestampFormat(body[0]),
-					timeStringService.String2TimestampFormat(body[1]));
+			return daoCdrInfo.getCdrSessionCountByTime(timeStringService.String2TimestampFormat(data[0]),
+					timeStringService.String2TimestampFormat(data[1]));
+		}
+
+	}
+	
+	public int getCdrSessionCountByAgentId(String content) {
+		//:TODO check the id permission
+		/** type:requester:startTime|endTime|agentId */
+		String[] data = content.split("\\|");
+		if (data[0].equals("0") && data[1].equals("0")) {
+			return daoCdrInfo.getCdrSessionCountByAgentId(data[2]);
+		} else {
+			return daoCdrInfo.getCdrSessionCountByTimeAgent(timeStringService.String2TimestampFormat(data[0]),
+					timeStringService.String2TimestampFormat(data[1]),data[2]);
 		}
 
 	}

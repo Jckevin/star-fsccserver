@@ -38,8 +38,6 @@ public class SocketClientTcpThread extends Thread {
 	private String clientId;
 	@Autowired
 	ClientReqMsgLogicService clientReqService;
-//	@Autowired
-//	ClientReqJsonMsgLogicService clientReqJsonService;
 
 	private long firsttime = 0;
 	private boolean isFrist = true;

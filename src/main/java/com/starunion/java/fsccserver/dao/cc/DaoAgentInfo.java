@@ -1,4 +1,4 @@
-package com.starunion.java.fsccserver.dao.freecc;
+package com.starunion.java.fsccserver.dao.cc;
 
 import java.io.IOException;
 import java.net.Socket;

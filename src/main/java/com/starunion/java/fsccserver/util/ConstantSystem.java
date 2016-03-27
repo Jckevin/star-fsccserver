@@ -41,8 +41,9 @@ public class ConstantSystem {
 	public final static String SYS_TAIL_END = "\r\n";
 	// public system API (query)
 	public final static String SYS_QUERY_TER_INFO = "sysQueryTerInfo";
-	public final static String SYS_QUERY_STATISTICS_SESSION_INFO = "sysQueryStatisticsSessionInfo";
-	public final static String SYS_QUERY_STATISTICS_AGENT_SESSION_INFO = "sysQueryStatisticsAgentSessionInfo";
+	public final static String SYS_QUERY_STATISTICS_ALL = "sysQueryStatisticsAll";
+	public final static String SYS_QUERY_STATISTICS_TIME = "sysQueryStatisticsTime";
+	public final static String SYS_QUERY_STATISTICS_CALLID = "sysQueryStatisticsCallid";
 	public final static String EXPRESS_STATISTIC_SESSION = "sessionCount";
 	
 	// public system API (command)
