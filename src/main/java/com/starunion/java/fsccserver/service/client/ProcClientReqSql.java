@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,58 +42,87 @@ public class ProcClientReqSql {
 
 	}
 
-	public int getCdrSessionCount(String content) {
-		//:TODO check the id permission
+	public int getCdrSessionCountAll(String content) {
+		/** it seems content no use ,only for placeholder */
+		return daoCdrInfoNew.getSessionCountAll();
+
+	}
+
+	public int getCdrSessionCountByTime(String content) {
+		// :TODO check the id permission
 		/** type:requester:startTime|endTime */
 		String[] data = content.split("\\|");
-		if (data[0].equals("0") && data[1].equals("0")) {
-			return daoCdrInfo.getCdrSessionCountAll();
-		} else {
-			return daoCdrInfo.getCdrSessionCountByTime(timeStringService.String2TimestampFormat(data[0]),
-					timeStringService.String2TimestampFormat(data[1]));
-		}
+		return daoCdrInfoNew.getSessionCountByTime(timeStringService.String2TimestampFormat(data[0]),
+				timeStringService.String2TimestampFormat(data[1]));
+	}
 
+	public int getCdrSessionCountByCallId(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId */
+		return daoCdrInfoNew.getSessionCountByCallId(content);
 	}
 	
-	public int getCdrSessionCountByAgentId(String content) {
-		//:TODO check the id permission
-		/** type:requester:startTime|endTime|agentId */
+	public int getCdrSessionCountByCallIdTime(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId|startTime|endTime */
 		String[] data = content.split("\\|");
-		if (data[0].equals("0") && data[1].equals("0")) {
-			return daoCdrInfo.getCdrSessionCountByAgentId(data[2]);
-		} else {
-			return daoCdrInfo.getCdrSessionCountByTimeAgent(timeStringService.String2TimestampFormat(data[0]),
-					timeStringService.String2TimestampFormat(data[1]),data[2]);
-		}
-
+		return daoCdrInfoNew.getSessionCountByCallIdTime(data[0], timeStringService.String2TimestampFormat(data[1]),
+				timeStringService.String2TimestampFormat(data[2]));
 	}
-
-	public int insertAgentInfo(String agId, String agPwd, String agType) {
-		return daoAgentInfo.add(agId, agPwd, agType);
+	
+	public int getCdrSessionCountByCallIdIn(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId */
+		return daoCdrInfoNew.getSessionCountByCallIdIn(content);
 	}
-
-	public int delAgentInfo(String agId) {
-		return daoAgentInfo.delById(agId);
+	
+	public int getCdrSessionCountByCallIdInTime(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId|startTime|endTime */
+		String[] data = content.split("\\|");
+		return daoCdrInfoNew.getSessionCountByCallIdInTime(data[0], timeStringService.String2TimestampFormat(data[1]),
+				timeStringService.String2TimestampFormat(data[2]));
 	}
-
-	public int updateAgentInfo(String agId, Map<String, String> map) {
-		return daoAgentInfo.updateAll(agId, map);
+	
+	public int getCdrSessionCountByCallIdOut(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId */
+		return daoCdrInfoNew.getSessionCountByCallIdOut(content);
 	}
-
-	public AgentInfo findAgentInfo(String agId) {
-		return daoAgentInfo.findBy(agId);
+	
+	public int getCdrSessionCountByCallIdOutTime(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId|startTime|endTime */
+		String[] data = content.split("\\|");
+		return daoCdrInfoNew.getSessionCountByCallIdOutTime(data[0], timeStringService.String2TimestampFormat(data[1]),
+				timeStringService.String2TimestampFormat(data[2]));
 	}
-
-	public List<AgentInfo> findAgentInfoList() {
-		return daoAgentInfo.findAll();
+	
+	public int getCdrSessionCountByCallIdReject(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId|startTime|endTime */
+		return daoCdrInfoNew.getSessionCountByCallIdReject(content);
 	}
-
-	public int insertAddrBook() {
-		return daoStarAddrBook.add();
+	
+	public int getCdrSessionCountByCallIdRejectTime(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId|startTime|endTime */
+		String[] data = content.split("\\|");
+		return daoCdrInfoNew.getSessionCountByCallIdRejectTime(data[0], timeStringService.String2TimestampFormat(data[1]),
+				timeStringService.String2TimestampFormat(data[2]));
 	}
-
-	public UserSip findByNumber() {
-		return daoUserSip.findByName();
+	
+	public int getCdrSessionCountByCallIdTransfer(String content) {
+		// :TODO check the id permission
+		return daoCdrInfoNew.getSessionCountByCallIdTransfer(content);
+	}
+	
+	public int getCdrSessionCountByCallIdTransferTime(String content) {
+		// :TODO check the id permission
+		/** type:requester:agentId|startTime|endTime */
+		String[] data = content.split("\\|");
+		return daoCdrInfoNew.getSessionCountByCallIdTransferTime(data[0], timeStringService.String2TimestampFormat(data[1]),
+				timeStringService.String2TimestampFormat(data[2]));
 	}
 
 }

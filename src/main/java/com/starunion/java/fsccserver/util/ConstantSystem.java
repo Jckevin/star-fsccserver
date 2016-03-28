@@ -41,9 +41,21 @@ public class ConstantSystem {
 	public final static String SYS_TAIL_END = "\r\n";
 	// public system API (query)
 	public final static String SYS_QUERY_TER_INFO = "sysQueryTerInfo";
-	public final static String SYS_QUERY_STATISTICS_ALL = "sysQueryStatisticsAll";
-	public final static String SYS_QUERY_STATISTICS_TIME = "sysQueryStatisticsTime";
-	public final static String SYS_QUERY_STATISTICS_CALLID = "sysQueryStatisticsCallid";
+	// query for statistics
+	public final static String SYS_QUERY_SESSION_COUNT_ALL = "sysQuerySessionCountAll";
+	public final static String SYS_QUERY_SESSION_COUNT_TIME = "sysQuerySessionCountTime";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID = "sysQuerySessionCountCallid";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_TIME = "sysQuerySessionCountCallidTime";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_IN = "sysQuerySessionCountCallidIn";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_IN_TIME = "sysQuerySessionCountCallidInTime";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_OUT = "sysQuerySessionCountCallidOut";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_OUT_TIME = "sysQuerySessionCountCallidOutTime";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_REJECT = "sysQuerySessionCountCallidReject";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_REJECT_TIME = "sysQuerySessionCountCallidRejectTime";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_TRANSFER = "sysQuerySessionCountCallidTransfer";
+	public final static String SYS_QUERY_SESSION_COUNT_CALLID_TRANSFER_TIME = "sysQuerySessionCountCallidTransferTime";
+	// check the shutdown time process on the table members!
+	public final static String SYS_QUERY_SESSION_COUNT_ACD = "sysQuerySessionCountCallidTransferTime";
 	public final static String EXPRESS_STATISTIC_SESSION = "sessionCount";
 	
 	// public system API (command)

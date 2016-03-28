@@ -183,6 +183,7 @@ public class DbUtilTemplate {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public int getCount(DataSource ds, String sql) {
+		logger.debug(sql);
 		queryRunner = new QueryRunner(ds);
 		try {
 			return ((Long) queryRunner.query(sql, new ScalarHandler())).intValue();

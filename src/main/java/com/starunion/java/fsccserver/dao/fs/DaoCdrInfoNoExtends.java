@@ -14,25 +14,46 @@ import com.starunion.java.fsccserver.dao.DbUtilTemplate;
  * 
  */
 @Repository
-public class DaoCdrInfoNoExtends extends DbUtilTemplate{
+public class DaoCdrInfoNoExtends extends DbUtilTemplate {
 	@Autowired
 	DataSource dsFreeSs;
 
-	public int getCdrSessionCountAll() {
+	public int getSessionCountAll() {
 		return getCount(dsFreeSs, "select count(*) from cdr");
 	}
-	public int getCdrSessionCountByCallId(DataSource ds, String agentId) {
+
+	public int getSessionCountByCallId(String callId) {
 		int count = -1;
 		StringBuffer buff = new StringBuffer();
-		buff.append("select count(*) from cdr where caller = ");
-		buff.append(agentId);
-		buff.append(" and where callee = ");
-		buff.append(agentId);
-		count = getCount(ds, buff.toString());
+		buff.append("select count(*) from cdr where caller_id_number = ");
+		buff.append(callId);
+		buff.append(" or destination_number = ");
+		buff.append(callId);
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdIn(String callId) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where destination_number = ");
+		buff.append(callId);
+		buff.append(" and caller_id_number != ");
+		buff.append(callId);
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdOut(String callId) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where caller_id_number = ");
+		buff.append(callId);
+		count = getCount(dsFreeSs, buff.toString());
 		return count;
 	}
 
-	public int getCdrSessionCountByTime(DataSource ds, String dateStart, String dateEnd) {
+	public int getSessionCountByTime(String dateStart, String dateEnd) {
 		int count = -1;
 		StringBuffer buff = new StringBuffer();
 		buff.append("select count(*) from cdr where start_stamp > '");
@@ -40,7 +61,106 @@ public class DaoCdrInfoNoExtends extends DbUtilTemplate{
 		buff.append("' and start_stamp < '");
 		buff.append(dateEnd);
 		buff.append("'");
-		count = getCount(ds, buff.toString());
+		count = getCount(dsFreeSs, buff.toString());
 		return count;
 	}
+
+	public int getSessionCountByCallIdTime(String callId, String dateStart, String dateEnd) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where start_stamp > '");
+		buff.append(dateStart);
+		buff.append("' and start_stamp < '");
+		buff.append(dateEnd);
+		buff.append("' and (caller_id_number = ");
+		buff.append(callId);
+		buff.append(" or destination_number = ");
+		buff.append(callId);
+		buff.append(")");
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdInTime(String callId, String dateStart, String dateEnd) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where start_stamp > '");
+		buff.append(dateStart);
+		buff.append("' and start_stamp < '");
+		buff.append(dateEnd);
+		buff.append("' and destination_number = ");
+		buff.append(callId);
+		buff.append(" and caller_id_number != ");
+		buff.append(callId);
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdOutTime(String callId, String dateStart, String dateEnd) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where start_stamp > '");
+		buff.append(dateStart);
+		buff.append("' and start_stamp < '");
+		buff.append(dateEnd);
+		buff.append("' and caller_id_number = ");
+		buff.append(callId);
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdReject(String callId) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where destination_number = ");
+		buff.append(callId);
+		buff.append(" and hangup_cause = 'CALL_REJECTED'");
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdRejectTime(String callId, String dateStart, String dateEnd) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where start_stamp > '");
+		buff.append(dateStart);
+		buff.append("' and start_stamp < '");
+		buff.append(dateEnd);
+		buff.append("' and destination_number = ");
+		buff.append(callId);
+		buff.append(" and hangup_cause = 'CALL_REJECTED'");
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdTransfer(String callId) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where destination_number = ");
+		buff.append(callId);
+		buff.append(" and caller_id_name = ");
+		buff.append(callId);
+		buff.append(" and caller_id_number != ");
+		buff.append(callId);
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+	
+	public int getSessionCountByCallIdTransferTime(String callId, String dateStart, String dateEnd) {
+		int count = -1;
+		StringBuffer buff = new StringBuffer();
+		buff.append("select count(*) from cdr where start_stamp > '");
+		buff.append(dateStart);
+		buff.append("' and start_stamp < '");
+		buff.append(dateEnd);
+		buff.append("' and destination_number = ");
+		buff.append(callId);
+		buff.append(" and caller_id_name = ");
+		buff.append(callId);
+		buff.append(" and caller_id_number != ");
+		buff.append(callId);
+		count = getCount(dsFreeSs, buff.toString());
+		return count;
+	}
+
 }

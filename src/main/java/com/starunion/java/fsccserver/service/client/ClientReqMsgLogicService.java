@@ -58,6 +58,8 @@ public class ClientReqMsgLogicService {
 		if (msg != null) {
 			int res = 0;
 			String content = "";
+			int sessionCount = 0;
+			StringBuffer buff = new StringBuffer();
 			logger.debug("receive client request type [{}]", msg.getType());
 			switch (msg.getType()) {
 			case ConstantSystem.CC_LOG_IN:
@@ -110,54 +112,118 @@ public class ClientReqMsgLogicService {
 				content = reqMsgQuryCmdService.getCcAgentInfoList(msg.getClientId());
 				rspBuff = makeClientContentResponse(content, reqLine);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_ALL:
-				int count = procReqSqlService.getCdrSessionCount(msg.getContent());
-				StringBuffer buff = new StringBuffer();
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_ALL:
+				sessionCount = procReqSqlService.getCdrSessionCountAll(msg.getContent());
 				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
 				buff.append(ConstantSystem.SYS_SPLIT);
-				buff.append(Integer.toString(count));
+				buff.append(Integer.toString(sessionCount));
 				buff.append("\n");
 				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_CALLID:
-				/** type:requester:agentId|startTime|endTime */
-				// int count =
-				// procReqSqlService.getCdrSessionCount(msg.getClientId(),
-				// msg.getContent());
-				// StringBuffer buff = new StringBuffer();
-				// buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
-				// buff.append(ConstantSystem.SYS_SPLIT);
-				// buff.append(Integer.toString(count));
-				// buff.append("\n");
-				// rspBuff = makeClientContentResponse(buff.toString(),
-				// reqLine);
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_TIME:
+				sessionCount = procReqSqlService.getCdrSessionCountByTime(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
 				break;
-			case "ccLogina":
-				rspBuff = makeClientStatusResponse(reqLine, procReqSqlService.insertAgentInfo("1", "password", "0"));
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID:
+				/** type:requester:agentId */
+				sessionCount = procReqSqlService.getCdrSessionCountByCallId(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
 				break;
-			case "ccLogind":
-				int i = procReqSqlService.delAgentInfo("1");
-				logger.debug("!!!!!!!!!after delete ,result = {}", i);
-				rspBuff = makeClientStatusResponse(reqLine, i);
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_IN:
+				/** type:requester:agentId */
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdIn(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
 				break;
-			case "ccLoginu":
-				// UserSip us = procReqSqlService.findByNumber();
-				Map<String, String> map = new HashMap<String, String>();
-				map.put("agentPwd", "drowssap");
-				map.put("agentType", "9");
-				rspBuff = makeClientStatusResponse(reqLine, procReqSqlService.updateAgentInfo("1", map));
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_OUT:
+				/** type:requester:agentId */
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdOut(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
 				break;
-			case "ccLoginq":
-				AgentInfo us = procReqSqlService.findAgentInfo("1");
-				logger.debug("pwd = {},type={}", us.getAgentPwd(), us.getAgentType());
-				rspBuff = makeClientStatusResponse(reqLine, 1);
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_TIME:
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdTime(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
 				break;
-			case "ccLoginqq":
-				List<AgentInfo> uslist = procReqSqlService.findAgentInfoList();
-				for (AgentInfo in : uslist) {
-					logger.debug("from list pwd = {},type={}", in.getAgentPwd(), in.getAgentType());
-				}
-				rspBuff = makeClientStatusResponse(reqLine, 1);
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_IN_TIME:
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdInTime(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_OUT_TIME:
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdOutTime(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_REJECT:
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdReject(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_REJECT_TIME:
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdRejectTime(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_TRANSFER:
+				/** not right enough, maybe freeswitch bug*/
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdTransfer(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID_TRANSFER_TIME:
+				/** not right enough, maybe freeswitch bug*/
+				sessionCount = procReqSqlService.getCdrSessionCountByCallIdTransferTime(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Integer.toString(sessionCount));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
 				break;
 			default:
 				logger.debug("unknow message type, do nothing...");

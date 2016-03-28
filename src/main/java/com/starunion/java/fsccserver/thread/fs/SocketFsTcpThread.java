@@ -45,7 +45,6 @@ public class SocketFsTcpThread extends Thread {
 		fsIp = ConfigManager.getInstance().getFsAddr();
 		while (true) {
 			try {
-
 				fsClient = new Socket(fsIp, ConstantSystem.FS_SERV_PORT);
 
 				BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));

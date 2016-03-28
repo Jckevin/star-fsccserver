@@ -116,7 +116,7 @@ public class ClientReqJsonMsgLogicService {
 				content = reqMsgQuryCmdService.getCcAgentInfoList(msgBase.getClientId());
 				rspBuff = makeClientMsgJsonResp(msgBase, res);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_ALL:
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_ALL:
 //				ReqMsgSysCallSatistics msgCallSatis = reqMsgParse.convToObj(reqLine, ReqMsgSysCallSatistics.class);
 //				int count = procReqSqlService.getCdrSessionCount(msgCallSatis.getTimeStart(),
 //						msgCallSatis.getTimeEnd());
@@ -127,7 +127,7 @@ public class ClientReqJsonMsgLogicService {
 //				buff.append("\n");
 ////				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
 				break;
-			case ConstantSystem.SYS_QUERY_STATISTICS_CALLID:
+			case ConstantSystem.SYS_QUERY_SESSION_COUNT_CALLID:
 
 				break;
 

@@ -69,21 +69,21 @@ public class FsCcServer {
 		/** start FS binding socket for subscribe. */
 		Thread fsThread = new Thread(applicationContext.getBean("socketFsTcpThread", SocketFsTcpThread.class));
 		fsThread.setName("FsSocketThread");
-//		fsThread.start();
+		fsThread.start();
 
 		/** start FS Notify receive thread. */
 		Thread fsNotifyThread = new Thread(applicationContext.getBean("threadFsNotifyProc", ThreadFsNotifyProc.class));
 		fsNotifyThread.setName("FsNotifyRecvThread");
-//		fsNotifyThread.start();
+		fsNotifyThread.start();
 
 		/** start FS Notify send thread. */
 		Thread fsNotifySendThread = new Thread(
 				applicationContext.getBean("threadNotifySendToClient", ThreadNotifySendToClient.class));
 		fsNotifySendThread.setName("FsNotifySendThread");
-//		fsNotifySendThread.start();
+		fsNotifySendThread.start();
 
 		/** initial server terminal info */
 		InitialService initServ = applicationContext.getBean("initialService", InitialService.class);
-//		initServ.initTerInfo();
+		initServ.initTerInfo();
 	}
 }
