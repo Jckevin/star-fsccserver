@@ -78,6 +78,7 @@ public class SocketFsTcpThread extends Thread {
 									fsSendCommand("event plain CHANNEL_CALLSTATE\n\n");
 									fsSendCommand("event plain CHANNEL_PARK\n\n");
 									fsSendCommand("event plain CUSTOM sofia::register\n\n");
+//									fsSendCommand("event plain CUSTOM callcenter::info\n\n");
 								}
 							} else if (contentType.equals("text/disconnect-notice")) {
 								logger.debug("server disconected, close the fsClient...");
@@ -99,7 +100,7 @@ public class SocketFsTcpThread extends Thread {
 						} else {
 							String eventType = respMap.get(ConstantSystem.FS_EVENT_HEAD);
 							logger.debug("get a notify message {} put it to blocking queue.", eventType);
-							if (eventType != null && eventType.startsWith("CHANNEL_")) {
+							if (eventType != null) {
 								logger.info("receive notify from FreeSWITCH:======>\n{}", notifyBuffer.toString());
 								try {
 									ClientDataMap.fsNotifyRecvQueue.put(respMap);

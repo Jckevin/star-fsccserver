@@ -1,5 +1,6 @@
 package com.starunion.java.fsccserver.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,6 +161,29 @@ public class DbUtilTemplate {
 	}
 
 	/**
+	 * method for query a list of column.
+	 */
+	public <T> List<T> findColumnList(DataSource ds, String sql,Class<T> entityClass) {
+		queryRunner = new QueryRunner(ds);
+		try {
+			return queryRunner.query(sql, new ColumnListHandler<T>());
+		} catch (SQLException e) {
+			logger.error("Error occured while attempting to update data", e);
+		}
+		return null;
+	}
+	
+//	public List<Integer> findColumnIntList(DataSource ds, String sql) {
+//		queryRunner = new QueryRunner(ds);
+//		try {
+//			return queryRunner.query(sql, new ColumnListHandler<Integer>());
+//		} catch (SQLException e) {
+//			logger.error("Error occured while attempting to update data", e);
+//		}
+//		return null;
+//	}
+
+	/**
 	 * method for batch operation with params.
 	 * 
 	 * @param sql
@@ -187,6 +212,22 @@ public class DbUtilTemplate {
 		queryRunner = new QueryRunner(ds);
 		try {
 			return ((Long) queryRunner.query(sql, new ScalarHandler())).intValue();
+		} catch (SQLException e) {
+			logger.error("Error occured while attempting to update data", e);
+		}
+		return ConstantSystem.FAILED;
+	}
+	
+	/**
+	 * getCount need ScalarHandler return columns info
+	 * 
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public int getColumnSum(DataSource ds, String sql) {
+		logger.debug(sql);
+		queryRunner = new QueryRunner(ds);
+		try {
+			return ((BigDecimal)queryRunner.query(sql, new ScalarHandler())).intValue();
 		} catch (SQLException e) {
 			logger.error("Error occured while attempting to update data", e);
 		}

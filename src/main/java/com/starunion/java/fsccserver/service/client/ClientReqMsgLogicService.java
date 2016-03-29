@@ -225,6 +225,33 @@ public class ClientReqMsgLogicService {
 				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
 				buff.delete(0, buff.length());
 				break;
+			case ConstantSystem.CC_QUERY_ACD_CALL_SUCC_RATE:
+				String acdCallSuccRate = procReqSqlService.getACDCallSuccRate(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(acdCallSuccRate);
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
+			case ConstantSystem.CC_QUERY_ACD_WAIT_TIME_AVG:
+				String waitAvg = procReqSqlService.getACDCallWaitTimeSecAvg(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(waitAvg);
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
+			case ConstantSystem.CC_QUERY_ACD_WAIT_TIME_MAX:
+				int waitMax = procReqSqlService.getACDCallWaitTimeSecMax(msg.getContent());
+				buff.append(ConstantSystem.EXPRESS_STATISTIC_SESSION);
+				buff.append(ConstantSystem.SYS_SPLIT);
+				buff.append(Float.toString(waitMax));
+				buff.append("\n");
+				rspBuff = makeClientContentResponse(buff.toString(), reqLine);
+				buff.delete(0, buff.length());
+				break;
 			default:
 				logger.debug("unknow message type, do nothing...");
 				rspBuff = makeClientStatusResponse(reqLine, ConstantSystem.FAILED);

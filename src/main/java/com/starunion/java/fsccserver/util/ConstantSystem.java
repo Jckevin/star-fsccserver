@@ -78,6 +78,9 @@ public class ConstantSystem {
 	public final static String CC_LOG_IN = "ccLogin";
 	public final static String CC_LOG_OUT = "ccLogOut";
 	public final static String CC_AGENT_QRY = "ccAgentQuery";
+	public final static String CC_QUERY_ACD_CALL_SUCC_RATE = "ccQueryCallSuccRate";
+	public final static String CC_QUERY_ACD_WAIT_TIME_AVG = "ccQueryWaitTimeAvg";
+	public final static String CC_QUERY_ACD_WAIT_TIME_MAX = "ccQueryWaitTimeMax";
 	// for agent sign in and out
 	public final static String CC_AGENT_SIGN = "ccAgentSign";
 	public final static String CC_AGENT_SIGN_IN = "1";
