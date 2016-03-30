@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.service.fs.FsNotifyMsgCheckService;
-import com.starunion.java.fsccserver.util.ConfigManager;
+import com.starunion.java.fsccserver.util.StarConfigManager;
 import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /** 
@@ -41,7 +41,7 @@ public class CallableFsExecCmdProc implements Callable<Integer>{
 			int result = ConstantSystem.FAILED;
 			logger.debug("get cmd = {}", sendCmd);
 			try {
-				String ipAddr = ConfigManager.getInstance().getFsAddr();
+				String ipAddr = StarConfigManager.getInstance().getFsAddr();
 				Socket fsClient = new Socket(ipAddr, ConstantSystem.FS_SERV_PORT);
 
 				BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));

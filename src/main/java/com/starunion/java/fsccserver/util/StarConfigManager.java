@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class ConfigManager {
-	private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
+public class StarConfigManager {
+	private static final Logger logger = LoggerFactory.getLogger(StarConfigManager.class);
 
 	private String disAddr;
 //	private String disPort;
@@ -27,16 +27,16 @@ public class ConfigManager {
 	private String disMusicPath;
 	private String peerCodec;
 
-	private static ConfigManager configurationManager;
+	private static StarConfigManager configurationManager;
 	private static String configurationPath;
 	private static Properties properties;
 
-	private ConfigManager() {
+	private StarConfigManager() {
 	}
 
-	public static synchronized ConfigManager getInstance() {
+	public static synchronized StarConfigManager getInstance() {
 		if (configurationManager == null) {
-			configurationManager = new ConfigManager();
+			configurationManager = new StarConfigManager();
 			return configurationManager;
 		} else
 			return configurationManager;

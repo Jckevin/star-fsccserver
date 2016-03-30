@@ -2,9 +2,6 @@ package com.starunion.java.fsccserver.po.freepbx;
 
 import java.sql.Timestamp;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
 public class UserGpsTrail {
 	private Integer id;
 	private String exten;

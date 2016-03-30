@@ -1,8 +1,5 @@
 package com.starunion.java.fsccserver.po.freepbx;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
 public class UserSip {
 	private Integer id;
 	private String number;

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.starunion.java.fsccserver.service.fs.FsNotifyMsgCheckService;
 import com.starunion.java.fsccserver.util.ClientDataMap;
-import com.starunion.java.fsccserver.util.ConfigManager;
+import com.starunion.java.fsccserver.util.StarConfigManager;
 import com.starunion.java.fsccserver.util.ConstantSystem;
 
 /**
@@ -42,7 +42,7 @@ public class SocketFsTcpThread extends Thread {
 
 	@Override
 	public void run() {
-		fsIp = ConfigManager.getInstance().getFsAddr();
+		fsIp = StarConfigManager.getInstance().getFsAddr();
 		while (true) {
 			try {
 				fsClient = new Socket(fsIp, ConstantSystem.FS_SERV_PORT);

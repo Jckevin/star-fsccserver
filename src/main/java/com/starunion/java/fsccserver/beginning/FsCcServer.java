@@ -13,7 +13,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.starunion.java.fsccserver.thread.SocketServerTcpJsonThread;
 import com.starunion.java.fsccserver.thread.SocketServerTcpThread;
-import com.starunion.java.fsccserver.util.ConfigManager;
+import com.starunion.java.fsccserver.util.StarConfigManager;
 import com.starunion.java.fsccserver.thread.fs.SocketFsTcpThread;
 import com.starunion.java.fsccserver.thread.fs.ThreadFsNotifyProc;
 import com.starunion.java.fsccserver.thread.fs.ThreadNotifySendToClient;
@@ -52,7 +52,7 @@ public class FsCcServer {
 		logger.debug("FsCcServer Version :V0.0.1@20160301");
 
 		/** initial Local configuration. */
-		ConfigManager configManager = applicationContext.getBean("configManager", ConfigManager.class);
+		StarConfigManager configManager = applicationContext.getBean("starConfigManager", StarConfigManager.class);
 		configManager.getInstance().setConfigurationPath("conf/appParams.conf");
 
 		/** start TCP socket(server) for clients. */

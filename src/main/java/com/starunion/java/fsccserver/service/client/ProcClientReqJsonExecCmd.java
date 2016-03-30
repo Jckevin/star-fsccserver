@@ -18,7 +18,7 @@ import com.starunion.java.fsccserver.msg.fs.ReqMsgSysGenOper;
 import com.starunion.java.fsccserver.po.TerParkingInfo;
 import com.starunion.java.fsccserver.service.JsonMsgService;
 import com.starunion.java.fsccserver.thread.client.CallableFsExecCmdProc;
-import com.starunion.java.fsccserver.util.ConfigManager;
+import com.starunion.java.fsccserver.util.StarConfigManager;
 import com.starunion.java.fsccserver.util.ConstantSystem;
 import com.starunion.java.fsccserver.util.ServerDataMap;
 
@@ -51,7 +51,7 @@ public class ProcClientReqJsonExecCmd {
 		buff.append("bgapi uuid_record ");
 		buff.append(uuid);
 		buff.append(" start ");
-		buff.append(ConfigManager.getInstance().getDisRecordPath());
+		buff.append(StarConfigManager.getInstance().getDisRecordPath());
 		buff.append(timePart[0]);
 		buff.append("/");
 		buff.append(msg.getCallee());

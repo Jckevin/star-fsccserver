@@ -27,8 +27,8 @@ public class ProcClientReqSql {
 	private static final Logger logger = LoggerFactory.getLogger(ProcClientReqSql.class);
 	@Autowired
 	DaoStarAddrBook daoStarAddrBook;
-	@Autowired
-	DaoUserSip1 daoUserSip;
+//	@Autowired
+//	DaoUserSip1 daoUserSip;
 	@Autowired
 	DaoAgentInfo daoAgentInfo;
 	@Autowired
