@@ -141,7 +141,7 @@ public class SocketServerTcpJsonThread extends Thread {
 		try {
 
 			if (serverSocket == null) {
-				serverSocket = new ServerSocket(ConstantSystem.TCP_SERV_PORT);
+				serverSocket = new ServerSocket(ConstantSystem.TCP_JSON_SERV_PORT);
 			}
 
 			logger.debug("server tcp thread had been started, wait for client binding...");

@@ -56,10 +56,10 @@ public class FsCcServer {
 		configManager.getInstance().setConfigurationPath("conf/appParams.conf");
 
 		/** start TCP socket(server) for clients. */
-//		Thread serverJsonThread = new Thread(
-//				applicationContext.getBean("socketServerTcpJsonThread", SocketServerTcpJsonThread.class));
-//		serverJsonThread.setName("CcServerJsonThread");
-//		serverJsonThread.start();
+		Thread serverJsonThread = new Thread(
+				applicationContext.getBean("socketServerTcpJsonThread", SocketServerTcpJsonThread.class));
+		serverJsonThread.setName("CcServerJsonThread");
+		serverJsonThread.start();
 		
 		Thread serverThread = new Thread(
 				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
@@ -84,6 +84,6 @@ public class FsCcServer {
 
 		/** initial server terminal info */
 		InitialService initServ = applicationContext.getBean("initialService", InitialService.class);
-		initServ.initTerInfo();
+//		initServ.initTerInfo();
 	}
 }

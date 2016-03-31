@@ -8,7 +8,8 @@ package com.starunion.java.fsccserver.util;
 public class ConstantSystem {
 
 	// for the project
-	public final static int TCP_SERV_PORT = 6099;
+	public final static int TCP_SERV_PORT = 6021;
+	public final static int TCP_JSON_SERV_PORT = 6099;
 	public final static int FS_SERV_PORT = 8021;
 
 	public final static int SUCCESS = 0;
