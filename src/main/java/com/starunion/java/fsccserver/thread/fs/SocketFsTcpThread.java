@@ -120,10 +120,10 @@ public class SocketFsTcpThread extends Thread {
 				e.printStackTrace();
 			} catch (IOException e) {
 				try {
-					sleep(10000);
 					Map<String, String> msg = new HashMap<String, String>();
 					msg.put(ConstantSystem.FS_EVENT_HEAD, ConstantSystem.SYS_NOTIFY_SERVER_UNBIND);
 					ClientDataMap.fsNotifyRecvQueue.put(msg);
+					sleep(10000);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
