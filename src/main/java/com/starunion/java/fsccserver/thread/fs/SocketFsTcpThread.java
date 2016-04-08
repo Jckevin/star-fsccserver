@@ -30,6 +30,9 @@ public class SocketFsTcpThread extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(SocketFsTcpThread.class);
 	@Autowired
 	FsNotifyMsgCheckService msgService;
+	
+	public static boolean isFsConnected = false;
+	
 	private BufferedWriter out = null;
 
 	private String fsIp;
@@ -46,11 +49,14 @@ public class SocketFsTcpThread extends Thread {
 		while (true) {
 			try {
 				fsClient = new Socket(fsIp, ConstantSystem.FS_SERV_PORT);
-
+				
+				isFsConnected = true;
+				
 				BufferedReader in = new BufferedReader(new InputStreamReader(fsClient.getInputStream()));
 				out = new BufferedWriter(new OutputStreamWriter(fsClient.getOutputStream()));
 				StringBuffer notifyBuffer = new StringBuffer();
 				String line = null;
+				
 				/** this logic is beautiful for me, hold on! keep on! */
 				while ((line = in.readLine()) != null) {
 					notifyBuffer.append(line);

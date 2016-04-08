@@ -60,12 +60,12 @@ public class FsCcServer {
 				applicationContext.getBean("socketServerTcpJsonThread", SocketServerTcpJsonThread.class));
 		serverJsonThread.setName("CcServerJsonThread");
 		serverJsonThread.start();
-		
+
 		Thread serverThread = new Thread(
 				applicationContext.getBean("socketServerTcpThread", SocketServerTcpThread.class));
 		serverThread.setName("CcServerThread");
 		serverThread.start();
-		
+
 		/** start FS binding socket for subscribe. */
 		Thread fsThread = new Thread(applicationContext.getBean("socketFsTcpThread", SocketFsTcpThread.class));
 		fsThread.setName("FsSocketThread");
@@ -83,7 +83,21 @@ public class FsCcServer {
 		fsNotifySendThread.start();
 
 		/** initial server terminal info */
-		InitialService initServ = applicationContext.getBean("initialService", InitialService.class);
-//		initServ.initTerInfo();
+		if (SocketFsTcpThread.isFsConnected) {
+			InitialService initServ = applicationContext.getBean("initialService", InitialService.class);
+			initServ.initTerInfo();
+		} else {
+			// use a timer seems not bad.
+			try {
+				Thread.sleep(10000);
+				InitialService initServ = applicationContext.getBean("initialService", InitialService.class);
+				initServ.initTerInfo();
+				logger.debug("OK");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 	}
 }

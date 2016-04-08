@@ -117,18 +117,26 @@ public class SocketClientTcpThread extends Thread {
 
 				}
 			} catch (SocketException e) {
+				logger.error("thread connection {} throw SocketException, e: ", getName(), e);
 				try {
 					clientSocket.close();
-					clientSocket = null;
-					logger.error("thread {} throw SocketException, e :", getName(), e);
 				} catch (IOException e1) {
-					logger.error("thread {} closed IOException, e : ", getName(), e1);
+					e1.printStackTrace();
 				}
+				ClientDataMap.clientSocketMap.remove(clientId);
 			} catch (IOException e) {
 				logger.error("thread connection {} throw IOException, e: ", getName(), e);
+				ClientDataMap.clientSocketMap.remove(clientId);
 			} catch (InterruptedException e) {
+				logger.error("thread connection {} throw InterruptedException, e: ", getName(), e);
+				ClientDataMap.clientSocketMap.remove(clientId);
 				break;
-			}
+			} 
+//			finally {
+//				//clientSocket = null;
+//				logger.debug("client excepted!!! now binding client count : {}. and client socket count : {}",
+//						ClientDataMap.clientSocketMap.size(), ClientDataMap.clientThreadMap.size());
+//			}
 		}
 		logger.debug("one client initactively closed , now binding client count : {}. and client socket count : {}",
 				ClientDataMap.clientSocketMap.size(), ClientDataMap.clientThreadMap.size());

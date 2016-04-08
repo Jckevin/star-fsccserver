@@ -178,7 +178,8 @@ public class ThreadFsNotifyProc extends Thread {
 					procFsNotifyService.procTerParking(caller, uuidCaller);
 
 				} else {
-					logger.debug("receive unknown Event-Name : {}", eventMap.get("Event-Name"));
+					logger.debug("receive unknown Event-Name : {}, whole = {}", eventMap.get("Event-Name"),eventMap.toString());
+					ClientDataMap.fsNotifySendQueue.put(eventMap.get("Event-Name")+"\r\n");
 				}
 			}
 		} catch (InterruptedException e) {

@@ -44,6 +44,7 @@ public class ThreadNotifySendToClient extends Thread{
 						entry.getValue().getOutputStream().flush();
 					} catch (IOException e) {
 						e.printStackTrace();
+						map.remove(entry.getKey());
 					}
 				}
 			}
